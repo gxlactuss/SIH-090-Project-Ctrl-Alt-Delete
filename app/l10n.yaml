@@ -1,0 +1,10 @@
+# Localisation config for `flutter gen-l10n`.
+#
+# The template is Hindi on purpose. gen-l10n fills any key a locale is missing
+# from the template, so a half-translated language degrades to Hindi rather
+# than to English -- which is the fallback chain the spec asks for.
+arb-dir: lib/l10n
+template-arb-file: app_hi.arb
+output-localization-file: app_localizations.dart
+output-class: AppLocalizations
+nullable-getter: false
