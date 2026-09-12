@@ -1,0 +1,848 @@
+{
+  "@@locale": "hi",
+  "appTitle": "कारीगर",
+  "actionNext": "आगे",
+  "actionBack": "पीछे",
+  "actionSkip": "छोड़ें",
+  "actionDone": "हो गया",
+  "actionRetry": "फिर कोशिश करें",
+  "actionYes": "हाँ",
+  "actionNo": "नहीं",
+  "actionListen": "सुनें",
+  "actionStopListening": "रोकें",
+  "stepOfSteps": "चरण {current}, कुल {total}",
+  "@stepOfSteps": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "splashTagline": "बोलिए, और आपका सामान बिक जाएगा",
+  "languageTitle": "अपनी भाषा चुनिए",
+  "languageHint": "जो भाषा आप बोलते हैं, उस पर दबाइए",
+  "welcomeTitle": "कारीगर क्या करता है",
+  "welcomeCard1Title": "तीन फ़ोटो लीजिए",
+  "welcomeCard1Body": "अपने बनाए सामान की तीन फ़ोटो लीजिए। ऐप बताएगा कि कैसे लेनी हैं।",
+  "welcomeCard2Title": "बोलकर बताइए",
+  "welcomeCard2Body": "यह क्या है, किस चीज़ का बना है, कितना दाम है — बस बोल दीजिए। लिखने की ज़रूरत नहीं।",
+  "welcomeCard3Title": "यह बिकने चला जाता है",
+  "welcomeCard3Body": "आपको सुनाकर पूछा जाएगा। आपकी हाँ के बाद ही सामान ऑनलाइन जाएगा।",
+  "welcomeStart": "शुरू करें",
+  "permissionsTitle": "ऐप को तीन चीज़ों की अनुमति चाहिए",
+  "permissionCameraTitle": "कैमरा",
+  "permissionCameraBody": "आपके सामान की फ़ोटो लेने के लिए। फ़ोटो आपके फ़ोन में ही रहती हैं, जब तक आप हाँ न कहें।",
+  "permissionMicTitle": "माइक",
+  "permissionMicBody": "ताकि आप बोलकर बता सकें कि सामान क्या है। लिखने की ज़रूरत न पड़े।",
+  "permissionNotificationTitle": "सूचनाएँ",
+  "permissionNotificationBody": "जब कुछ बिक जाए, तो हम आपको तुरंत बता सकें।",
+  "permissionAllow": "अनुमति दें",
+  "permissionNotNow": "अभी नहीं",
+  "permissionGranted": "इजाज़त है",
+  "permissionDeniedTitle": "अनुमति नहीं मिली",
+  "permissionDeniedBody": "इसके बिना यह काम नहीं करेगा। फ़ोन की सेटिंग में जाकर अनुमति दीजिए।",
+  "permissionOpenSettings": "सेटिंग खोलें",
+  "phoneTitle": "आपका फ़ोन नंबर",
+  "phoneWhy": "हम इस नंबर पर एक कोड भेजेंगे। और किसी को यह नंबर नहीं दिया जाएगा।",
+  "phoneInvalid": "दस अंक का नंबर डालिए",
+  "phoneUnknown": "यह नंबर इस डेमो में नहीं चलेगा। {number} डालिए।",
+  "@phoneUnknown": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "phoneSendCode": "कोड भेजिए",
+  "otpTitle": "आया हुआ कोड डालिए",
+  "otpSentTo": "{number} पर भेजा गया",
+  "@otpSentTo": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "otpResendIn": "दोबारा भेजें — {seconds} सेकंड बाद",
+  "@otpResendIn": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "otpResend": "कोड दोबारा भेजें",
+  "otpCallMe": "मुझे फ़ोन करके बताइए",
+  "otpCalling": "थोड़ी देर में फ़ोन आएगा और कोड बोलकर बताया जाएगा।",
+  "otpWrong": "कोड ठीक नहीं है। फिर से डालिए।",
+  "otpChangeNumber": "नंबर बदलें",
+  "otpAutoRead": "संदेश अपने आप पढ़ लिया गया",
+  "profileTitle": "अपने बारे में बताइए",
+  "profileNameLabel": "आपका नाम",
+  "profileNameHint": "बोलकर बताइए या लिखिए",
+  "profileNameMissing": "नाम बताइए",
+  "profileCraftLabel": "आप क्या बनाते हैं",
+  "profileCraftMissing": "एक चुनिए",
+  "profileSpeakToFill": "बोलकर भरिए",
+  "profileListening": "सुन रहे हैं…",
+  "dictationUnavailable": "इस फ़ोन पर बोलकर लिखना नहीं चल रहा। कृपया लिखकर डालिए।",
+  "dictationNothingHeard": "कुछ सुनाई नहीं दिया। माइक दबाकर फिर बोलिए।",
+  "craftWeaving": "बुनाई",
+  "craftPottery": "मिट्टी का काम",
+  "craftWoodwork": "लकड़ी का काम",
+  "craftMetalwork": "धातु का काम",
+  "craftJewellery": "गहने",
+  "craftEmbroidery": "कढ़ाई",
+  "craftPainting": "चित्रकारी",
+  "craftLeather": "चमड़े का काम",
+  "craftBamboo": "बाँस और घास",
+  "craftOther": "कुछ और",
+  "ondcTitle": "अपना ओएनडीसी खाता जोड़िए",
+  "ondcExplain": "ओएनडीसी वह जगह है जहाँ ग्राहक आपका सामान देखते और खरीदते हैं। पैसा सीधे आपको मिलता है, हमारे पास नहीं आता।",
+  "ondcEmailLabel": "ओएनडीसी की ईमेल",
+  "ondcSellerIdLabel": "विक्रेता आईडी",
+  "ondcScan": "क्यूआर कोड स्कैन कीजिए",
+  "ondcLink": "खाता जोड़िए",
+  "ondcLinking": "जोड़ा जा रहा है…",
+  "ondcLinked": "खाता जुड़ गया",
+  "ondcFailed": "यह खाता नहीं मिला। दोबारा देखिए।",
+  "ondcNoAccount": "मेरे पास अभी खाता नहीं है",
+  "ondcNoAccountExplain": "कोई बात नहीं। आप सामान तैयार करके रख सकते हैं। खाता जुड़ते ही सब एक साथ चला जाएगा।",
+  "practiceTitle": "एक बार अभ्यास कीजिए",
+  "practiceIntro": "यह सिर्फ़ अभ्यास है। यहाँ कुछ भी सचमुच नहीं बिकेगा और कहीं नहीं जाएगा।",
+  "practiceStart": "अभ्यास शुरू कीजिए",
+  "practicePhotoStep": "फ़ोटो {current}, कुल {total}",
+  "@practicePhotoStep": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "practicePhotoWhole": "पूरा सामान दिखाइए",
+  "practicePhotoDetail": "पास से एक फ़ोटो लीजिए",
+  "practicePhotoScale": "साथ में हाथ रखिए, ताकि नाप पता चले",
+  "practiceTakePhoto": "फ़ोटो लीजिए",
+  "practiceVoiceTitle": "अब बोलकर बताइए",
+  "practiceVoiceBody": "यह क्या है, किस चीज़ का बना है, कितना बड़ा है, कितने दिन लगे, और दाम क्या है।",
+  "practiceHoldToSpeak": "दबाकर बोलिए",
+  "practiceReviewTitle": "अब आपको सुनाया जाएगा",
+  "practiceReviewBody": "असली बार में ऐप आपकी बात से जो समझा, वह आपको सुनाएगा। गलत हो तो आप वहीं बोलकर सुधार सकते हैं।",
+  "practiceDoneTitle": "अभ्यास पूरा हुआ",
+  "practiceNothingPublished": "कुछ भी नहीं भेजा गया। यह सिर्फ़ अभ्यास था।",
+  "practiceAgain": "एक बार और अभ्यास करें",
+  "practiceFinish": "ऐप चालू कीजिए",
+  "onboardingDoneTitle": "सब तैयार है, {name}",
+  "@onboardingDoneTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "onboardingDoneBody": "अब आप अपना सामान डाल सकते हैं।",
+  "navHome": "होम",
+  "navListings": "सामान",
+  "navSales": "बिक्री",
+  "navProfile": "प्रोफ़ाइल",
+  "homeGreeting": "नमस्ते, {name}",
+  "@homeGreeting": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "homeAddProduct": "सामान डालिए",
+  "homeAddProductSpoken": "यह बड़ा बटन दबाइए और अपना सामान डालिए। तीन फ़ोटो लीजिए, बोलकर बताइए कि यह क्या है, और यह बिकने के लिए चला जाएगा।",
+  "homeQueueWaiting": "{count, plural, =1{1 सामान भेजा जाना बाकी है} other{{count} सामान भेजे जाने बाकी हैं}}",
+  "@homeQueueWaiting": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "homeSold": "{count, plural, =1{1 बिका} other{{count} बिके}}",
+  "@homeSold": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "homeRecent": "आपका हाल का सामान",
+  "homeEmptyTitle": "अभी यहाँ कुछ नहीं है",
+  "homeEmptyBody": "ऊपर वाला बड़ा बटन दबाकर अपना पहला सामान डालिए।",
+  "homeSeeAll": "सब देखिए",
+  "offlineNoNetwork": "अभी नेटवर्क नहीं है",
+  "offlineNothingLost": "कुछ भी खोया नहीं है। नेटवर्क आते ही अपने आप चला जाएगा।",
+  "offlineSeeQueue": "देखिए क्या बाकी है",
+  "statusQueued": "भेजा जाना बाकी",
+  "statusProcessing": "तैयार हो रहा है",
+  "statusNeedsAttention": "आपका जवाब चाहिए",
+  "statusReady": "भेजने के लिए तैयार",
+  "statusPublished": "बिक्री पर है",
+  "statusFailed": "नहीं भेजा जा सका",
+  "listingUntitled": "सामान",
+  "listingNoPrice": "दाम नहीं बताया",
+  "comingSoonTitle": "जल्दी आ रहा है",
+  "comingSoonBody": "ऐप का यह हिस्सा अभी बन रहा है।",
+  "captureTitle": "सामान डालिए",
+  "capturePhotoStep": "फ़ोटो {current} / {total}",
+  "@capturePhotoStep": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "capturePhotoWhole": "पूरा सामान दिखाइए",
+  "capturePhotoDetail": "पास से एक फ़ोटो लीजिए",
+  "capturePhotoScale": "बगल में हाथ रखिए, जिससे नाप पता चले",
+  "captureTakePhoto": "फ़ोटो लीजिए",
+  "captureFromGallery": "गैलरी से चुनिए",
+  "captureTorchOn": "रोशनी चालू",
+  "captureTorchOff": "रोशनी बंद",
+  "captureCameraFailed": "कैमरा नहीं खुला",
+  "captureCameraRetry": "फिर कोशिश कीजिए",
+  "captureCameraPermission": "आपके सामान की फ़ोटो लेने के लिए ऐप को कैमरे की ज़रूरत है।",
+  "captureOpenSettings": "सेटिंग खोलिए",
+  "captureLeaveTitle": "बिना सहेजे बाहर जाएँ?",
+  "captureLeaveBody": "फ़ोटो और आपकी बात मिटा दी जाएगी।",
+  "captureLeaveConfirm": "मिटा दीजिए",
+  "captureLeaveCancel": "यहीं रहिए",
+  "shotReviewTitle": "क्या यह फ़ोटो ठीक है?",
+  "shotReviewChecking": "फ़ोटो देखी जा रही है…",
+  "shotReviewKeep": "यह फ़ोटो रखिए",
+  "shotReviewRetake": "फिर से लीजिए",
+  "qualityTooDark": "यह फ़ोटो बहुत अँधेरी है। दरवाज़े के पास खड़े होकर लीजिए।",
+  "qualityTooBright": "इस पर बहुत रोशनी है। धूप से मुँह घुमाकर लीजिए।",
+  "qualityBlurry": "यह फ़ोटो साफ़ नहीं है। फ़ोन को स्थिर रखकर फिर से लीजिए।",
+  "qualityUnreadable": "यह फ़ोटो ठीक से सहेजी नहीं गई। कृपया फिर से लीजिए।",
+  "qualityNoSubject": "इस फ़ोटो में सामान नहीं दिख रहा। उसे घेरे के अंदर रखिए और पास आकर लीजिए।",
+  "qualityWarningTitle": "यह फ़ोटो फिर से लीजिए",
+  "qualityKeepAnyway": "फिर भी रख लीजिए",
+  "photoSetTitle": "आपकी तीन फ़ोटो",
+  "photoSetBody": "पहली फ़ोटो वही है जो ख़रीदने वाले सबसे पहले देखते हैं। किसी फ़ोटो को दबाकर उसे फिर से लीजिए।",
+  "photoSetMain": "पहली फ़ोटो",
+  "photoSetMakeMain": "इसे पहली फ़ोटो बनाइए",
+  "photoSetRetakeThis": "यह फिर से लीजिए",
+  "photoSetConfirm": "ये फ़ोटो ठीक हैं",
+  "photoIssueTooDark": "बहुत अँधेरी है, साफ़ नहीं दिखती",
+  "photoIssueTooBright": "इस पर बहुत रोशनी है",
+  "photoIssueBlurry": "धुंधली है, साफ़ नहीं है",
+  "photoIssueNoSubject": "इस फ़ोटो में सामान नहीं दिखता",
+  "photoIssueUnreadable": "यह फ़ोटो सहेजी नहीं गई",
+  "voiceTitle": "अब बोलकर बताइए यह क्या है",
+  "voiceBody": "यह क्या है, किस चीज़ का बना है, कितना बड़ा है, बनाने में कितना समय लगा, और दाम कितना है।",
+  "voiceHoldToSpeak": "दबाकर बोलिए",
+  "voiceRecording": "बोलिए… बात पूरी होने पर छोड़ दीजिए",
+  "voiceElapsed": "{total} में से {seconds} सेकंड",
+  "@voiceElapsed": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "voiceTooShort": "यह बहुत छोटा था। बटन दबाकर फिर से बोलिए।",
+  "voiceFailed": "माइक चालू नहीं हुआ। देखिए कि ऐप को माइक की इजाज़त है या नहीं।",
+  "voiceBackToPhotos": "फ़ोटो पर वापस जाइए",
+  "playbackTitle": "आपने जो कहा, सुन लीजिए",
+  "playbackPlay": "सुनिए",
+  "playbackStop": "रोकिए",
+  "playbackAgain": "फिर से बोलिए",
+  "playbackAccept": "यह सही है",
+  "playbackUnavailable": "यह फ़ोन इसे सुना नहीं सकता। आप इसे भेज सकते हैं, या फिर से बोल सकते हैं।",
+  "savedTitle": "सहेज लिया गया",
+  "savedBody": "नेटवर्क आते ही यह अपने आप चला जाएगा।",
+  "savedBodyOnline": "यह अभी भेजा जा रहा है। आपको यहाँ रुकना नहीं है।",
+  "savedAddAnother": "एक और सामान डालिए",
+  "savedGoHome": "होम पर जाइए",
+  "saveFailed": "इसे इस फ़ोन में सहेजा नहीं जा सका। शायद जगह नहीं बची है।",
+  "saveRetry": "फिर से सहेजने की कोशिश कीजिए",
+  "queueTitle": "भेजा जाना बाकी",
+  "queueBody": "यहाँ कुछ भी खोया नहीं है। नेटवर्क आते ही हर एक चला जाएगा।",
+  "queueEmptyTitle": "कुछ भी बाकी नहीं है",
+  "queueEmptyBody": "आपने जो बनाया, वह सब भेजा जा चुका है।",
+  "queueStateWaiting": "नेटवर्क का इंतज़ार है",
+  "queueStateUploading": "भेजा जा रहा है… सौ में से {percent}",
+  "@queueStateUploading": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "queueStateProcessing": "अब हमारे पास है। हम इसे लिख रहे हैं।",
+  "queueStateFailed": "नहीं गया। कारण देखने के लिए दबाइए।",
+  "queueItemTitle": "यह सामान",
+  "queueMadeAt": "{date} को बनाया",
+  "@queueMadeAt": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "queueAttempts": "{count, plural, =1{एक बार कोशिश की} other{{count} बार कोशिश की}}",
+  "@queueAttempts": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "queueRetryNow": "अभी भेजने की कोशिश कीजिए",
+  "queueRetryWaiting": "अभी नेटवर्क नहीं है। यह अपने आप चला जाएगा।",
+  "queueDelete": "यह सामान मिटाइए",
+  "queueDeleteTitle": "यह सामान मिटाएँ?",
+  "queueDeleteBody": "फ़ोटो और आपकी बात मिट जाएगी। यह वापस नहीं आएगा।",
+  "queueDeleteConfirm": "हाँ, मिटा दीजिए",
+  "queueDeleteCancel": "नहीं, रहने दीजिए",
+  "failureNetwork": "नेटवर्क बीच में रुक गया। सिग्नल आते ही यह अपने आप फिर जाएगा।",
+  "failureServer": "हमारी तरफ़ से जवाब नहीं आया। फिर कोशिश की जाएगी।",
+  "failureMissingFiles": "फ़ोटो अब इस फ़ोन में नहीं हैं, इसलिए यह नहीं भेजा जा सकता। कृपया इसे फिर से बनाइए।",
+  "failureRejected": "यह स्वीकार नहीं हो सका। कृपया इसे फिर से बनाइए।",
+  "failureUnknown": "कुछ गड़बड़ हुई। आप फिर कोशिश कर सकते हैं।",
+  "processingTitle": "हम इसे लिख रहे हैं",
+  "processingBody": "आपकी फ़ोटो और आपकी बात हमारे पास है। इसमें कुछ मिनट लगते हैं।",
+  "processingLeave": "आपको यहाँ रुकना नहीं है। तैयार होने पर हम आपको बता देंगे।",
+  "processingGoHome": "होम पर जाइए",
+  "processingStepSent": "आपके फ़ोन से भेजा गया",
+  "processingStepListening": "आपने जो कहा, वह सुना जा रहा है",
+  "processingStepWriting": "ब्यौरा लिखा जा रहा है",
+  "processingStepReady": "आपके देखने के लिए तैयार",
+  "attentionTitle": "एक सवाल",
+  "attentionBody": "बाकी सब हमें समझ आ गया। सिर्फ़ यह बात रह गई।",
+  "attentionHoldToAnswer": "दबाकर जवाब दीजिए",
+  "attentionAnswering": "आपका जवाब भेजा जा रहा है…",
+  "attentionFailed": "आपका जवाब नहीं गया। कृपया फिर से बोलिए।",
+  "readBackTitle": "हमें यह समझ आया",
+  "readBackListen": "पूरा सुनिए",
+  "readBackFields": "हमने जो लिखा",
+  "readBackCorrect": "जो गलत हो, उसे दबाइए",
+  "readBackApprove": "यह सब सही है",
+  "notSaid": "नहीं बताया",
+  "fieldMaterial": "किस चीज़ का",
+  "fieldSize": "नाप",
+  "fieldColour": "रंग",
+  "fieldTechnique": "कैसे बनाया",
+  "fieldQuantity": "कितने",
+  "fieldPrice": "दाम",
+  "correctTitle": "सही {field} बोलिए",
+  "@correctTitle": {
+    "placeholders": {
+      "field": {
+        "type": "String"
+      }
+    }
+  },
+  "correctHoldToSpeak": "दबाकर बोलिए",
+  "correctListening": "सुन रहे हैं…",
+  "correctFailedOnce": "हम समझ नहीं पाए। एक बार और कहिए।",
+  "correctUseKeypad": "इसके बजाय लिखिए",
+  "correctUseVoice": "इसके बजाय बोलिए",
+  "correctPick": "या इनमें से चुनिए",
+  "correctSave": "यह सहेजिए",
+  "correctCancel": "जैसा है वैसा रहने दीजिए",
+  "colourRed": "लाल",
+  "colourBlue": "नीला",
+  "colourGreen": "हरा",
+  "colourYellow": "पीला",
+  "colourBlack": "काला",
+  "colourWhite": "सफ़ेद",
+  "colourBrown": "भूरा",
+  "colourMulti": "कई रंग",
+  "sizeSmall": "छोटा",
+  "sizeMedium": "मझोला",
+  "sizeLarge": "बड़ा",
+  "sizeExtraLarge": "बहुत बड़ा",
+  "suggestTitle": "क्या यह भी जोड़ दें?",
+  "suggestYes": "हाँ, जोड़ दीजिए",
+  "suggestNo": "नहीं, रहने दीजिए",
+  "suggestSkip": "मुझे पक्का पता नहीं",
+  "suggestProgress": "{total} में से {current}",
+  "@suggestProgress": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "suggestDone": "और कुछ जोड़ना नहीं है",
+  "priceTitle": "दाम कितना है?",
+  "priceBody": "यह एक नग का दाम है।",
+  "priceFloor": "आपकी लागत: {amount}",
+  "@priceFloor": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "priceFloorExplain": "आपका सामान और आपका समय मिलाकर इतना होता है। इससे कम में बेचने पर आपको घाटा होगा।",
+  "priceBand": "ऐसी चीज़ें दूसरे लोग {low} से {high} में बेचते हैं",
+  "@priceBand": {
+    "placeholders": {
+      "low": {
+        "type": "String"
+      },
+      "high": {
+        "type": "String"
+      }
+    }
+  },
+  "priceBelowFloor": "यह आपकी लागत से कम है। फिर भी आप यही रख सकते हैं।",
+  "priceSayIt": "दाम बोलिए",
+  "priceTypeIt": "दाम लिखिए",
+  "priceConfirm": "यह दाम सही है",
+  "stockTitle": "आपके पास कितने हैं?",
+  "stockBody": "सब बिक जाने पर हम आपकी तरफ़ से यह हटा देंगे।",
+  "stockOneOfAKind": "सिर्फ़ एक ही है, और दूसरा कभी नहीं बनेगा",
+  "stockMore": "एक और",
+  "stockLess": "एक कम",
+  "stockConfirm": "यह सही है",
+  "photosTitle": "कौन सी फ़ोटो पहले आएगी?",
+  "photosBody": "ख़रीदने वाले सबसे पहले पहली फ़ोटो देखते हैं।",
+  "photosMakeFirst": "इसे पहली फ़ोटो बनाइए",
+  "photosFirst": "पहली फ़ोटो",
+  "photosConfirm": "ये फ़ोटो सही हैं",
+  "previewTitle": "ख़रीदने वाले यह देखेंगे",
+  "previewListenAll": "पूरा सुनिए",
+  "previewNoDescription": "कोई ब्यौरा नहीं लिखा गया।",
+  "previewConfirm": "हाँ, यह सही है",
+  "previewChange": "कुछ बदलिए",
+  "consentTitle": "क्या हम इसे बिक्री पर लगा दें?",
+  "consentPhoto": "मेरी फ़ोटो दिखाइए",
+  "consentPhotoExplain": "आपके सामान की फ़ोटो ख़रीदने वाले की स्क्रीन पर जाएँगी।",
+  "consentStory": "मेरी कारीगरी की कहानी दिखाइए",
+  "consentStoryExplain": "आपका नाम, आपका गाँव और आप कैसे बनाते हैं, यह कारीगर कार्ड पर जाएगा। मना करके भी आप बेच सकते हैं।",
+  "consentNeeded": "फ़ोटो के बिना हम इसे नहीं लगा सकते।",
+  "consentPublish": "बिक्री पर लगाइए",
+  "publishingTitle": "बिक्री पर लगाया जा रहा है",
+  "publishingBody": "इसमें थोड़ा समय लगेगा। ऐप बंद मत कीजिए।",
+  "publishedTitle": "यह बिक्री पर लग गया",
+  "publishedBody": "ख़रीदने वाले इसे अभी देख सकते हैं।",
+  "publishedShare": "व्हाट्सएप पर भेजिए",
+  "publishedCopyLink": "लिंक कॉपी कीजिए",
+  "publishedLinkCopied": "लिंक कॉपी हो गया",
+  "publishedShowQr": "स्कैन करने वाला कोड दिखाइए",
+  "publishedQrExplain": "कोई भी अपना फ़ोन इस पर रखकर आपका सामान खोल सकता है।",
+  "publishedAnother": "ऐसा एक और बनाइए",
+  "publishedDone": "होम पर जाइए",
+  "publishFailed": "यह नहीं लग सका। कुछ खोया नहीं है — आप फिर कोशिश कर सकते हैं।",
+  "publishRetry": "फिर कोशिश कीजिए",
+  "reviewLeaveTitle": "अभी के लिए छोड़ दें?",
+  "reviewLeaveBody": "आपने जो मंज़ूर किया है वह रखा रहेगा। आप अपने सामान में जाकर फिर आ सकते हैं।",
+  "reviewLeaveConfirm": "अभी के लिए छोड़िए",
+  "editLeaveTitle": "बदलाव अभी बिक्री पर नहीं गए हैं",
+  "editLeaveBody": "आपके बदलाव सहेज लिए गए हैं, लेकिन ख़रीदने वालों को अभी भी पुराना ही दिख रहा है। इन्हें लगाने के लिए आपको आख़िरी बटन दबाना होगा।",
+  "editLeaveConfirm": "ठीक है, बाद में लगाऊँगा",
+  "reviewLeaveCancel": "आगे बढ़िए",
+  "reviewSaveFailed": "यह सहेजा नहीं गया। कृपया फिर कोशिश कीजिए।",
+  "statusSoldOut": "सब बिक गए",
+  "statusUnpublished": "हटा दिया गया",
+  "listingsTitle": "आपका सामान",
+  "listingsFilterAll": "सब",
+  "listingsFilterDrafts": "तैयार हो रहे",
+  "listingsFilterAttention": "आपकी ज़रूरत है",
+  "listingsFilterLive": "बिक्री पर",
+  "listingsFilterSoldOut": "सब बिक गए",
+  "listingsEmptyTitle": "आपने अभी कुछ नहीं बनाया",
+  "listingsEmptyBody": "होम पर बड़ा बटन दबाकर अपना पहला सामान डालिए।",
+  "listingsEmptyFilter": "यहाँ कुछ नहीं है।",
+  "listingsStock": "{count, plural, =0{कुछ नहीं बचा} =1{1 बचा} other{{count} बचे}}",
+  "@listingsStock": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "listingsViews": "{count, plural, =0{अभी किसी ने नहीं देखा} =1{एक बार देखा गया} other{{count} बार देखा गया}}",
+  "@listingsViews": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "listingsQuickStock": "कितने हैं, बदलिए",
+  "listingTitle": "यह सामान",
+  "listingOpenPreview": "ख़रीदने वाले जो देखते हैं, वह देखिए",
+  "listingEdit": "कुछ बदलिए",
+  "listingDuplicate": "ऐसा एक और बनाइए",
+  "listingUnpublish": "बिक्री से हटाइए",
+  "listingRelist": "फिर बिक्री पर लगाइए",
+  "listingFinish": "इसे पूरा कीजिए",
+  "listingSoldOutTitle": "ये सब बिक गए",
+  "listingSoldOutBody": "हमने इसे आपके लिए बिक्री से हटा दिया। और बना लें तो फिर लगा दीजिए।",
+  "editTitle": "यह सामान बदलिए",
+  "editBody": "आप इसे फिर से देखेंगे, और उसके बाद यह वापस बिक्री पर चला जाएगा।",
+  "editRepublishing": "बदलाव बिक्री पर लगाए जा रहे हैं…",
+  "editRepublished": "आपके बदलाव अब बिक्री पर हैं",
+  "editRepublishConfirm": "बदलाव वापस बिक्री पर लगाइए",
+  "quickStockTitle": "कितने बचे हैं?",
+  "quickStockMarkSoldOut": "सब बिक गए हैं",
+  "quickStockSave": "सहेजिए",
+  "quickStockSaved": "सहेज लिया",
+  "unpublishTitle": "बिक्री से हटाएँ?",
+  "unpublishBody": "ख़रीदने वाले इसे अब नहीं देखेंगे। कुछ मिटेगा नहीं, और आप इसे कभी भी वापस लगा सकते हैं।",
+  "unpublishConfirm": "हाँ, हटा दीजिए",
+  "unpublishCancel": "नहीं, बिक्री पर रहने दीजिए",
+  "unpublishDone": "यह बिक्री से हट गया",
+  "relistDone": "यह फिर बिक्री पर है",
+  "duplicateTitle": "ऐसा एक और बनाएँ?",
+  "duplicateBody": "आपने इसके बारे में जो बताया था, वह हम रख लेंगे। आपको सिर्फ़ नई फ़ोटो लेनी हैं।",
+  "duplicateConfirm": "फ़ोटो लीजिए",
+  "duplicateCancel": "अभी नहीं",
+  "duplicateBanner": "पिछले जैसा एक और बनाया जा रहा है। सिर्फ़ फ़ोटो नई हैं।",
+  "listingActionFailed": "यह नहीं हो सका। कृपया फिर कोशिश कीजिए।",
+  "salesTitle": "क्या बिका",
+  "salesNew": "नया",
+  "salesEmptyTitle": "अभी कुछ नहीं बिका",
+  "salesEmptyBody": "जब कोई कुछ ख़रीदेगा, वह यहाँ दिखेगा और हम आपको बता देंगे।",
+  "salesLoading": "देख रहे हैं क्या बिका…",
+  "salesQuantity": "{count, plural, =1{1 नग} other{{count} नग}}",
+  "@salesQuantity": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "salesPackBy": "{date} तक बाँधिए",
+  "@salesPackBy": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "salesPackByToday": "आज ही बाँधिए",
+  "salesPackByTomorrow": "कल तक बाँधिए",
+  "salesPackedAlready": "इसकी तारीख़ निकल चुकी है",
+  "salesSeeEarnings": "आपने कितना कमाया, देखिए",
+  "saleTitle": "यह ऑर्डर",
+  "saleReadOnly": "यह सिर्फ़ आपको बताने के लिए है। ऑर्डर का सारा काम बाज़ार पर होता है, इस ऐप में नहीं।",
+  "salePaid": "आपको {amount} मिलेंगे",
+  "@salePaid": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "salePlaced": "{date} को बिका",
+  "@salePlaced": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "saleGoingTo": "{area} जा रहा है",
+  "@saleGoingTo": {
+    "placeholders": {
+      "area": {
+        "type": "String"
+      }
+    }
+  },
+  "saleWhatToPack": "क्या बाँधना है",
+  "salePackingHelp": "कैसे बाँधें",
+  "saleSeeListing": "यह सामान देखिए",
+  "packingTitle": "कैसे बाँधें",
+  "packingBody": "इन्हें एक-एक करके कीजिए। जो हो जाए, उसे दबा दीजिए।",
+  "packingStep1": "कपड़े या काग़ज़ में लपेटिए, जिससे कुछ रगड़े नहीं",
+  "packingStep2": "चारों तरफ़ काग़ज़ या भूसा भरिए, जिससे डिब्बे के अंदर हिले नहीं",
+  "packingStep3": "देख लीजिए कि अंदर उतने ही नग हैं जितने चाहिए",
+  "packingStep4": "डिब्बा बंद करके चारों तरफ़ टेप लगाइए",
+  "packingStep5": "लेने आने वाले के लिए तैयार रखिए",
+  "packingDone": "सब हो गया",
+  "packingProgress": "{total} में से {done} हो गए",
+  "@packingProgress": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "earningsTitle": "आपने कितना कमाया",
+  "earningsWeek": "इस हफ़्ते",
+  "earningsMonth": "इस महीने",
+  "earningsTotal": "शुरू से अब तक",
+  "earningsItems": "{count, plural, =0{अभी कुछ नहीं बिका} =1{1 नग बिका} other{{count} नग बिके}}",
+  "@earningsItems": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "earningsNote": "यह वह है जो आपको मिलता है, बाज़ार का हिस्सा निकलने के बाद।",
+  "profileOverviewTitle": "आप",
+  "profileVillageLabel": "गाँव या क्लस्टर",
+  "profileNotSet": "नहीं बताया",
+  "profileEditEntry": "अपनी जानकारी बदलिए",
+  "profileStoryEntry": "आपकी कारीगरी की कहानी",
+  "profileLanguageEntry": "भाषा",
+  "profilePhoneEntry": "फ़ोन नंबर",
+  "profileOndcEntry": "आपका बिक्री खाता",
+  "profileNotificationsEntry": "हम आपको क्या बताएँ",
+  "profileVoiceEntry": "आवाज़ और सुनाई",
+  "profilePrivacyEntry": "आपके बारे में क्या दिखता है",
+  "profileStorageEntry": "इस फ़ोन में जगह",
+  "profileAccountEntry": "साइन आउट",
+  "editProfileTitle": "आपकी जानकारी",
+  "editProfilePhoto": "आपकी फ़ोटो",
+  "editProfileAddPhoto": "अपनी फ़ोटो डालिए",
+  "editProfileChangePhoto": "फ़ोटो बदलिए",
+  "editProfileRemovePhoto": "फ़ोटो हटाइए",
+  "editProfilePhotoWhy": "आपकी इजाज़त हो तभी ख़रीदने वाले इसे कारीगर कार्ड पर देखते हैं।",
+  "editProfileVillageHint": "बोलिए या लिखिए",
+  "editProfileSave": "सहेजिए",
+  "editProfileSaved": "सहेज लिया",
+  "storyTitle": "आपकी कारीगरी की कहानी",
+  "storyBody": "ख़रीदने वालों को बताइए कि आप कौन हैं और कैसे बनाते हैं। आप बोलिए, हम लिख लेंगे।",
+  "storyHoldToSpeak": "दबाकर अपनी कहानी सुनाइए",
+  "storyEmpty": "आपने अभी अपनी कहानी नहीं बताई।",
+  "storyEditHint": "आप इसका कोई भी शब्द बदल सकते हैं।",
+  "storyExample": "जैसे: हमारे घर में तीन पीढ़ियों से यही बनता आया है, और मैं आज भी अपने दादा के करघे पर काम करता हूँ।",
+  "changePhoneTitle": "अपना नंबर बदलिए",
+  "changePhoneBody": "नंबर आपका ही है, यह पक्का करने के लिए हम उस पर एक कोड भेजेंगे।",
+  "changePhoneCurrent": "अभी आपका नंबर {number} है",
+  "@changePhoneCurrent": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "changePhoneDone": "आपका नंबर बदल गया",
+  "ondcAccountTitle": "आपका बिक्री खाता",
+  "ondcAccountLinked": "आपका खाता जुड़ा हुआ है",
+  "ondcAccountNone": "अभी कोई खाता नहीं जुड़ा",
+  "ondcAccountNoneBody": "आप सामान बनाते रहिए। खाता जुड़ते ही वह बिक्री पर चला जाएगा।",
+  "ondcAccountLink": "खाता जोड़िए",
+  "ondcAccountUnlink": "यह खाता हटाइए",
+  "ondcUnlinkTitle": "यह खाता हटाएँ?",
+  "ondcUnlinkBody": "जो बिक्री पर है वह हट जाएगा। आपका बनाया कुछ भी मिटेगा नहीं, और आप इसे फिर जोड़ सकते हैं।",
+  "ondcUnlinkConfirm": "हाँ, हटा दीजिए",
+  "ondcUnlinkCancel": "नहीं, रहने दीजिए",
+  "ondcUnlinkDone": "खाता हट गया",
+  "notificationsTitle": "हम आपको क्या बताएँ",
+  "notifySold": "जब कुछ बिके",
+  "notifySoldWhy": "ख़रीदने वाले के पैसे देते ही हम बता देंगे, जिससे आप बाँधना शुरू कर सकें।",
+  "notifyAttention": "जब हमें आपसे कुछ पूछना हो",
+  "notifyAttentionWhy": "कभी-कभी सामान बिक्री पर जाने से पहले एक बात रह जाती है।",
+  "notifyUpload": "जब सामान भेजा जा चुके",
+  "notifyUploadWhy": "आपने फ़ोन पर जो बनाया वह हम तक पहुँच जाए, तब हम बता देंगे।",
+  "notificationsBlocked": "यह फ़ोन हमें आपको कुछ भेजने नहीं दे रहा। आप इसे फ़ोन की सेटिंग में चालू कर सकते हैं।",
+  "voiceSettingsTitle": "आवाज़ और सुनाई",
+  "voiceSpeed": "हम कितनी तेज़ बोलें",
+  "voiceSpeedSlow": "धीरे",
+  "voiceSpeedFast": "तेज़",
+  "voiceTry": "अभी बोलकर सुनाइए",
+  "voiceSample": "हम आपसे इतनी तेज़ बोलेंगे।",
+  "voiceAutoRead": "हर स्क्रीन खुलते ही पढ़कर सुनाइए",
+  "voiceAutoReadWhy": "यह बंद हो तो हम तभी बोलते हैं जब आप स्पीकर दबाते हैं।",
+  "voiceVolume": "कितनी ऊँची आवाज़",
+  "voiceUnavailable": "यह फ़ोन बोल नहीं सकता। सब कुछ चलेगा, पर कुछ पढ़कर नहीं सुनाया जाएगा।",
+  "privacyTitle": "आपके बारे में क्या दिखता है",
+  "privacyBody": "हर सामान बिक्री पर लगाते समय आपने इनके लिए हाँ कहा था। आप इनमें से कोई भी वापस ले सकते हैं।",
+  "privacyPhoto": "इस सामान की फ़ोटो",
+  "privacyStory": "आपका नाम, गाँव और कहानी",
+  "privacyNothing": "अभी आपका कुछ भी बिक्री पर नहीं है।",
+  "privacyWithdrawTitle": "यह वापस लें?",
+  "privacyWithdrawPhotoBody": "फ़ोटो के बिना यह सामान बिक्री पर नहीं रह सकता, इसलिए यह हट जाएगा। कुछ मिटेगा नहीं।",
+  "privacyWithdrawStoryBody": "आपका नाम, गाँव और कहानी इस सामान से हटा दी जाएगी। यह बिक्री पर बना रहेगा।",
+  "privacyWithdrawConfirm": "हाँ, वापस लीजिए",
+  "privacyWithdrawCancel": "नहीं, रहने दीजिए",
+  "privacyWithdrawn": "वापस ले लिया",
+  "storageTitle": "इस फ़ोन में जगह",
+  "storagePhotos": "फ़ोटो और रिकॉर्डिंग",
+  "storageWaiting": "{count, plural, =0{भेजा जाना कुछ भी बाकी नहीं} =1{1 चीज़ भेजी जानी बाकी है} other{{count} चीज़ें भेजी जानी बाकी हैं}}",
+  "@storageWaiting": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "storageClear": "जो भेजा जा चुका है, उसे हटाइए",
+  "storageClearWhy": "जो अभी भेजा जाना बाकी है, उसे कभी नहीं छुआ जाता।",
+  "storageCleared": "{size} खाली हुई",
+  "@storageCleared": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "storageNothingToClear": "हटाने के लिए कुछ नहीं है",
+  "accountTitle": "साइन आउट",
+  "accountSignOut": "इस फ़ोन से साइन आउट कीजिए",
+  "accountSignOutTitle": "साइन आउट करें?",
+  "accountSignOutBody": "जो भेजा जाना बाकी है वह चला जाएगा। जो बिक्री पर है वह बिक्री पर ही रहेगा।",
+  "accountSignOutConfirm": "हाँ, साइन आउट",
+  "accountSignOutCancel": "नहीं, बने रहिए",
+  "accountDelete": "मेरा खाता मिटाइए",
+  "accountDeleteTitle": "अपना खाता मिटाएँ?",
+  "accountDeleteBody": "सब कुछ बिक्री से हट जाएगा और इस फ़ोन का सारा सामान मिट जाएगा। यह वापस नहीं आएगा।",
+  "accountDeleteConfirm": "हाँ, सब कुछ मिटा दीजिए",
+  "accountDeleteCancel": "नहीं, मेरा खाता रहने दीजिए",
+  "accountDeleteHold": "मिटाने के लिए बटन दबाए रखिए",
+  "profileHelpEntry": "मदद",
+  "helpTitle": "मदद",
+  "helpBody": "छोटे जवाब, पढ़कर सुनाए जाते हैं। सुनने के लिए किसी को भी दबाइए।",
+  "helpSteps": "ऐसे कीजिए",
+  "helpTopicPhotos": "अच्छी फ़ोटो कैसे लें",
+  "helpTopicPhotosBody": "अच्छी फ़ोटो से सामान बिकता है। ख़रीदने वाला सामान हाथ में नहीं ले सकता, उसके पास सिर्फ़ फ़ोटो होती है।",
+  "helpTopicPhotosStep1": "दरवाज़े या खिड़की के पास खड़े होइए, जिससे दिन की रोशनी सामान पर पड़े",
+  "helpTopicPhotosStep2": "सामान को सादे कपड़े पर रखिए, आसपास और कुछ न हो",
+  "helpTopicPhotosStep3": "फ़ोटो आने तक फ़ोन को दोनों हाथों से स्थिर पकड़िए",
+  "helpTopicPhotosStep4": "एक फ़ोटो पास से लीजिए, जिससे कारीगरी दिखे",
+  "helpTopicPhotosStep5": "एक फ़ोटो में बगल में हाथ रखिए, जिससे नाप पता चले",
+  "helpTopicVoice": "अपने सामान के बारे में क्या बोलें",
+  "helpTopicVoiceBody": "जैसे सामने खड़े ग्राहक से बोलते हैं, वैसे ही बोलिए। बोलने का कोई ग़लत तरीक़ा नहीं है।",
+  "helpTopicVoiceStep1": "बताइए यह क्या है",
+  "helpTopicVoiceStep2": "बताइए यह किस चीज़ का बना है",
+  "helpTopicVoiceStep3": "बताइए यह कितना बड़ा है, इंच या फुट में",
+  "helpTopicVoiceStep4": "बताइए बनाने में कितना समय लगा",
+  "helpTopicVoiceStep5": "बताइए आप इसके कितने चाहते हैं",
+  "helpTopicPrice": "दाम कैसे तय करें",
+  "helpTopicPriceBody": "दाम में आपका सामान और आपका समय, दोनों निकलने चाहिए। हम आपके साथ यह जोड़ते हैं, और उससे कम पर बिना बताए कभी नहीं जाने देते।",
+  "helpTopicPriceStep1": "जोड़िए कि सामान में कितना लगा",
+  "helpTopicPriceStep2": "जोड़िए कि काम में कितने दिन लगे",
+  "helpTopicPriceStep3": "हम जो बताते हैं वह देखिए, और आप बेहतर जानते हों तो बदल दीजिए",
+  "helpTopicPriceStep4": "लागत से कम हुआ तो हम बता देंगे, पर चुनना आपका ही है",
+  "helpTopicSold": "बिकने के बाद क्या होता है",
+  "helpTopicSoldBody": "ख़रीदने वाला बाज़ार पर पैसे देता है। आप सामान बाँधकर दे देते हैं, और पैसे आप तक आ जाते हैं।",
+  "helpTopicSoldStep1": "बिकते ही हम आपको बता देंगे",
+  "helpTopicSoldStep2": "खोलकर देखिए क्या और कितना बाँधना है",
+  "helpTopicSoldStep3": "हम जो तारीख़ बताएँ, उससे पहले बाँध लीजिए",
+  "helpTopicSoldStep4": "लेने आने वाले को दे दीजिए",
+  "helpTopicSoldStep5": "उसके बाद पैसे आप तक पहुँच जाते हैं",
+  "helpVideoComing": "इसके लिए एक छोटा वीडियो जल्दी आ रहा है।",
+  "helpPractice": "एक बार और अभ्यास कीजिए",
+  "helpPracticeBody": "पूरी बात फिर से कीजिए। कुछ भी कहीं नहीं भेजा जाएगा।",
+  "helpFaqEntry": "लोग जो पूछते हैं",
+  "helpAboutEntry": "कारीगर के बारे में",
+  "helpSupportEntry": "किसी व्यक्ति से बात कीजिए",
+  "helpTermsEntry": "शर्तें और निजता",
+  "helpVersionEntry": "इस ऐप के बारे में",
+  "faqTitle": "लोग जो पूछते हैं",
+  "faqQ1": "क्या इसका मुझे कुछ देना पड़ेगा?",
+  "faqA1": "नहीं। सामान डालना मुफ़्त है। कुछ बिकने पर ही बाज़ार अपना थोड़ा हिस्सा लेता है।",
+  "faqQ2": "नेटवर्क न हो तो?",
+  "faqA2": "सब कुछ चलता रहेगा। आपका बनाया आपके फ़ोन में रखा रहता है और नेटवर्क आते ही अपने आप चला जाता है।",
+  "faqQ3": "पैसे किसके पास जाते हैं?",
+  "faqA3": "आपके। ख़रीदने वाला बाज़ार पर पैसे देता है और वे आपके खाते में आते हैं। पैसे कभी हमारे पास से नहीं जाते।",
+  "faqQ4": "बिक्री पर लगने के बाद कुछ बदल सकते हैं?",
+  "faqA4": "हाँ। अपने सामान में जाकर खोलिए, जो बदलना हो बदलिए, और वह फिर बिक्री पर चला जाएगा।",
+  "faqQ5": "मैंने कुछ ग़लत बोल दिया तो?",
+  "faqA5": "जब तक आप सुनकर सही न कहें, कुछ भी बिक्री पर नहीं जाता। आप बोलकर उसका कोई भी हिस्सा सुधार सकते हैं।",
+  "faqQ6": "क्या मुझे पढ़ना-लिखना आना चाहिए?",
+  "faqA6": "नहीं। आप सब कुछ बोलकर और दबाकर कर सकते हैं। हर स्क्रीन आपको पढ़कर सुनाई जा सकती है।",
+  "faqQ7": "मेरा नाम और गाँव कौन देखता है?",
+  "faqA7": "आपकी इजाज़त हो तभी, और हर सामान के लिए अलग से। आप इसे कभी भी वापस ले सकते हैं।",
+  "aboutTitle": "कारीगर के बारे में",
+  "aboutWhatTitle": "यह क्या है",
+  "aboutWhat": "कारीगर हाथ से बने सामान को ONDC पर पहुँचाता है — भारत का खुला ख़रीद-बिक्री नेटवर्क — और इसके लिए बनाने वाले को लिखना नहीं, बोलना होता है। आपकी भाषा में कुछ फ़ोटो और एक बात से ऐसी लिस्टिंग बनती है जो देश भर के ख़रीदार देख सकते हैं।",
+  "aboutWhyTitle": "हमने यह क्यों बनाया",
+  "aboutWhy": "भारत में लगभग सत्तर लाख कारीगर ऐसा सामान बनाते हैं जो लोग ख़रीदना चाहते हैं, और उनमें से ज़्यादातर बिचौलिए के ज़रिए बेचते हैं जो अंतर का पैसा रख लेता है। रुकावट काम में नहीं है। रुकावट फ़ॉर्म में है: ऑनलाइन लिस्टिंग अंग्रेज़ी में टाइप करना, ढेरों ख़ाने भरना और कैटलॉग जैसी फ़ोटो माँगती है। यह ऐप वह फ़ॉर्म हटा देता है।",
+  "aboutHowTitle": "यह कैसे काम करता है",
+  "aboutHow": "तीन फ़ोटो लीजिए और बोलकर बताइए कि यह क्या है। हमारी व्यवस्था सुनती है, लिस्टिंग लिखती है, और आपको पढ़कर सुनाती है। जब तक आप सुनकर सही न कहें, कुछ भी बाहर नहीं जाता।",
+  "aboutSihTitle": "स्मार्ट इंडिया हैकाथॉन 2025",
+  "aboutSih": "समस्या 090 के लिए बनाया गया: कारीगरों और बुनकरों को ONDC पर ख़रीदारों तक पहुँचाना।",
+  "aboutMissionTitle": "हम क्या करना चाहते हैं",
+  "aboutMission": "किसी काम का दाम उसी के हाथ में हो जिसने वह काम किया है।",
+  "aboutTeamTitle": "किसने बनाया",
+  "supportTitle": "किसी व्यक्ति से बात कीजिए",
+  "supportBody": "कुछ काम न कर रहा हो, या समझ न आ रहा हो कि क्या करें, तो हमें फ़ोन कीजिए। कोई व्यक्ति आपकी भाषा में जवाब देगा।",
+  "supportCall": "हमें फ़ोन कीजिए",
+  "supportWhatsApp": "व्हाट्सएप पर संदेश भेजिए",
+  "supportHours": "हर दिन, सुबह नौ से शाम सात बजे तक।",
+  "supportNumber": "हमारा नंबर {number} है",
+  "@supportNumber": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "supportFailed": "आपका फ़ोन इसे खोल नहीं सका। हमारा नंबर {number} है।",
+  "@supportFailed": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "termsTitle": "शर्तें और निजता",
+  "termsSummaryTitle": "छोटी बात",
+  "termsSummary1": "आपका बनाया आपका ही है। हम उसे आपके लिए बिक्री पर लगाते हैं और बिक्री में से कुछ नहीं लेते।",
+  "termsSummary2": "आपकी फ़ोटो और आपकी आवाज़ सिर्फ़ आपकी लिस्टिंग लिखने के लिए इस्तेमाल होती है, और किसी काम के लिए नहीं।",
+  "termsSummary3": "आपका नाम, गाँव और कहानी सिर्फ़ उन्हीं सामानों पर जाती है जिनकी आपने इजाज़त दी, और आप वह वापस ले सकते हैं।",
+  "termsSummary4": "पैसे ख़रीदने वाले से सीधे आप तक जाते हैं। वे कभी हमारे पास से नहीं जाते।",
+  "termsSummary5": "आप इस फ़ोन से सब कुछ कभी भी मिटा सकते हैं।",
+  "termsFullTitle": "पूरी बात",
+  "termsFullBody": "इस्तेमाल की पूरी शर्तें और निजता नीति हमारी वेबसाइट पर हैं। यहाँ कुछ समझ न आए तो हमें फ़ोन कीजिए, कोई व्यक्ति समझा देगा।",
+  "termsOpenFull": "पूरी बात पढ़िए",
+  "versionTitle": "इस ऐप के बारे में",
+  "versionNumber": "संस्करण {version}",
+  "@versionNumber": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "versionUpToDate": "यह सबसे नया संस्करण है",
+  "versionCheck": "नया संस्करण देखिए",
+  "versionChecking": "देख रहे हैं…",
+  "versionLicences": "लाइसेंस",
+  "versionLicencesWhy": "यह ऐप जिस मुफ़्त सॉफ़्टवेयर पर बना है।",
+  "noNetworkTitle": "नेटवर्क नहीं है",
+  "noNetworkBody": "आप काम करते रहिए। सब कुछ आपके फ़ोन में रखा रहता है और नेटवर्क आते ही अपने आप चला जाता है।",
+  "noNetworkNeeded": "इस एक काम के लिए नेटवर्क चाहिए। सिग्नल आने पर फिर कोशिश कीजिए।",
+  "serverErrorTitle": "हम अपनी तरफ़ नहीं पहुँच सके",
+  "serverErrorBody": "आपका किया कुछ भी खोया नहीं है। कृपया थोड़ी देर में फिर कोशिश कीजिए।",
+  "actionTryAgain": "फिर कोशिश कीजिए",
+  "permissionRecoveryTitle": "ऐप को आपकी इजाज़त चाहिए",
+  "permissionRecoveryBody": "फ़ोन ऐप को ये इस्तेमाल नहीं करने दे रहा। आप इन्हें फ़ोन की सेटिंग में चालू करके यहाँ वापस आ सकते हैं।",
+  "permissionCameraWhy": "आपने जो बनाया है उसकी फ़ोटो लेने के लिए। इसके बिना कुछ भी बिक्री पर नहीं लग सकता।",
+  "permissionMicWhy": "जिससे आप लिखने की जगह बोल सकें। इसके बिना सब कुछ लिखना पड़ेगा।",
+  "permissionNotifyTitle": "सूचनाएँ",
+  "permissionNotifyWhy": "जिससे कुछ बिकने पर हम आपको बता सकें। इसके बिना आपको ऐप खोलकर देखना पड़ेगा।",
+  "permissionBlocked": "इजाज़त नहीं है",
+  "permissionAsk": "फिर पूछिए",
+  "permissionRecheck": "मैंने चालू कर दिया",
+  "permissionAllGood": "ऐप को जो चाहिए, सब की इजाज़त है।",
+  "updateTitle": "कृपया ऐप अपडेट कीजिए",
+  "updateBody": "यह संस्करण अब हमसे बात नहीं कर सकता। स्टोर में नया संस्करण मौजूद है, और अपडेट के बाद आपके फ़ोन का सब कुछ वैसा ही रहेगा।",
+  "updateAction": "नया संस्करण लीजिए",
+  "updateFailed": "स्टोर नहीं खुला। वहाँ कारीगर खोजिए।",
+  "emptyNudge": "होम पर बड़ा बटन दबाकर अपना पहला सामान डालिए।"
+}
