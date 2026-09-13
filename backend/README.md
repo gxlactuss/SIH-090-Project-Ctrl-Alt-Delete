@@ -69,23 +69,32 @@ The service will run at `http://127.0.0.1:8000`.
 
 ---
 
-## Health Check
+## API Endpoints (v1 Contract)
 
-Check the service status:
+All business endpoints live under `/api/v1` and currently return deterministic contract stubs.
 
-```bash
-curl http://127.0.0.1:8000/health
-```
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `GET` | `/health` | Service health check |
+| `GET` | `/api/v1/seller` | Fetch seller profile |
+| `POST` | `/api/v1/listings` | Create / queue a new listing item |
+| `GET` | `/api/v1/listings` | List seller listings |
+| `GET` | `/api/v1/listings/{listing_id}` | Get specific listing details |
+| `POST` | `/api/v1/listings/{listing_id}/media` | Multipart upload for media (`image` / `audio`) |
+| `GET` | `/api/v1/listings/{listing_id}/status` | Get listing processing state in pipeline |
+| `GET` | `/api/v1/listings/{listing_id}/attention` | Fetch attention/intervention details |
+| `GET` | `/api/v1/listings/{listing_id}/readback` | Fetch generated details for read-back review |
+| `POST` | `/api/v1/listings/{listing_id}/approval` | Submit artisan review approval/correction |
+| `GET` | `/api/v1/listings/{listing_id}/suggestions` | Fetch suggested additions |
+| `POST` | `/api/v1/listings/{listing_id}/suggestions/{suggestion_id}/approval` | Approve or reject an individual suggestion |
+| `POST` | `/api/v1/listings/{listing_id}/consent` | Record consent for publishing artisan photo & story |
+| `POST` | `/api/v1/listings/{listing_id}/publish` | Trigger listing publication |
+| `GET` | `/api/v1/listings/{listing_id}/preview` | Fetch read-only listing preview |
 
-Expected JSON response:
+### Key Contract Enums
 
-```json
-{
-  "status": "ok",
-  "service": "Listing Factory API",
-  "version": "0.1.0"
-}
-```
+- **`ListingState`**: `queued`, `processing`, `needs_attention`, `ready`, `published`
+- **`MediaType`**: `image`, `audio`
 
 ---
 
