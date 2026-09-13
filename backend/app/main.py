@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.routes.health import router as health_router
+from app.api.v1 import api_v1_router
 from app.core.config import settings
 
 app = FastAPI(
@@ -23,5 +24,8 @@ if settings.CORS_ORIGINS:
         allow_headers=["*"],
     )
 
-# Register routers
+# Register health check at root level
 app.include_router(health_router)
+
+# Register API v1 business routes
+app.include_router(api_v1_router)
