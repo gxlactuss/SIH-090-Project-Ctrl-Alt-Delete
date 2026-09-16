@@ -98,20 +98,43 @@ All business endpoints live under `/api/v1` and currently return deterministic c
 
 ---
 
+## Persistent Domain Models
+
+The persistence layer defines six core SQLAlchemy 2.x domain tables registered with `Base.metadata`:
+
+1. **`sellers`**: Artisan profiles (`id`, `name`, `language`, `cluster`, `ondc_seller_id`, timestamps).
+2. **`listings`**: Core publishing items (`id`, `seller_id`, `client_item_id`, `state`, timestamps) with unique `(seller_id, client_item_id)`.
+3. **`media`**: Metadata for uploaded photos and voice notes (`id`, `listing_id`, `media_type`, `storage_path`, timestamps).
+4. **`listing_consents`**: Seller consent decisions (`photo_consent`, `story_consent`, timestamps) with unique `listing_id`.
+5. **`suggestions`**: AI/system proposed additions (`field`, `value`, `reason`, `approved`, timestamps).
+6. **`listing_approvals`**: Seller approval records after read-back review (`approved`, `approved_at`, timestamps) with unique `listing_id`.
+
+> **Note**: As per architectural decoupling, the `/api/v1` API endpoints currently remain deterministic contract stubs and are intentionally not yet connected to persistence.
+
+---
+
 ## Database Migrations (Alembic)
 
-Alembic is configured to detect models inheriting from `app.db.base.Base`.
+Database schema migrations are managed via Alembic in `backend/alembic/versions/`. Domain models are registered via `app.models` onto `Base.metadata`.
 
-To generate a new migration after adding SQLAlchemy models:
+### Running Migrations
 
-```bash
-alembic revision --autogenerate -m "Add new models"
-```
-
-To apply migrations:
+To apply migrations against a live database:
 
 ```bash
 alembic upgrade head
+```
+
+To generate static SQL for offline review or execution (without connecting to PostgreSQL):
+
+```bash
+alembic upgrade head --sql
+```
+
+To downgrade schema changes:
+
+```bash
+alembic downgrade base
 ```
 
 ---
