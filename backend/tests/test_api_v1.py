@@ -75,33 +75,60 @@ def test_list_seller_listings() -> None:
 
 
 def test_media_upload_contract() -> None:
-    # Test valid image upload
-    file_content = b"fake-image-bytes"
-    files = {"file": ("test_art.jpg", io.BytesIO(file_content), "image/jpeg")}
-    data = {"media_type": MediaType.image.value}
+    import tempfile
+    import uuid
+    from app.core.config import settings
+    from app.core.security import get_current_seller
+    from app.models.seller import Seller
 
-    response = client.post("/api/v1/listings/lst-100/media", files=files, data=data)
-    assert response.status_code == 200
-    res_data = response.json()
-    assert res_data["listing_id"] == "lst-100"
-    assert res_data["media_type"] == "image"
-    assert res_data["status"] == "uploaded"
-    assert "id" in res_data
+    mock_seller = Seller(
+        id=uuid.UUID("11111111-1111-1111-1111-111111111111"),
+        name="Artisan Radha Devi",
+        language="hi",
+        cluster="Madhubani Cluster",
+        ondc_seller_id="ONDC-SELL-IND-9876",
+    )
+    app.dependency_overrides[get_current_seller] = lambda: mock_seller
+    headers = {"Authorization": "Bearer test-token"}
 
-    # Test valid audio upload
-    audio_content = b"fake-audio-bytes"
-    files_audio = {"file": ("recording.wav", io.BytesIO(audio_content), "audio/wav")}
-    data_audio = {"media_type": MediaType.audio.value}
+    with tempfile.TemporaryDirectory() as tmp_dir:
+        orig_storage = settings.MEDIA_STORAGE_DIR
+        settings.MEDIA_STORAGE_DIR = tmp_dir
+        try:
+            # Test valid image upload
+            file_content = b"fake-image-bytes"
+            files = {"file": ("test_art.jpg", io.BytesIO(file_content), "image/jpeg")}
+            data = {"media_type": MediaType.image.value}
 
-    response_audio = client.post("/api/v1/listings/lst-100/media", files=files_audio, data=data_audio)
-    assert response_audio.status_code == 200
-    assert response_audio.json()["media_type"] == "audio"
+            response = client.post("/api/v1/listings/lst-100/media", files=files, data=data, headers=headers)
+            assert response.status_code == 200
+            res_data = response.json()
+            assert res_data["listing_id"] == "lst-100"
+            assert res_data["media_type"] == "image"
+            assert res_data["status"] == "uploaded"
+            assert "id" in res_data
 
-    # Test invalid media_type
-    bad_files = {"file": ("test.txt", io.BytesIO(b"data"), "text/plain")}
-    bad_data = {"media_type": "video"}
-    bad_response = client.post("/api/v1/listings/lst-100/media", files=bad_files, data=bad_data)
-    assert bad_response.status_code == 422
+            # Test valid audio upload
+            audio_content = b"fake-audio-bytes"
+            files_audio = {"file": ("recording.wav", io.BytesIO(audio_content), "audio/wav")}
+            data_audio = {"media_type": MediaType.audio.value}
+
+            response_audio = client.post(
+                "/api/v1/listings/lst-100/media", files=files_audio, data=data_audio, headers=headers
+            )
+            assert response_audio.status_code == 200
+            assert response_audio.json()["media_type"] == "audio"
+
+            # Test invalid media_type
+            bad_files = {"file": ("test.txt", io.BytesIO(b"data"), "text/plain")}
+            bad_data = {"media_type": "video"}
+            bad_response = client.post(
+                "/api/v1/listings/lst-100/media", files=bad_files, data=bad_data, headers=headers
+            )
+            assert bad_response.status_code == 422
+        finally:
+            settings.MEDIA_STORAGE_DIR = orig_storage
+            app.dependency_overrides.pop(get_current_seller, None)
 
 
 def test_get_listing_status() -> None:

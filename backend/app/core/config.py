@@ -29,6 +29,7 @@ class Settings(BaseSettings):
 
     # Media storage configuration
     MEDIA_STORAGE_DIR: str = "./media"
+    MAX_MEDIA_UPLOAD_SIZE: int = 10 * 1024 * 1024  # 10 MB in bytes
 
     # CORS origins
     CORS_ORIGINS: Union[List[str], str] = ["*"]
