@@ -6,7 +6,7 @@ from alembic import command
 
 
 def test_migration_file_exists_and_discoverable():
-    """Verify Alembic detects the 0001_domain_tables migration revision."""
+    """Verify Alembic detects all migrations in the chain up to 0002_firebase_authentication."""
     backend_dir = Path(__file__).resolve().parent.parent
     ini_path = backend_dir / "alembic.ini"
     config = Config(str(ini_path))
@@ -15,15 +15,22 @@ def test_migration_file_exists_and_discoverable():
     script = ScriptDirectory.from_config(config)
     head_revision = script.get_current_head()
 
-    assert head_revision == "0001_domain_tables"
+    assert head_revision == "0002_firebase_authentication"
 
-    rev_script = script.get_revision(head_revision)
-    assert rev_script is not None
-    assert rev_script.module is not None
-    assert hasattr(rev_script.module, "upgrade")
-    assert hasattr(rev_script.module, "downgrade")
-    assert callable(rev_script.module.upgrade)
-    assert callable(rev_script.module.downgrade)
+    # Verify 0001_domain_tables
+    rev_0001 = script.get_revision("0001_domain_tables")
+    assert rev_0001 is not None
+    assert rev_0001.module is not None
+    assert callable(rev_0001.module.upgrade)
+    assert callable(rev_0001.module.downgrade)
+
+    # Verify 0002_firebase_authentication
+    rev_0002 = script.get_revision("0002_firebase_authentication")
+    assert rev_0002 is not None
+    assert rev_0002.down_revision == "0001_domain_tables"
+    assert rev_0002.module is not None
+    assert callable(rev_0002.module.upgrade)
+    assert callable(rev_0002.module.downgrade)
 
 
 def test_migration_sql_generation_offline(capsys):
@@ -38,7 +45,7 @@ def test_migration_sql_generation_offline(capsys):
     captured = capsys.readouterr()
     sql_output = captured.out
 
-    # Verify all expected tables and enums are rendered in PostgreSQL SQL
+    # Verify 0001 migration elements
     assert "CREATE TABLE sellers" in sql_output
     assert "CREATE TABLE listings" in sql_output
     assert "CREATE TABLE media" in sql_output
@@ -52,3 +59,10 @@ def test_migration_sql_generation_offline(capsys):
     assert "uq_listing_consents_listing_id" in sql_output
     assert "uq_listing_approvals_listing_id" in sql_output
     assert "0001_domain_tables" in sql_output
+
+    # Verify 0002 migration elements
+    assert "ALTER TABLE sellers ADD COLUMN firebase_uid" in sql_output
+    assert "ALTER TABLE sellers ADD COLUMN phone_number" in sql_output
+    assert "uq_sellers_firebase_uid" in sql_output
+    assert "uq_sellers_phone_number" in sql_output
+    assert "0002_firebase_authentication" in sql_output

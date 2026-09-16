@@ -23,10 +23,12 @@ class Seller(Base):
         default=uuid.uuid4,
         server_default=func.gen_random_uuid(),
     )
-    name: Mapped[str] = mapped_column(String(255), nullable=False)
-    language: Mapped[str] = mapped_column(String(32), nullable=False)
+    name: Mapped[str] = mapped_column(String(255), nullable=False, default="")
+    language: Mapped[str] = mapped_column(String(32), nullable=False, default="hi")
     cluster: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     ondc_seller_id: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    firebase_uid: Mapped[Optional[str]] = mapped_column(String(128), nullable=True, index=True)
+    phone_number: Mapped[Optional[str]] = mapped_column(String(32), nullable=True, index=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),
@@ -43,6 +45,8 @@ class Seller(Base):
 
     __table_args__ = (
         UniqueConstraint("ondc_seller_id", name="uq_sellers_ondc_seller_id"),
+        UniqueConstraint("firebase_uid", name="uq_sellers_firebase_uid"),
+        UniqueConstraint("phone_number", name="uq_sellers_phone_number"),
     )
 
     # 1:N relationship with listings

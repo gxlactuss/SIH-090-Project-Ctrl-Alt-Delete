@@ -13,14 +13,29 @@ def test_health_endpoint_intact() -> None:
 
 
 def test_get_seller_profile() -> None:
-    response = client.get("/api/v1/seller")
-    assert response.status_code == 200
-    data = response.json()
-    assert "id" in data
-    assert "name" in data
-    assert "language" in data
-    assert "cluster" in data
-    assert "ondc_seller_id" in data
+    import uuid
+    from app.core.security import get_current_seller
+    from app.models.seller import Seller
+
+    mock_seller = Seller(
+        id=uuid.UUID("11111111-1111-1111-1111-111111111111"),
+        name="Artisan Radha Devi",
+        language="hi",
+        cluster="Madhubani Cluster",
+        ondc_seller_id="ONDC-SELL-IND-9876",
+    )
+    app.dependency_overrides[get_current_seller] = lambda: mock_seller
+    try:
+        response = client.get("/api/v1/seller", headers={"Authorization": "Bearer test-token"})
+        assert response.status_code == 200
+        data = response.json()
+        assert "id" in data
+        assert "name" in data
+        assert "language" in data
+        assert "cluster" in data
+        assert "ondc_seller_id" in data
+    finally:
+        app.dependency_overrides.pop(get_current_seller, None)
 
 
 def test_create_listing() -> None:

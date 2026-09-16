@@ -76,7 +76,9 @@ All business endpoints live under `/api/v1` and currently return deterministic c
 | Method | Endpoint | Description |
 | :--- | :--- | :--- |
 | `GET` | `/health` | Service health check |
-| `GET` | `/api/v1/seller` | Fetch seller profile |
+| `POST` | `/api/v1/auth/firebase` | Authenticate with Firebase ID token and obtain application JWT |
+| `GET` | `/api/v1/seller` | Fetch authenticated seller profile (Bearer token) |
+| `PUT` | `/api/v1/seller` | Update profile fields (name, language, cluster) for authenticated seller |
 | `POST` | `/api/v1/listings` | Create / queue a new listing item |
 | `GET` | `/api/v1/listings` | List seller listings |
 | `GET` | `/api/v1/listings/{listing_id}` | Get specific listing details |

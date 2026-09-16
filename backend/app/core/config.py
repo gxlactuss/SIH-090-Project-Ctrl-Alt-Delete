@@ -18,8 +18,14 @@ class Settings(BaseSettings):
     # PostgreSQL Database URL
     DATABASE_URL: str = "postgresql+psycopg2://postgres:postgres@localhost:5432/listing_factory"
 
-    # JWT Authentication configuration placeholder
+    # JWT Authentication configuration
     JWT_SECRET: str = "replace-with-a-secure-random-secret-key-in-production"
+    JWT_ALGORITHM: str = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
+
+    # Firebase Authentication configuration
+    FIREBASE_SERVICE_ACCOUNT_JSON: Union[str, None] = None
+    FIREBASE_SERVICE_ACCOUNT_PATH: Union[str, None] = None
 
     # Media storage configuration
     MEDIA_STORAGE_DIR: str = "./media"

@@ -55,6 +55,12 @@ def test_seller_columns_and_nullability():
     assert "ondc_seller_id" in columns
     assert columns["ondc_seller_id"].nullable is True
 
+    assert "firebase_uid" in columns
+    assert columns["firebase_uid"].nullable is True
+
+    assert "phone_number" in columns
+    assert columns["phone_number"].nullable is True
+
     assert "created_at" in columns
     assert columns["created_at"].nullable is False
 
@@ -209,6 +215,8 @@ def test_metadata_unique_constraints():
     ]
     seller_uq_cols = [{col.name for col in c.columns} for c in sellers_uqs]
     assert {"ondc_seller_id"} in seller_uq_cols
+    assert {"firebase_uid"} in seller_uq_cols
+    assert {"phone_number"} in seller_uq_cols
 
     # UNIQUE(seller_id, client_item_id) on listings
     listings_uqs = [
