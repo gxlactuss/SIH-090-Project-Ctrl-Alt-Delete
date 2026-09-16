@@ -1,9 +1,81 @@
 import io
+import tempfile
+import uuid
+from typing import Generator
+
+import pytest
+from fastapi import Depends
 from fastapi.testclient import TestClient
+from sqlalchemy import create_engine, event
+from sqlalchemy.orm import Session, sessionmaker
+from sqlalchemy.pool import StaticPool
+
+from app.core.config import settings
+from app.core.security import get_current_seller
+from app.db.base import Base
+from app.db.session import get_db
 from app.main import app
+from app.models.listing import Listing
+from app.models.seller import Seller
 from app.schemas.enums import ListingState, MediaType
+from app.services.listing import transition_listing
 
 client = TestClient(app)
+AUTH_HEADERS = {"Authorization": "Bearer test-token"}
+
+
+@pytest.fixture(autouse=True)
+def setup_api_v1_env() -> Generator[None, None, None]:
+    """Provide an isolated in-memory SQLite database and authenticated mock seller for all contract tests."""
+    engine = create_engine(
+        "sqlite:///:memory:",
+        connect_args={"check_same_thread": False},
+        poolclass=StaticPool,
+    )
+
+    @event.listens_for(engine, "connect")
+    def set_sqlite_pragma(dbapi_connection, connection_record):
+        cursor = dbapi_connection.cursor()
+        cursor.execute("PRAGMA foreign_keys=ON")
+        cursor.close()
+
+    Base.metadata.create_all(engine)
+    TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+    mock_seller_id = uuid.UUID("11111111-1111-1111-1111-111111111111")
+
+    def override_get_db() -> Generator[Session, None, None]:
+        session = TestingSessionLocal()
+        try:
+            yield session
+        finally:
+            session.close()
+
+    def override_get_current_seller(db: Session = Depends(get_db)) -> Seller:
+        seller = db.query(Seller).filter(Seller.id == mock_seller_id).first()
+        if seller is None:
+            seller = Seller(
+                id=mock_seller_id,
+                firebase_uid="firebase-v1-seller",
+                name="Artisan Radha Devi",
+                language="hi",
+                cluster="Madhubani Cluster",
+                ondc_seller_id="ONDC-SELL-IND-9876",
+                phone_number="+919876543210",
+            )
+            db.add(seller)
+            db.commit()
+            db.refresh(seller)
+        return seller
+
+    app.dependency_overrides[get_db] = override_get_db
+    app.dependency_overrides[get_current_seller] = override_get_current_seller
+
+    yield
+
+    app.dependency_overrides.pop(get_db, None)
+    app.dependency_overrides.pop(get_current_seller, None)
+    Base.metadata.drop_all(engine)
 
 
 def test_health_endpoint_intact() -> None:
@@ -13,34 +85,23 @@ def test_health_endpoint_intact() -> None:
 
 
 def test_get_seller_profile() -> None:
-    import uuid
-    from app.core.security import get_current_seller
-    from app.models.seller import Seller
-
-    mock_seller = Seller(
-        id=uuid.UUID("11111111-1111-1111-1111-111111111111"),
-        name="Artisan Radha Devi",
-        language="hi",
-        cluster="Madhubani Cluster",
-        ondc_seller_id="ONDC-SELL-IND-9876",
-    )
-    app.dependency_overrides[get_current_seller] = lambda: mock_seller
-    try:
-        response = client.get("/api/v1/seller", headers={"Authorization": "Bearer test-token"})
-        assert response.status_code == 200
-        data = response.json()
-        assert "id" in data
-        assert "name" in data
-        assert "language" in data
-        assert "cluster" in data
-        assert "ondc_seller_id" in data
-    finally:
-        app.dependency_overrides.pop(get_current_seller, None)
+    response = client.get("/api/v1/seller", headers=AUTH_HEADERS)
+    assert response.status_code == 200
+    data = response.json()
+    assert "id" in data
+    assert "name" in data
+    assert "language" in data
+    assert "cluster" in data
+    assert "ondc_seller_id" in data
 
 
 def test_create_listing() -> None:
     # Valid creation
-    response = client.post("/api/v1/listings", json={"client_item_id": "mobile-item-123"})
+    response = client.post(
+        "/api/v1/listings",
+        json={"client_item_id": "mobile-item-123"},
+        headers=AUTH_HEADERS,
+    )
     assert response.status_code == 200
     data = response.json()
     assert data["client_item_id"] == "mobile-item-123"
@@ -48,26 +109,38 @@ def test_create_listing() -> None:
     assert "id" in data
 
     # Invalid creation - missing required field
-    bad_response = client.post("/api/v1/listings", json={})
+    bad_response = client.post("/api/v1/listings", json={}, headers=AUTH_HEADERS)
     assert bad_response.status_code == 422
 
 
 def test_get_listing() -> None:
-    response = client.get("/api/v1/listings/lst-100")
+    # Create listing first
+    create_res = client.post(
+        "/api/v1/listings",
+        json={"client_item_id": "item-get-test"},
+        headers=AUTH_HEADERS,
+    )
+    listing_id = create_res.json()["id"]
+
+    response = client.get(f"/api/v1/listings/{listing_id}", headers=AUTH_HEADERS)
     assert response.status_code == 200
     data = response.json()
-    assert data["id"] == "lst-100"
-    assert "client_item_id" in data
+    assert data["id"] == listing_id
+    assert data["client_item_id"] == "item-get-test"
     assert data["state"] in [s.value for s in ListingState]
 
 
 def test_list_seller_listings() -> None:
-    response = client.get("/api/v1/listings")
+    # Seed listings
+    client.post("/api/v1/listings", json={"client_item_id": "list-item-001"}, headers=AUTH_HEADERS)
+    client.post("/api/v1/listings", json={"client_item_id": "list-item-002"}, headers=AUTH_HEADERS)
+
+    response = client.get("/api/v1/listings", headers=AUTH_HEADERS)
     assert response.status_code == 200
     data = response.json()
     assert "items" in data
     assert isinstance(data["items"], list)
-    assert len(data["items"]) > 0
+    assert len(data["items"]) >= 2
     for item in data["items"]:
         assert "id" in item
         assert "client_item_id" in item
@@ -75,21 +148,13 @@ def test_list_seller_listings() -> None:
 
 
 def test_media_upload_contract() -> None:
-    import tempfile
-    import uuid
-    from app.core.config import settings
-    from app.core.security import get_current_seller
-    from app.models.seller import Seller
-
-    mock_seller = Seller(
-        id=uuid.UUID("11111111-1111-1111-1111-111111111111"),
-        name="Artisan Radha Devi",
-        language="hi",
-        cluster="Madhubani Cluster",
-        ondc_seller_id="ONDC-SELL-IND-9876",
+    # Create listing
+    create_res = client.post(
+        "/api/v1/listings",
+        json={"client_item_id": "item-media-contract"},
+        headers=AUTH_HEADERS,
     )
-    app.dependency_overrides[get_current_seller] = lambda: mock_seller
-    headers = {"Authorization": "Bearer test-token"}
+    listing_id = create_res.json()["id"]
 
     with tempfile.TemporaryDirectory() as tmp_dir:
         orig_storage = settings.MEDIA_STORAGE_DIR
@@ -100,10 +165,12 @@ def test_media_upload_contract() -> None:
             files = {"file": ("test_art.jpg", io.BytesIO(file_content), "image/jpeg")}
             data = {"media_type": MediaType.image.value}
 
-            response = client.post("/api/v1/listings/lst-100/media", files=files, data=data, headers=headers)
+            response = client.post(
+                f"/api/v1/listings/{listing_id}/media", files=files, data=data, headers=AUTH_HEADERS
+            )
             assert response.status_code == 200
             res_data = response.json()
-            assert res_data["listing_id"] == "lst-100"
+            assert res_data["listing_id"] == listing_id
             assert res_data["media_type"] == "image"
             assert res_data["status"] == "uploaded"
             assert "id" in res_data
@@ -114,7 +181,7 @@ def test_media_upload_contract() -> None:
             data_audio = {"media_type": MediaType.audio.value}
 
             response_audio = client.post(
-                "/api/v1/listings/lst-100/media", files=files_audio, data=data_audio, headers=headers
+                f"/api/v1/listings/{listing_id}/media", files=files_audio, data=data_audio, headers=AUTH_HEADERS
             )
             assert response_audio.status_code == 200
             assert response_audio.json()["media_type"] == "audio"
@@ -123,37 +190,57 @@ def test_media_upload_contract() -> None:
             bad_files = {"file": ("test.txt", io.BytesIO(b"data"), "text/plain")}
             bad_data = {"media_type": "video"}
             bad_response = client.post(
-                "/api/v1/listings/lst-100/media", files=bad_files, data=bad_data, headers=headers
+                f"/api/v1/listings/{listing_id}/media", files=bad_files, data=bad_data, headers=AUTH_HEADERS
             )
             assert bad_response.status_code == 422
         finally:
             settings.MEDIA_STORAGE_DIR = orig_storage
-            app.dependency_overrides.pop(get_current_seller, None)
 
 
 def test_get_listing_status() -> None:
-    response = client.get("/api/v1/listings/lst-100/status")
+    create_res = client.post(
+        "/api/v1/listings",
+        json={"client_item_id": "item-status-test"},
+        headers=AUTH_HEADERS,
+    )
+    listing_id = create_res.json()["id"]
+
+    response = client.get(f"/api/v1/listings/{listing_id}/status", headers=AUTH_HEADERS)
     assert response.status_code == 200
     data = response.json()
-    assert data["listing_id"] == "lst-100"
-    assert data["state"] in [s.value for s in ListingState]
+    assert data["listing_id"] == listing_id
+    assert data["state"] == ListingState.queued.value
 
 
 def test_get_listing_attention() -> None:
-    response = client.get("/api/v1/listings/lst-100/attention")
+    create_res = client.post(
+        "/api/v1/listings",
+        json={"client_item_id": "item-attention-test"},
+        headers=AUTH_HEADERS,
+    )
+    listing_id = create_res.json()["id"]
+
+    response = client.get(f"/api/v1/listings/{listing_id}/attention", headers=AUTH_HEADERS)
     assert response.status_code == 200
     data = response.json()
-    assert data["listing_id"] == "lst-100"
+    assert data["listing_id"] == listing_id
     assert isinstance(data["needs_attention"], bool)
     assert "question" in data
     assert "field" in data
 
 
 def test_get_listing_readback() -> None:
-    response = client.get("/api/v1/listings/lst-100/readback")
+    create_res = client.post(
+        "/api/v1/listings",
+        json={"client_item_id": "item-readback-test"},
+        headers=AUTH_HEADERS,
+    )
+    listing_id = create_res.json()["id"]
+
+    response = client.get(f"/api/v1/listings/{listing_id}/readback", headers=AUTH_HEADERS)
     assert response.status_code == 200
     data = response.json()
-    assert data["listing_id"] == "lst-100"
+    assert data["listing_id"] == listing_id
     assert "language" in data
     assert "title" in data
     assert "description" in data
@@ -162,21 +249,51 @@ def test_get_listing_readback() -> None:
 
 
 def test_approve_listing() -> None:
+    create_res = client.post(
+        "/api/v1/listings",
+        json={"client_item_id": "item-approve-test"},
+        headers=AUTH_HEADERS,
+    )
+    listing_id = create_res.json()["id"]
+
+    # Transition to needs_attention to test approval transition -> ready
+    from app.services.listing import transition_listing
+    from app.db.session import get_db
+    db = next(app.dependency_overrides[get_db]())
+    listing = db.query(Listing).filter(Listing.id == uuid.UUID(listing_id)).first()
+    transition_listing(db, listing, ListingState.processing)
+    transition_listing(db, listing, ListingState.needs_attention)
+
     # Valid approval
-    response = client.post("/api/v1/listings/lst-100/approval", json={"approved": True})
+    response = client.post(
+        f"/api/v1/listings/{listing_id}/approval",
+        json={"approved": True},
+        headers=AUTH_HEADERS,
+    )
     assert response.status_code == 200
     data = response.json()
-    assert data["listing_id"] == "lst-100"
+    assert data["listing_id"] == listing_id
     assert data["approved"] is True
     assert data["state"] == ListingState.ready.value
 
     # Invalid body
-    bad_response = client.post("/api/v1/listings/lst-100/approval", json={"approved": "not-a-bool"})
+    bad_response = client.post(
+        f"/api/v1/listings/{listing_id}/approval",
+        json={"approved": "not-a-bool"},
+        headers=AUTH_HEADERS,
+    )
     assert bad_response.status_code == 422
 
 
 def test_get_listing_suggestions() -> None:
-    response = client.get("/api/v1/listings/lst-100/suggestions")
+    create_res = client.post(
+        "/api/v1/listings",
+        json={"client_item_id": "item-suggestions-test"},
+        headers=AUTH_HEADERS,
+    )
+    listing_id = create_res.json()["id"]
+
+    response = client.get(f"/api/v1/listings/{listing_id}/suggestions", headers=AUTH_HEADERS)
     assert response.status_code == 200
     data = response.json()
     assert "items" in data
@@ -189,48 +306,90 @@ def test_get_listing_suggestions() -> None:
 
 
 def test_approve_suggestion() -> None:
+    create_res = client.post(
+        "/api/v1/listings",
+        json={"client_item_id": "item-sug-approve-test"},
+        headers=AUTH_HEADERS,
+    )
+    listing_id = create_res.json()["id"]
+
     response = client.post(
-        "/api/v1/listings/lst-100/suggestions/sug-001/approval",
+        f"/api/v1/listings/{listing_id}/suggestions/sug-001/approval",
         json={"approved": True},
+        headers=AUTH_HEADERS,
     )
     assert response.status_code == 200
     data = response.json()
-    assert data["listing_id"] == "lst-100"
+    assert data["listing_id"] == listing_id
     assert data["suggestion_id"] == "sug-001"
     assert data["approved"] is True
 
 
 def test_record_listing_consent() -> None:
+    create_res = client.post(
+        "/api/v1/listings",
+        json={"client_item_id": "item-consent-test"},
+        headers=AUTH_HEADERS,
+    )
+    listing_id = create_res.json()["id"]
+
     response = client.post(
-        "/api/v1/listings/lst-100/consent",
+        f"/api/v1/listings/{listing_id}/consent",
         json={"photo": True, "story": True},
+        headers=AUTH_HEADERS,
     )
     assert response.status_code == 200
     data = response.json()
-    assert data["listing_id"] == "lst-100"
+    assert data["listing_id"] == listing_id
     assert data["photo"] is True
     assert data["story"] is True
     assert data["ready_to_publish"] is True
 
     # Test invalid consent body
-    bad_response = client.post("/api/v1/listings/lst-100/consent", json={"photo": "yes"})
+    bad_response = client.post(
+        f"/api/v1/listings/{listing_id}/consent",
+        json={"photo": "yes"},
+        headers=AUTH_HEADERS,
+    )
     assert bad_response.status_code == 422
 
 
 def test_publish_listing() -> None:
-    response = client.post("/api/v1/listings/lst-100/publish")
+    create_res = client.post(
+        "/api/v1/listings",
+        json={"client_item_id": "item-publish-test"},
+        headers=AUTH_HEADERS,
+    )
+    listing_id = create_res.json()["id"]
+
+    # Transition listing to ready state before publishing
+    from app.services.listing import transition_listing
+    from app.db.session import get_db
+    db = next(app.dependency_overrides[get_db]())
+    listing = db.query(Listing).filter(Listing.id == uuid.UUID(listing_id)).first()
+    transition_listing(db, listing, ListingState.processing)
+    transition_listing(db, listing, ListingState.ready)
+
+    response = client.post(f"/api/v1/listings/{listing_id}/publish", headers=AUTH_HEADERS)
     assert response.status_code == 200
     data = response.json()
-    assert data["listing_id"] == "lst-100"
+    assert data["listing_id"] == listing_id
     assert data["state"] == ListingState.published.value
     assert "preview_url" in data
 
 
 def test_get_listing_preview() -> None:
-    response = client.get("/api/v1/listings/lst-100/preview")
+    create_res = client.post(
+        "/api/v1/listings",
+        json={"client_item_id": "item-preview-test"},
+        headers=AUTH_HEADERS,
+    )
+    listing_id = create_res.json()["id"]
+
+    response = client.get(f"/api/v1/listings/{listing_id}/preview", headers=AUTH_HEADERS)
     assert response.status_code == 200
     data = response.json()
-    assert data["listing_id"] == "lst-100"
+    assert data["listing_id"] == listing_id
     assert "title" in data
     assert "description" in data
     assert "price" in data
