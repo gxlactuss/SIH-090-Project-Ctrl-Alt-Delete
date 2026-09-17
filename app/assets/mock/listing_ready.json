@@ -1,0 +1,20 @@
+{
+  "id": "listing-001",
+  "status": "ready",
+  "title": "",
+  "description": "",
+  "imageUrls": [],
+  "factSheet": {
+    "material": null,
+    "size": null,
+    "colour": null,
+    "technique": null,
+    "quantity": null,
+    "priceInPaise": null,
+    "hoursToMake": null
+  },
+  "suggestions": [],
+  "followUpQuestion": null,
+  "suggestedPriceInPaise": null,
+  "priceFloorInPaise": null
+}
