@@ -143,10 +143,31 @@ alembic downgrade base
 
 ## Running Tests
 
-Run the test suite with pytest:
+Run the full test suite with pytest:
 
 ```bash
 pytest
 ```
 
-Tests run independently without requiring a running PostgreSQL instance.
+Run just the pipeline test suite (including the integrated ImageStation):
+
+```bash
+pytest tests/test_pipeline.py -v
+```
+
+Tests run independently without requiring a running PostgreSQL instance (using in-memory SQLite).
+
+---
+
+## 🎨 AI/ML Subsystems Integration
+
+### Vision Station (`app/services/vision/`)
+- **Engine**: `ImageStation` (powered by `isnet-general-use` ONNX segmentation).
+- **Stage**: `app/services/pipeline/stages/image.py` (`ImageStage`).
+- **Pipeline Flow**:
+  1. **Quality Gatekeeper**: Evaluates blur via Laplacian variance ($\ge 30$) with Canny fallback, and lighting via Otsu ROI brightness (dark floor 55, bright ceiling 185).
+  2. **Color Restoration**: Strips warm tungsten casts via Gray-World white balancing.
+  3. **Background Removal**: Isolates handicraft foreground using IS-Net model weights in `app/services/vision/.models/`.
+  4. **Studio Framing**: Centers product with $\le 1\text{px}$ error and scales to **80% canvas coverage** on a pure white background with a soft contact shadow.
+  5. **Deliverables**: Produces $1024 \times 1024$ primary listing image (`_clean.jpg`), $256 \times 256$ thumbnail (`_thumb.jpg`), and transparent PNG cutout (`_cutout.png`).
+- **Resilience**: Features automatic graceful fallback for synthetic database unit tests while running full AI inference on uploaded media files.

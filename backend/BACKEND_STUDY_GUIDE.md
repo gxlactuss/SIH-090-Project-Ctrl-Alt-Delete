@@ -739,7 +739,7 @@ Pydantic models define the public HTTP contract. All request schemas specify `mo
   7. If all stages finish with `success`: transitions listing state in DB to `ready`. Returns `PipelineResult(success=True)`.
 
 #### Concrete Stages (`app/services/pipeline/stages/`)
-* `image.py` (`ImageStage`): Filters `context.media` for `MediaType.image`. If none exist, returns `StageResult.attention("At least one image is required")`. Else populates `context.image_output`.
+* `image.py` (`ImageStage`): **[LIVE INTEGRATED]** Connects directly to `ImageStation` (`app/services/vision/`). Filters `context.media` for `MediaType.image` (halts with `StageResult.attention("At least one image is required")` if missing). Evaluates blur (Laplacian $\ge 30$ with Canny fallback) and lighting (Otsu ROI brightness 55–185). Strips color casts, segments foreground via IS-Net ONNX, scales craft to 80% canvas coverage on pure white background with ground shadow, generates thumbnail, and populates `context.image_output` (with graceful fallback for synthetic DB test fixtures).
 * `speech.py` (`SpeechStage`): Filters `context.media` for `MediaType.audio`. If none exist, returns `StageResult.attention("Voice note audio is required")`. Else populates `context.speech_output` with transcript and language.
 * `fact_sheet.py` (`FactSheetStage`): Validates prerequisites (`image_output` and `speech_output`). Synthesizes artisan craft title, story summary, and material attributes into `context.fact_sheet_output`.
 * `price.py` (`PriceStage`): Validates prerequisite (`fact_sheet_output`). Produces fair pricing recommendation (e.g. ₹1,200 to ₹1,800, recommended ₹1,500) into `context.price_output`.
@@ -1209,7 +1209,7 @@ PipelineContext ──► [ 1. ImageStage ]
 ### 13.3 Known Areas with Weak or Missing Coverage
 Based strictly on repository inspection:
 1. **Background Asynchronous Worker Integration**: `app/workers/__init__.py` is currently a placeholder. The pipeline runner is currently invoked synchronously; an async worker queue (e.g., Celery, ARQ, or FastAPI BackgroundTasks) has not yet been hooked up to HTTP endpoints.
-2. **Real AI/ML Model Endpoints**: `app/services/pipeline/stages/` currently return deterministic mock outputs rather than running live PyTorch/ONNX inference.
+2. **Real AI/ML Model Endpoints**: `ImageStage` (`app/services/pipeline/stages/image.py`) is now **live integrated** with `ImageStation` (IS-Net ONNX, OpenCV, Pillow). Downstream stages (`SpeechStage`, `FactSheetStage`, `PriceStage`, `ConfidenceStage`) remain deterministic mocks ready for speech/LLM integration.
 
 ---
 

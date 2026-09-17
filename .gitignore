@@ -14,3 +14,14 @@ docs/
 .vscode/
 *.iml
 *.swp
+
+# Python / Virtual Envs
+__pycache__/
+*.py[cod]
+venv/
+.venv/
+
+# ML weights
+.models/
+*.onnx
+output/
