@@ -32,10 +32,6 @@ from app.services.listing import (
 )
 
 
-# ============================================================================
-# Fixtures
-# ============================================================================
-
 @pytest.fixture(scope="function")
 def test_engine():
     """Create an isolated in-memory SQLite database engine with foreign keys enabled."""
@@ -118,10 +114,6 @@ def sellers_and_auth(test_db: Session):
     return (seller_a, headers_a), (seller_b, headers_b)
 
 
-# ============================================================================
-# 1. Creation Tests
-# ============================================================================
-
 def test_authenticated_seller_creates_persisted_listing(client: TestClient, test_db: Session, sellers_and_auth):
     """Verify authenticated seller can create a listing, which is stored in DB with queued state and UUID."""
     (seller_a, headers_a), _ = sellers_and_auth
@@ -167,10 +159,6 @@ def test_client_cannot_supply_seller_id_or_other_fields(client: TestClient, sell
     )
     assert response.status_code == 422
 
-
-# ============================================================================
-# 2. Ownership & Isolation Tests
-# ============================================================================
 
 def test_seller_can_retrieve_own_listing(client: TestClient, sellers_and_auth):
     """Verify seller can retrieve their own listing by server identifier."""
@@ -242,10 +230,6 @@ def test_list_seller_listings_returns_only_authenticated_sellers_listings(client
     assert items_b[0]["id"] == res_b1.json()["id"]
 
 
-# ============================================================================
-# 3. Idempotency & Composite Uniqueness Tests
-# ============================================================================
-
 def test_same_seller_same_client_item_id_idempotent(client: TestClient, test_db: Session, sellers_and_auth):
     """Verify identical repeated creation requests from same seller return existing listing deterministically."""
     (seller_a, headers_a), _ = sellers_and_auth
@@ -281,10 +265,6 @@ def test_different_sellers_same_client_item_id_allowed(client: TestClient, selle
 
     assert res_a.json()["id"] != res_b.json()["id"]
 
-
-# ============================================================================
-# 4. State Machine & Transitions Tests
-# ============================================================================
 
 @pytest.mark.parametrize(
     "initial,target",
@@ -402,10 +382,6 @@ def test_persisted_state_survives_fresh_db_session(test_engine, sellers_and_auth
     sess2.close()
 
 
-# ============================================================================
-# 5. Status Endpoint Tests
-# ============================================================================
-
 def test_status_endpoint_returns_actual_db_state(client: TestClient, test_db: Session, sellers_and_auth):
     """Verify GET /listings/{id}/status returns the real current DB state."""
     (seller_a, headers_a), _ = sellers_and_auth
@@ -426,10 +402,6 @@ def test_status_endpoint_returns_actual_db_state(client: TestClient, test_db: Se
     assert res2.status_code == 200
     assert res2.json()["state"] == ListingState.processing.value
 
-
-# ============================================================================
-# 6. Approval and Publish Endpoint Tests
-# ============================================================================
 
 def test_approval_endpoint_state_transitions(client: TestClient, test_db: Session, sellers_and_auth):
     """Verify POST /listings/{id}/approval enforces state transitions."""
@@ -503,10 +475,6 @@ def test_publish_endpoint_state_enforcement(client: TestClient, test_db: Session
     assert listing.state == ListingState.published
 
 
-# ============================================================================
-# 7. Downstream Endpoints Ownership Enforcement
-# ============================================================================
-
 def test_downstream_endpoints_seller_ownership(client: TestClient, sellers_and_auth):
     """Verify all downstream listing operations return 404 when accessed by non-owner."""
     (seller_a, headers_a), (seller_b, headers_b) = sellers_and_auth
@@ -541,10 +509,6 @@ def test_downstream_endpoints_seller_ownership(client: TestClient, sellers_and_a
     assert client.post(f"/api/v1/listings/{listing_id}/publish", headers=headers_b).status_code == 404
     assert client.get(f"/api/v1/listings/{listing_id}/preview", headers=headers_b).status_code == 404
 
-
-# ============================================================================
-# 8. Media Integration with Real Listing
-# ============================================================================
 
 def test_media_upload_to_real_persisted_listing(client: TestClient, test_db: Session, sellers_and_auth):
     """Verify uploading media to a real persisted listing connects to the DB Media record and enforces ownership."""

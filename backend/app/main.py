@@ -14,7 +14,6 @@ app = FastAPI(
     openapi_url="/openapi.json",
 )
 
-# Configure CORS Middleware
 if settings.CORS_ORIGINS:
     app.add_middleware(
         CORSMiddleware,
@@ -24,8 +23,5 @@ if settings.CORS_ORIGINS:
         allow_headers=["*"],
     )
 
-# Register health check at root level
 app.include_router(health_router)
-
-# Register API v1 business routes
 app.include_router(api_v1_router)

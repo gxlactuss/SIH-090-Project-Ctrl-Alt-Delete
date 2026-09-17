@@ -22,10 +22,6 @@ from app.models.seller import Seller
 from app.schemas.enums import ListingState, MediaType
 
 
-# ============================================================================
-# Fixtures
-# ============================================================================
-
 @pytest.fixture(scope="function")
 def test_engine():
     """Create an isolated in-memory SQLite database engine with foreign keys enabled."""
@@ -102,10 +98,6 @@ def seller_and_auth(test_db: Session):
     headers = {"Authorization": f"Bearer {token}"}
     return seller, headers
 
-
-# ============================================================================
-# Tests: Valid Image and Audio Uploads
-# ============================================================================
 
 def test_valid_image_upload_success_and_disk_storage(
     media_client: TestClient,
@@ -199,10 +191,6 @@ def test_various_supported_formats(
     assert stored_path.is_file()
 
 
-# ============================================================================
-# Tests: Security, Server-Controlled Naming & Path Traversal Protection
-# ============================================================================
-
 def test_server_controlled_filename_prevents_collision(
     media_client: TestClient,
     isolated_storage: Path,
@@ -275,10 +263,6 @@ def test_malicious_listing_id_path_traversal_rejected(
     # 400 Bad Request or 404 from route matching
     assert response.status_code in [400, 404]
 
-
-# ============================================================================
-# Tests: Validation (MIME type, Size, Empty, Mismatch)
-# ============================================================================
 
 def test_unsupported_mime_type_rejected(
     media_client: TestClient,
@@ -393,10 +377,6 @@ def test_empty_file_upload_rejected(
         assert len(list(listing_dir.iterdir())) == 0
 
 
-# ============================================================================
-# Tests: Authentication & Authorization
-# ============================================================================
-
 def test_unauthenticated_upload_rejected(
     media_client: TestClient,
 ):
@@ -425,10 +405,6 @@ def test_invalid_token_upload_rejected(
     )
     assert response.status_code == 401
 
-
-# ============================================================================
-# Tests: Database Persistence Seam & Ownership (Task 6 Boundary)
-# ============================================================================
 
 def test_media_metadata_persisted_when_listing_exists_in_db(
     media_client: TestClient,

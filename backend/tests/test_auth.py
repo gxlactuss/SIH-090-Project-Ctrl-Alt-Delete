@@ -29,10 +29,6 @@ from app.main import app
 from app.models.seller import Seller
 
 
-# ============================================================================
-# Test Database & Client Fixtures
-# ============================================================================
-
 @pytest.fixture(scope="function")
 def test_engine():
     """Create an isolated thread-safe in-memory SQLite database engine for testing."""
@@ -80,10 +76,6 @@ def auth_client(test_engine):
     app.dependency_overrides.clear()
 
 
-# ============================================================================
-# 1. Phone Normalization Tests
-# ============================================================================
-
 def test_phone_normalization_valid_international():
     """Verify various valid international phone numbers are normalized to E.164-like canonical form."""
     assert normalize_phone_number("+91 98765 43210") == "+919876543210"
@@ -114,10 +106,6 @@ def test_phone_normalization_invalid_inputs():
     with pytest.raises(ValueError, match="outside valid range"):
         normalize_phone_number("+1234567890123456789")
 
-
-# ============================================================================
-# 2. Firebase ID Token Verification Service Tests
-# ============================================================================
 
 def test_verify_firebase_token_missing():
     """Verify missing or whitespace token raises FirebaseTokenMissingError."""
@@ -174,10 +162,6 @@ def test_verify_firebase_token_invalid(mock_init, mock_verify):
     with pytest.raises(FirebaseTokenInvalidError):
         verify_firebase_id_token("invalid-token")
 
-
-# ============================================================================
-# 3. POST /api/v1/auth/firebase Endpoint Tests
-# ============================================================================
 
 @patch("app.services.auth.verify_firebase_id_token")
 def test_firebase_auth_first_login_creates_seller(mock_verify, auth_client: TestClient, test_db: Session):
@@ -329,10 +313,6 @@ def test_firebase_auth_error_scenarios(mock_verify, auth_client: TestClient):
     assert res4.status_code == 422
 
 
-# ============================================================================
-# 4. Application JWT Validation Tests
-# ============================================================================
-
 def test_jwt_valid_seller_resolution(auth_client: TestClient, test_db: Session):
     """Verify valid application JWT successfully authenticates protected GET /api/v1/seller."""
     seller = Seller(name="Artisan Radha Devi", language="hi", phone_number="+919876543210")
@@ -396,10 +376,6 @@ def test_jwt_malformed_token(auth_client: TestClient):
     response = auth_client.get("/api/v1/seller", headers={"Authorization": "Bearer not-a-real-jwt"})
     assert response.status_code == 401
 
-
-# ============================================================================
-# 5. Seller Isolation & Profile Update Tests
-# ============================================================================
 
 def test_seller_isolation(auth_client: TestClient, test_db: Session):
     """Verify Seller A cannot retrieve Seller B's profile."""

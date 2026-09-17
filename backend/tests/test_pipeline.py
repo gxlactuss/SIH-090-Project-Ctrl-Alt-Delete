@@ -33,10 +33,6 @@ from app.services.pipeline import (
 )
 
 
-# ============================================================================
-# Fixtures & Test Database Setup
-# ============================================================================
-
 @pytest.fixture(scope="function")
 def test_engine():
     """Create an isolated in-memory SQLite database engine with foreign keys enabled."""
@@ -112,10 +108,6 @@ def seeded_seller_and_listing(test_db: Session):
     return seller, listing
 
 
-# ============================================================================
-# Helper Test Stages for Failure Injection & Order Verification
-# ============================================================================
-
 class TrackingStage:
     """Stage that records its execution in a shared tracker list."""
 
@@ -129,7 +121,7 @@ class TrackingStage:
 
 
 class TransientFailureStage:
-    """Stage that fails a specified number of times before delegating to the wrapped stage."""
+    """Stage wrapper that fails N times before succeeding or running underlying stage."""
 
     def __init__(self, stage: PipelineStage, fail_times: int, fail_with_exception: bool = False) -> None:
         self.stage = stage
@@ -146,10 +138,6 @@ class TransientFailureStage:
             return StageResult.fail(reason=f"Transient failure on attempt {self.attempts}")
         return self.stage.run(context)
 
-
-# ============================================================================
-# 1. Successful Pipeline Execution Tests
-# ============================================================================
 
 def test_successful_pipeline_execution_and_state_ready(test_db: Session, seeded_seller_and_listing):
     """Verify queued listing transitions through processing to ready with all 5 stages populated."""
@@ -230,10 +218,6 @@ def test_stage_outputs_flow_through_context(test_db: Session, seeded_seller_and_
     assert captured_ctx.confidence_output is not None
     assert captured_ctx.confidence_output.overall_score >= 0.70
 
-
-# ============================================================================
-# 2. Missing Media & Needs Attention Tests
-# ============================================================================
 
 def test_missing_image_media_halts_pipeline_with_needs_attention(test_db: Session):
     """Verify listing without images transitions to needs_attention and downstream stages do not run."""
@@ -318,10 +302,6 @@ def test_low_confidence_score_transitions_to_needs_attention(test_db: Session, s
     test_db.refresh(listing)
     assert listing.state == ListingState.needs_attention
 
-
-# ============================================================================
-# 3. Retry Policy & Failure Behavior Tests
-# ============================================================================
 
 def test_transient_failure_retries_and_succeeds(test_db: Session, seeded_seller_and_listing):
     """Verify transient stage failure retries up to max attempts and continues pipeline upon recovery."""
@@ -450,10 +430,6 @@ def test_needs_attention_is_not_retried(test_db: Session, seeded_seller_and_list
     assert attention_counter["runs"] == 1
 
 
-# ============================================================================
-# 4. State Guard & Safety Tests
-# ============================================================================
-
 def test_published_listing_cannot_be_processed(test_db: Session, seeded_seller_and_listing):
     """Verify attempting to run pipeline on a published listing raises invalid transition error."""
     seller, listing = seeded_seller_and_listing
@@ -502,10 +478,6 @@ def test_pipeline_can_be_restarted_from_needs_attention(test_db: Session, seeded
     assert listing.state == ListingState.ready
 
 
-# ============================================================================
-# 5. Database Persistence & Session Verification
-# ============================================================================
-
 def test_final_listing_state_persisted_across_fresh_session(test_engine, seeded_seller_and_listing):
     """Verify final state set by the runner survives closing and re-opening the database session."""
     SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=test_engine)
@@ -546,10 +518,6 @@ def test_functional_run_listing_pipeline_entry_point(test_db: Session, seeded_se
     assert result.success is True
     assert result.final_state == ListingState.ready
 
-
-# ============================================================================
-# 6. Stage Unit Tests & Edge Cases
-# ============================================================================
 
 def test_nonexistent_listing_raises_not_found(test_db: Session):
     """Verify runner raises ListingNotFoundError when listing_id does not exist."""

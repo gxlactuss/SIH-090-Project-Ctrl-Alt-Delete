@@ -111,7 +111,7 @@ The persistence layer defines six core SQLAlchemy 2.x domain tables registered w
 5. **`suggestions`**: AI/system proposed additions (`field`, `value`, `reason`, `approved`, timestamps).
 6. **`listing_approvals`**: Seller approval records after read-back review (`approved`, `approved_at`, timestamps) with unique `listing_id`.
 
-> **Note**: As per architectural decoupling, the `/api/v1` API endpoints currently remain deterministic contract stubs and are intentionally not yet connected to persistence.
+> **Persistence Status**: Core authentication, seller profiles, media uploads, and listing state management are persisted in PostgreSQL. Downstream AI generation endpoints (`readback`, `suggestions`, `consent`, `preview`) operate on persisted listing entities while returning contract stubs until integrated with asynchronous background pipeline processing.
 
 ---
 
