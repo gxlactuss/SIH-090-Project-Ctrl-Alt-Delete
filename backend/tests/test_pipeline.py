@@ -1,6 +1,7 @@
 """Comprehensive test suite for the deterministic listing pipeline runner."""
 import uuid
 from typing import Generator, List
+from pathlib import Path
 
 import pytest
 from sqlalchemy import create_engine, event
@@ -618,3 +619,70 @@ def test_confidence_stage_score_above_threshold_succeeds(seeded_seller_and_listi
     assert ctx.confidence_output.overall_score == 0.95
     assert ctx.confidence_output.is_confident is True
 
+def test_image_stage_live_path_success(tmp_path, monkeypatch):
+    """Verify ImageStage live processing branch with mock files under MEDIA_STORAGE_DIR."""
+    storage_dir = tmp_path / "media"
+    storage_dir.mkdir(parents=True, exist_ok=True)
+    monkeypatch.setattr("app.core.config.settings.MEDIA_STORAGE_DIR", str(storage_dir))
+
+    listing_id = uuid.uuid4()
+    media_id = uuid.uuid4()
+    media_rel_path = f"{listing_id}/test.jpg"
+    full_img_path = storage_dir / media_rel_path
+    full_img_path.parent.mkdir(parents=True, exist_ok=True)
+    full_img_path.write_bytes(b"\xff\xd8\xff\xe0" + b"\x00" * 100)
+
+    media = Media(id=media_id, listing_id=listing_id, media_type=MediaType.image, storage_path=media_rel_path)
+    ctx = PipelineContext(listing_id=listing_id, media=[media])
+
+    class MockStation:
+        def process_image(self, input_path, output_dir, item_id):
+            clean_file = Path(output_dir) / f"{item_id}_clean.jpg"
+            clean_file.parent.mkdir(parents=True, exist_ok=True)
+            clean_file.write_text("dummy")
+            return {
+                "quality": {"passed": True, "blur_score": 100.0, "warnings": []},
+                "outputs": {"clean_image": str(clean_file)},
+            }
+
+    monkeypatch.setattr("app.services.pipeline.stages.image._get_station", lambda: MockStation())
+
+    stage = ImageStage()
+    res = stage.run(ctx)
+
+    assert res.status == StageStatus.success
+    assert ctx.image_output is not None
+    assert ctx.image_output.image_count == 1
+    assert ctx.image_output.image_paths[0] == f"{listing_id}/vision/{media_id}_clean.jpg"
+
+
+def test_image_stage_live_path_quality_failure(tmp_path, monkeypatch):
+    """Verify ImageStage live processing halts with needs_attention when photo quality fails."""
+    storage_dir = tmp_path / "media"
+    storage_dir.mkdir(parents=True, exist_ok=True)
+    monkeypatch.setattr("app.core.config.settings.MEDIA_STORAGE_DIR", str(storage_dir))
+
+    listing_id = uuid.uuid4()
+    media_id = uuid.uuid4()
+    media_rel_path = f"{listing_id}/blurry.jpg"
+    full_img_path = storage_dir / media_rel_path
+    full_img_path.parent.mkdir(parents=True, exist_ok=True)
+    full_img_path.write_bytes(b"\xff\xd8\xff\xe0" + b"\x00" * 100)
+
+    media = Media(id=media_id, listing_id=listing_id, media_type=MediaType.image, storage_path=media_rel_path)
+    ctx = PipelineContext(listing_id=listing_id, media=[media])
+
+    class MockStation:
+        def process_image(self, input_path, output_dir, item_id):
+            return {
+                "quality": {"passed": False, "warnings": ["Photo is blurry (score 15.2 < 30.0)"]},
+                "outputs": {},
+            }
+
+    monkeypatch.setattr("app.services.pipeline.stages.image._get_station", lambda: MockStation())
+
+    stage = ImageStage()
+    res = stage.run(ctx)
+
+    assert res.status == StageStatus.needs_attention
+    assert "photo quality check failed" in res.reason.lower()

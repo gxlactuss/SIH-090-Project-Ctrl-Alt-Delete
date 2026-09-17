@@ -48,6 +48,10 @@ htmlcov/
 media/
 uploads/
 
+# Machine Learning weights
+.models/
+*.onnx
+
 # IDE and editors
 .vscode/
 .idea/
