@@ -34,6 +34,11 @@ class Settings(BaseSettings):
     # Pipeline configuration
     PIPELINE_MAX_STAGE_ATTEMPTS: int = 3
 
+    # AI & Speech Service configuration
+    SARVAM_API_KEY: Union[str, None] = None
+    GEMINI_API_KEY: Union[str, None] = None
+    GEMINI_MODEL: str = "gemini-3.5-flash"
+
     # CORS origins
     CORS_ORIGINS: Union[List[str], str] = ["*"]
 
