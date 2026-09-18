@@ -35,18 +35,36 @@ class _OtpScreenState extends State<OtpScreen> {
 
   bool get _isComplete => _code.length == AppConstants.otpDigits;
 
+  late final AuthRepository _auth;
+
   @override
   void initState() {
     super.initState();
+    _auth = context.read<OnboardingController>().auth;
+    _auth.autoRead.addListener(_onAutoRead);
     _startResendTimer();
     _armAutoRead();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _onAutoRead());
   }
 
   @override
   void dispose() {
+    _auth.autoRead.removeListener(_onAutoRead);
     _ticker?.cancel();
     _autoReadTimer?.cancel();
     super.dispose();
+  }
+
+  void _onAutoRead() {
+    final read = _auth.autoRead.value;
+    if (read == null || !mounted || _verifying) return;
+    _autoReadTimer?.cancel();
+    setState(() {
+      _code = read.code ?? '';
+      _autoRead = true;
+      _error = null;
+    });
+    _verify(allowEmpty: read.code == null);
   }
 
   void _startResendTimer() {
@@ -60,9 +78,9 @@ class _OtpScreenState extends State<OtpScreen> {
   }
 
   void _armAutoRead() {
-    final auth = context.read<OnboardingController>().auth;
-    final code = auth.demoOtp;
-    if (code == null) return;
+    final onboarding = context.read<OnboardingController>();
+    final code = onboarding.auth.demoOtp;
+    if (code == null || onboarding.phone != onboarding.auth.demoNumber) return;
 
     _autoReadTimer = Timer(AppConstants.otpAutoReadDelay, () {
       if (!mounted || _code.isNotEmpty) return;
@@ -94,8 +112,8 @@ class _OtpScreenState extends State<OtpScreen> {
     });
   }
 
-  Future<void> _verify() async {
-    if (_verifying || !_isComplete) return;
+  Future<void> _verify({bool allowEmpty = false}) async {
+    if (_verifying || !(_isComplete || allowEmpty)) return;
     final l10n = AppLocalizations.of(context);
     final onboarding = context.read<OnboardingController>();
 
@@ -114,9 +132,17 @@ class _OtpScreenState extends State<OtpScreen> {
     switch (outcome) {
       case OtpVerifyOutcome.verified:
         Navigator.of(context).pushNamed(AppRoutes.profile);
-      case OtpVerifyOutcome.wrongCode:
+      case OtpVerifyOutcome.wrongCode ||
+          OtpVerifyOutcome.expired ||
+          OtpVerifyOutcome.tooManyTries ||
+          OtpVerifyOutcome.failed:
         setState(() {
-          _error = l10n.otpWrong;
+          _error = switch (outcome) {
+            OtpVerifyOutcome.expired => l10n.otpExpired,
+            OtpVerifyOutcome.tooManyTries => l10n.authTooManyTries,
+            OtpVerifyOutcome.failed => l10n.phoneSendFailed,
+            _ => l10n.otpWrong,
+          };
           _code = '';
           _autoRead = false;
         });
@@ -137,9 +163,16 @@ class _OtpScreenState extends State<OtpScreen> {
         : await onboarding.auth.requestOtp(onboarding.phone);
     if (!mounted) return;
 
-    if (outcome == OtpRequestOutcome.sent) {
-      _startResendTimer();
-      if (byCall) setState(() => _notice = l10n.otpCalling);
+    switch (outcome) {
+      case OtpRequestOutcome.sent:
+        _startResendTimer();
+        if (byCall) setState(() => _notice = l10n.otpCalling);
+      case OtpRequestOutcome.tooManyTries:
+        setState(() => _error = l10n.authTooManyTries);
+      case OtpRequestOutcome.failed:
+        setState(() => _error = l10n.phoneSendFailed);
+      case OtpRequestOutcome.invalidNumber || OtpRequestOutcome.unknownNumber:
+        break;
     }
   }
 
@@ -220,12 +253,13 @@ class _OtpScreenState extends State<OtpScreen> {
           busy: _verifying,
           onPressed: _isComplete ? _verify : null,
         ),
-        BigActionButton(
-          label: l10n.otpCallMe,
-          icon: Icons.phone_in_talk,
-          tone: ButtonTone.secondary,
-          onPressed: () => _resend(byCall: true),
-        ),
+        if (onboarding.auth.canCall)
+          BigActionButton(
+            label: l10n.otpCallMe,
+            icon: Icons.phone_in_talk,
+            tone: ButtonTone.secondary,
+            onPressed: () => _resend(byCall: true),
+          ),
       ],
     );
   }

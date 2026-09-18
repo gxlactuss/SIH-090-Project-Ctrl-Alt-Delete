@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "113245852415",
+    "project_id": "sih090",
+    "storage_bucket": "sih090.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:113245852415:android:ad0fd452a56454fb1932ca",
+        "android_client_info": {
+          "package_name": "com.kaarigar.kaarigar"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyACdEiFo_426d5oz5V1vuArpHHy2j75gzU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,11 +1,11 @@
 abstract final class DevAccounts {
   static const bool enabled = !bool.fromEnvironment('dart.vm.product');
 
-  static const String phone = '1111111111';
+  static const String phone = '8828333400';
 
   static const String otp = '111111';
 
-  static const String ondcEmail = 'a@gmail.com';
+  static const String ondcSellerId = 'demo-seller-01';
 
-  static const String ondcField = 'a';
+  static const String ondcEmail = 'demo.seller@example.com';
 }

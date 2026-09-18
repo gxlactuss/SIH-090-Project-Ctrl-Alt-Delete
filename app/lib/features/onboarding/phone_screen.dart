@@ -66,6 +66,10 @@ class _PhoneScreenState extends State<PhoneScreen> {
         setState(() => _error = l10n.phoneInvalid);
       case OtpRequestOutcome.unknownNumber:
         setState(() => _error = l10n.phoneUnknown(auth.demoNumber ?? ''));
+      case OtpRequestOutcome.tooManyTries:
+        setState(() => _error = l10n.authTooManyTries);
+      case OtpRequestOutcome.failed:
+        setState(() => _error = l10n.phoneSendFailed);
     }
   }
 

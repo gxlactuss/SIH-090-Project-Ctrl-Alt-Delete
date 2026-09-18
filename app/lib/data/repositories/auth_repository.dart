@@ -1,35 +1,52 @@
+import 'dart:async';
+
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
+
 import '../../core/constants/app_constants.dart';
 import '../../core/dev/dev_accounts.dart';
 
-/// What happened when we asked for a code.
 enum OtpRequestOutcome {
   sent,
 
-  /// Not ten digits. The screen should not even let this happen, but the
-  /// repository does not trust the screen.
   invalidNumber,
 
-  /// A well-formed number that this build has no account for. With no auth
-  /// server behind the demo, that is every number but the test one.
   unknownNumber,
+
+  tooManyTries,
+
+  failed,
 }
 
-/// What happened when we checked the code.
-enum OtpVerifyOutcome { verified, wrongCode }
+enum OtpVerifyOutcome { verified, wrongCode, expired, tooManyTries, failed }
 
-/// Phone-number sign-in: 1.5 and 1.6.
-///
-/// There is no auth backend yet, so this is a local stand-in that keeps the
-/// real shape -- a request, a wait, a verify, and a resend with a cooldown --
-/// so that swapping in the server later touches this file and nothing else.
+class AutoRead {
+  const AutoRead(this.code);
+
+  final String? code;
+}
+
 class AuthRepository {
-  const AuthRepository();
+  AuthRepository({FirebaseAuth? firebase})
+    : _firebase =
+          firebase ?? (Firebase.apps.isEmpty ? null : FirebaseAuth.instance);
 
-  /// The number this build accepts, shown on 1.5 so nobody has to guess.
+  final FirebaseAuth? _firebase;
+
+  String? _verificationId;
+  int? _resendToken;
+  String? _codeFor;
+  PhoneAuthCredential? _autoCredential;
+
+  final ValueNotifier<AutoRead?> autoRead = ValueNotifier(null);
+
+  bool get canCall => _firebase == null;
+
   String? get demoNumber => DevAccounts.enabled ? DevAccounts.phone : null;
 
-  /// The code the fake SMS delivers, which 1.6 uses to imitate auto-read.
-  String? get demoOtp => DevAccounts.enabled ? DevAccounts.otp : null;
+  String? get demoOtp =>
+      DevAccounts.enabled && _firebase == null ? DevAccounts.otp : null;
 
   Future<OtpRequestOutcome> requestOtp(String phone) async {
     final digits = _digitsOf(phone);
@@ -37,6 +54,118 @@ class AuthRepository {
       return OtpRequestOutcome.invalidNumber;
     }
 
+    final firebase = _firebase;
+    if (firebase == null) return _fakeRequest(digits);
+
+    final done = Completer<OtpRequestOutcome>();
+    void finish(OtpRequestOutcome outcome) {
+      if (!done.isCompleted) done.complete(outcome);
+    }
+
+    final resendToken = digits == _codeFor ? _resendToken : null;
+    _autoCredential = null;
+    autoRead.value = null;
+
+    try {
+      await firebase.verifyPhoneNumber(
+        phoneNumber: '+91$digits',
+        forceResendingToken: resendToken,
+        codeSent: (verificationId, token) {
+          _verificationId = verificationId;
+          _resendToken = token;
+          _codeFor = digits;
+          finish(OtpRequestOutcome.sent);
+        },
+        verificationCompleted: (credential) {
+          _codeFor = digits;
+          _autoCredential = credential;
+          autoRead.value = AutoRead(credential.smsCode);
+          finish(OtpRequestOutcome.sent);
+        },
+        verificationFailed: (e) => finish(_requestFailure(e)),
+        codeAutoRetrievalTimeout: (_) {},
+      );
+    } on FirebaseAuthException catch (e) {
+      finish(_requestFailure(e));
+    } catch (_) {
+      finish(OtpRequestOutcome.failed);
+    }
+
+    return done.future.timeout(
+      const Duration(seconds: 60),
+      onTimeout: () => OtpRequestOutcome.failed,
+    );
+  }
+
+  Future<OtpRequestOutcome> requestOtpByCall(String phone) => requestOtp(phone);
+
+  Future<OtpVerifyOutcome> verifyOtp({
+    required String phone,
+    required String code,
+  }) async {
+    final digits = _digitsOf(phone);
+    final firebase = _firebase;
+    if (firebase == null) return _fakeVerify(digits, code);
+
+    if (digits != _codeFor) return OtpVerifyOutcome.expired;
+
+    final auto = _autoCredential;
+    final PhoneAuthCredential credential;
+    if (auto != null && (code.isEmpty || code == auto.smsCode)) {
+      credential = auto;
+    } else if (_verificationId != null && code.isNotEmpty) {
+      credential = PhoneAuthProvider.credential(
+        verificationId: _verificationId!,
+        smsCode: code,
+      );
+    } else {
+      return OtpVerifyOutcome.wrongCode;
+    }
+
+    try {
+      final user = firebase.currentUser;
+      if (user != null && user.phoneNumber != '+91$digits') {
+        await user.updatePhoneNumber(credential);
+      } else {
+        await firebase.signInWithCredential(credential);
+      }
+      return OtpVerifyOutcome.verified;
+    } on FirebaseAuthException catch (e) {
+      debugPrint('Phone verify failed: ${e.code} ${e.message}');
+      return switch (e.code) {
+        'invalid-verification-code' => OtpVerifyOutcome.wrongCode,
+        'session-expired' ||
+        'code-expired' ||
+        'invalid-verification-id' => OtpVerifyOutcome.expired,
+        'too-many-requests' => OtpVerifyOutcome.tooManyTries,
+        _ => OtpVerifyOutcome.failed,
+      };
+    } catch (_) {
+      return OtpVerifyOutcome.failed;
+    }
+  }
+
+  Future<String?> idToken() async => _firebase?.currentUser?.getIdToken();
+
+  Future<void> signOut() async {
+    _verificationId = null;
+    _resendToken = null;
+    _codeFor = null;
+    _autoCredential = null;
+    autoRead.value = null;
+    await _firebase?.signOut();
+  }
+
+  OtpRequestOutcome _requestFailure(FirebaseAuthException e) {
+    debugPrint('Phone code request failed: ${e.code} ${e.message}');
+    return switch (e.code) {
+      'invalid-phone-number' => OtpRequestOutcome.invalidNumber,
+      'too-many-requests' || 'quota-exceeded' => OtpRequestOutcome.tooManyTries,
+      _ => OtpRequestOutcome.failed,
+    };
+  }
+
+  Future<OtpRequestOutcome> _fakeRequest(String digits) async {
     await Future<void>.delayed(AppConstants.fakeNetworkDelay);
 
     if (DevAccounts.enabled && digits == DevAccounts.phone) {
@@ -45,19 +174,11 @@ class AuthRepository {
     return OtpRequestOutcome.unknownNumber;
   }
 
-  /// The "call me instead" fallback on 1.6. Same code, delivered by voice,
-  /// for a seller who cannot read the SMS.
-  Future<OtpRequestOutcome> requestOtpByCall(String phone) =>
-      requestOtp(phone);
-
-  Future<OtpVerifyOutcome> verifyOtp({
-    required String phone,
-    required String code,
-  }) async {
+  Future<OtpVerifyOutcome> _fakeVerify(String digits, String code) async {
     await Future<void>.delayed(AppConstants.fakeNetworkDelay);
 
     if (DevAccounts.enabled &&
-        _digitsOf(phone) == DevAccounts.phone &&
+        digits == DevAccounts.phone &&
         code == DevAccounts.otp) {
       return OtpVerifyOutcome.verified;
     }
