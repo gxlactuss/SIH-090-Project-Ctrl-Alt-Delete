@@ -37,6 +37,7 @@ dependencies:
   google_mlkit_object_detection: ^0.17.1
   http: ^1.6.0
   http_parser: ^4.1.2
+  crypto: ^3.0.7
   workmanager: ^0.10.10
   firebase_core: ^4.15.0
   firebase_auth: ^6.7.0
