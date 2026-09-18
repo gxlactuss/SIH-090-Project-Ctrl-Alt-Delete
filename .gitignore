@@ -8,6 +8,8 @@ docs/
 *.fls
 *.fdb_latexmk
 handoff.md
+ArchitectureV1.pdf
+PRDv1.pdf
 
 .DS_Store
 

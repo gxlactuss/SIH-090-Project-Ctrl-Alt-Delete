@@ -71,9 +71,18 @@ class VoiceStation:
             "api-subscription-key": self.api_key,
         }
 
+        ext = audio_path.suffix.lower()
+        content_type = "audio/wav"
+        if ext == ".mp3":
+            content_type = "audio/mpeg"
+        elif ext in (".m4a", ".mp4"):
+            content_type = "audio/mp4"
+        elif ext == ".ogg":
+            content_type = "audio/ogg"
+
         with open(audio_path, "rb") as f:
             files = {
-                "file": (audio_path.name, f, "audio/wav"),
+                "file": (audio_path.name, f, content_type),
             }
             data = {
                 "model": "saaras:v3",

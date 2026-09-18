@@ -206,9 +206,20 @@ class GeminiExtractor:
             stated_price = float(stated_price)
 
         dimensions = parsed.get("dimensions")
+        if isinstance(dimensions, str) and dimensions.strip().lower() in ("null", "none", "n/a", "not specified", "not mentioned", "unknown"):
+            dimensions = None
+
         origin = parsed.get("origin")
+        if isinstance(origin, str) and origin.strip().lower() in ("null", "none", "n/a", "not specified", "not mentioned", "unknown"):
+            origin = None
+
         colors = parsed.get("colors") or []
         missing_fields = parsed.get("missing_fields") or []
+
+        if dimensions is None and "dimensions" not in missing_fields:
+            missing_fields.append("dimensions")
+        if stated_price is None and "price" not in missing_fields:
+            missing_fields.append("price")
 
         attributes = {
             "origin": origin,
