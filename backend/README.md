@@ -92,11 +92,29 @@ All business endpoints live under `/api/v1` and currently return deterministic c
 | `POST` | `/api/v1/listings/{listing_id}/consent` | Record consent for publishing artisan photo & story |
 | `POST` | `/api/v1/listings/{listing_id}/publish` | Trigger listing publication |
 | `GET` | `/api/v1/listings/{listing_id}/preview` | Fetch read-only listing preview |
+| `POST` | `/api/v1/voice/demo` | Interactive Voice-to-Catalog multimodal demonstration endpoint |
 
 ### Key Contract Enums
 
 - **`ListingState`**: `queued`, `processing`, `needs_attention`, `ready`, `published`
 - **`MediaType`**: `image`, `audio`
+
+---
+
+## 🎙️ Multimodal Voice-to-Catalog CLI Tool
+
+You can test the entire multimodal cataloging pipeline directly from the command line using [`test_voice_cli.py`](file:///home/kaustubh/Desktop/codes/SIH-090-Project-Ctrl-Alt-Delete-main/backend/test_voice_cli.py):
+
+```bash
+# 1. Test with an existing voice recording (.wav, .mp3, .m4a) and export JSON:
+python3 test_voice_cli.py --file /path/to/voice_note.wav --output listing.json
+
+# 2. Record live speech from your microphone for 10 seconds:
+python3 test_voice_cli.py --record --seconds 10
+
+# 3. Test with the built-in synthetic craft sample:
+python3 test_voice_cli.py
+```
 
 ---
 
@@ -143,25 +161,25 @@ alembic downgrade base
 
 ## Running Tests
 
-Run the full test suite with pytest:
+Run the full regression test suite with pytest (**160 / 160 passed - 100%**):
 
 ```bash
-pytest
+pytest -v
 ```
 
-Run just the pipeline test suite (including the integrated ImageStation):
+Run just the pipeline and publishing test suite:
 
 ```bash
-pytest tests/test_pipeline.py -v
+pytest tests/test_pipeline.py tests/test_publishing.py -v
 ```
 
-Tests run independently without requiring a running PostgreSQL instance (using in-memory SQLite).
+Tests run independently without requiring a running PostgreSQL instance or live API keys (using in-memory SQLite and deterministic synthetic fallbacks).
 
 ---
 
 ## 🎨 AI/ML Subsystems Integration
 
-### Vision Station (`app/services/vision/`)
+### 1. Vision Station (`app/services/vision/`)
 - **Engine**: `ImageStation` (powered by `isnet-general-use` ONNX segmentation).
 - **Stage**: `app/services/pipeline/stages/image.py` (`ImageStage`).
 - **Pipeline Flow**:
@@ -170,4 +188,32 @@ Tests run independently without requiring a running PostgreSQL instance (using i
   3. **Background Removal**: Isolates handicraft foreground using IS-Net model weights in `app/services/vision/.models/`.
   4. **Studio Framing**: Centers product with $\le 1\text{px}$ error and scales to **80% canvas coverage** on a pure white background with a soft contact shadow.
   5. **Deliverables**: Produces $1024 \times 1024$ primary listing image (`_clean.jpg`), $256 \times 256$ thumbnail (`_thumb.jpg`), and transparent PNG cutout (`_cutout.png`).
-- **Resilience**: Features automatic graceful fallback for synthetic database unit tests while running full AI inference on uploaded media files.
+
+### 2. Voice Station (`app/services/voice/`)
+- **Engine**: `VoiceStation` calling Sarvam AI (`speech-to-text-translate` model `saaras:v3`).
+- **Stage**: `app/services/pipeline/stages/speech.py` (`SpeechStage`).
+- **Pipeline Flow**:
+  1. Validates audio format, size, and applies storage path traversal guards.
+  2. Ingests artisan speech in regional Indic dialects (Hindi, Marathi, Bengali, Hinglish, etc.).
+  3. Direct neural translation into structured English transcript (`SpeechStageOutput`).
+  4. Preserves deterministic synthetic fallback for offline test environments.
+
+### 3. Fact Sheet Extraction (`app/services/llm/`)
+- **Engine**: `GeminiExtractor` powered by Google Gemini Flash (`gemini-3.5-flash`).
+- **Stage**: `app/services/pipeline/stages/fact_sheet.py` (`FactSheetStage`).
+- **Pipeline Flow**:
+  1. Grammar-constrained JSON decoding via native `response_schema` and `response_mime_type: "application/json"`.
+  2. Extracts high-converting title, craft category, authentic materials, cultural backstory, and dominant colors.
+  3. Identifies missing commercial fields (`missing_fields: ['dimensions', 'price']`) without hallucinating values.
+  4. Transient error resilience with automated backoff retry on HTTP 503/429 spikes.
+
+### 4. Fair Pricing Advisor (`app/services/pipeline/stages/price.py`)
+- Automatically adopts stated price if the artisan explicitly mentioned it in the voice note.
+- If price is omitted, generates market benchmark bounds (`recommended_price`, `min_price`, `max_price`).
+- Flags missing values to generate suggestion DB records for artisan review.
+
+### 5. Multi-Channel Syndication Adapters (`app/services/publishing/`)
+All adapters implement the `PublishingAdapter` protocol with validation and publication contracts:
+- **ONDC Adapter** (`app/services/publishing/ondc.py`): Formats canonical listing into Beckn protocol catalog items (`bpp_id`, `item_id`).
+- **Meta Commerce Adapter** (`app/services/publishing/meta.py`): Formats canonical listing for WhatsApp Business Catalog and Facebook Shops.
+- **Google Merchant Center Adapter** (`app/services/publishing/google.py`): Generates Content API for Shopping feeds with `identifier_exists: false` exemption for handmade Indian crafts.

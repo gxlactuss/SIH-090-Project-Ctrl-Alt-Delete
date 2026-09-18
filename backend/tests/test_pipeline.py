@@ -686,3 +686,163 @@ def test_image_stage_live_path_quality_failure(tmp_path, monkeypatch):
 
     assert res.status == StageStatus.needs_attention
     assert "photo quality check failed" in res.reason.lower()
+
+
+def test_speech_stage_path_traversal_detection(tmp_path, monkeypatch):
+    """Verify SpeechStage blocks path traversal attempts in media storage paths."""
+    storage_dir = tmp_path / "media"
+    storage_dir.mkdir(parents=True, exist_ok=True)
+    monkeypatch.setattr("app.core.config.settings.MEDIA_STORAGE_DIR", str(storage_dir))
+
+    listing_id = uuid.uuid4()
+    media = Media(
+        id=uuid.uuid4(),
+        listing_id=listing_id,
+        media_type=MediaType.audio,
+        storage_path="../../etc/evil.wav",
+    )
+    ctx = PipelineContext(listing_id=listing_id, media=[media])
+
+    stage = SpeechStage()
+    res = stage.run(ctx)
+    assert res.status == StageStatus.failure
+    assert "invalid media storage path" in res.reason.lower()
+
+
+def test_speech_stage_with_voice_station_mock(tmp_path, monkeypatch):
+    """Verify SpeechStage invokes VoiceStation and populates context correctly."""
+    storage_dir = tmp_path / "media"
+    storage_dir.mkdir(parents=True, exist_ok=True)
+    monkeypatch.setattr("app.core.config.settings.MEDIA_STORAGE_DIR", str(storage_dir))
+
+    listing_id = uuid.uuid4()
+    audio_path = f"{listing_id}/story.wav"
+    full_path = storage_dir / audio_path
+    full_path.parent.mkdir(parents=True, exist_ok=True)
+    full_path.write_bytes(b"RIFF" + b"\x00" * 40)
+
+    media = Media(
+        id=uuid.uuid4(),
+        listing_id=listing_id,
+        media_type=MediaType.audio,
+        storage_path=audio_path,
+    )
+    ctx = PipelineContext(listing_id=listing_id, media=[media])
+
+    from app.services.voice.pipeline import VoiceTranscriptionResult
+
+    class MockVoiceStation:
+        def process_audio(self, audio_path, allow_synthetic_fallback=True):
+            return VoiceTranscriptionResult(
+                transcript="Handmade bamboo basket crafted in Assam.",
+                language_code="as",
+                duration_seconds=12.0,
+            )
+
+    monkeypatch.setattr("app.services.pipeline.stages.speech._get_voice_station", lambda: MockVoiceStation())
+
+    stage = SpeechStage()
+    res = stage.run(ctx)
+    assert res.status == StageStatus.success
+    assert ctx.speech_output is not None
+    assert ctx.speech_output.transcript == "Handmade bamboo basket crafted in Assam."
+    assert ctx.speech_output.language == "as"
+    assert ctx.speech_output.duration_seconds == 12.0
+
+
+def test_fact_sheet_stage_with_gemini_mock(monkeypatch):
+    """Verify FactSheetStage calls GeminiExtractor and enriches attributes with missing fields."""
+    from app.services.pipeline.context import ImageStageOutput, SpeechStageOutput
+    from app.services.llm.gemini import GeminiExtractionResult
+
+    ctx = PipelineContext(listing_id=uuid.uuid4())
+    ctx.image_output = ImageStageOutput(
+        image_count=2,
+        image_paths=["path1.jpg", "path2.jpg"],
+        detected_labels=["pottery"],
+        dimensions=[{"width": 1024, "height": 1024}],
+    )
+    ctx.speech_output = SpeechStageOutput(
+        audio_path="dummy.wav",
+        transcript="Clay pot made using river soil, asking 450 rupees.",
+        language="hi",
+    )
+
+    class MockGeminiExtractor:
+        def extract_fact_sheet(self, transcript, detected_language="hi", allow_synthetic_fallback=True):
+            return GeminiExtractionResult(
+                title="Handcrafted Terracotta Clay Pot",
+                craft_type="Terracotta Pottery",
+                material="River clay, natural red soil",
+                story_summary="Crafted using riverbed soil on a traditional potter wheel.",
+                stated_price=450.0,
+                dimensions="15x15 cm",
+                origin="Gorakhpur, Uttar Pradesh",
+                colors=["terracotta", "red ochre"],
+                missing_fields=[],
+                attributes={
+                    "stated_price": 450.0,
+                    "dimensions": "15x15 cm",
+                    "origin": "Gorakhpur, Uttar Pradesh",
+                    "primary_colors": ["terracotta", "red ochre"],
+                    "missing_fields": [],
+                },
+            )
+
+    monkeypatch.setattr("app.services.pipeline.stages.fact_sheet._get_gemini_extractor", lambda: MockGeminiExtractor())
+
+    stage = FactSheetStage()
+    res = stage.run(ctx)
+
+    assert res.status == StageStatus.success
+    assert ctx.fact_sheet_output is not None
+    assert ctx.fact_sheet_output.title == "Handcrafted Terracotta Clay Pot"
+    assert ctx.fact_sheet_output.craft_type == "Terracotta Pottery"
+    assert ctx.fact_sheet_output.attributes["stated_price"] == 450.0
+    assert ctx.fact_sheet_output.attributes["image_count"] == 2
+
+
+def test_price_stage_adopts_stated_price():
+    """Verify PriceStage adopts artisan's stated price if available."""
+    from app.services.pipeline.context import FactSheetOutput
+
+    ctx = PipelineContext(listing_id=uuid.uuid4())
+    ctx.fact_sheet_output = FactSheetOutput(
+        title="Terracotta Handi",
+        craft_type="Pottery",
+        material="Clay",
+        story_summary="Handmade pot",
+        attributes={"stated_price": 600.0},
+    )
+
+    stage = PriceStage()
+    res = stage.run(ctx)
+
+    assert res.status == StageStatus.success
+    assert ctx.price_output is not None
+    assert ctx.price_output.recommended_price == 600.0
+    assert ctx.price_output.min_price == 540.0
+    assert ctx.price_output.max_price == 690.0
+    assert res.metadata.get("stated_by_artisan") is True
+
+
+def test_price_stage_generates_ai_bounds_when_price_not_stated():
+    """Verify PriceStage estimates fair price bounds when price was not mentioned."""
+    from app.services.pipeline.context import FactSheetOutput
+
+    ctx = PipelineContext(listing_id=uuid.uuid4())
+    ctx.fact_sheet_output = FactSheetOutput(
+        title="Handmade Coaster",
+        craft_type="Jute Craft",
+        material="Jute fiber",
+        story_summary="Handwoven coasters",
+        attributes={"stated_price": None},
+    )
+
+    stage = PriceStage()
+    res = stage.run(ctx)
+
+    assert res.status == StageStatus.success
+    assert ctx.price_output is not None
+    assert ctx.price_output.recommended_price == 1500.0
+    assert res.metadata.get("stated_by_artisan") is False

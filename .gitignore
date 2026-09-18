@@ -7,6 +7,7 @@ docs/
 *.synctex.gz
 *.fls
 *.fdb_latexmk
+handoff.md
 
 .DS_Store
 
@@ -18,10 +19,24 @@ docs/
 # Python / Virtual Envs
 __pycache__/
 *.py[cod]
+venv
 venv/
 .venv/
+.venv
+
+# Environment files
+.env
+*.env
 
 # ML weights
 .models/
 *.onnx
+# Output artifacts
 output/
+*output*.json
+*.wav
+generated_assets/
+*listing*.json
+
+
+

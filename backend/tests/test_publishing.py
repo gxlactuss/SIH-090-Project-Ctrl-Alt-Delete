@@ -5,6 +5,8 @@ from app.services.publishing.base import (
     PublishingAdapter,
 )
 from app.services.publishing.ondc import ONDCPublishingAdapter
+from app.services.publishing.meta import MetaPublishingAdapter
+from app.services.publishing.google import GoogleMerchantPublishingAdapter
 
 
 def test_publishing_adapter_imports_and_protocol() -> None:
@@ -77,3 +79,111 @@ def test_ondc_adapter_deterministic_validation_failure() -> None:
     assert result.channel == "ondc"
     assert result.status == "validation_failed"
     assert result.external_id is None
+
+
+def test_meta_adapter_implements_protocol() -> None:
+    """Verify that MetaPublishingAdapter implements the PublishingAdapter protocol."""
+    adapter = MetaPublishingAdapter()
+    assert isinstance(adapter, PublishingAdapter)
+    assert adapter.channel_name == "meta"
+
+
+def test_meta_adapter_publish_success() -> None:
+    """Verify Meta adapter formats catalog items for WhatsApp Business Catalog."""
+    adapter = MetaPublishingAdapter()
+    listing = CanonicalListing(
+        id="meta-test-1",
+        title="Terracotta Tea Cups",
+        description="Set of 6 handcrafted earthen kulhad cups",
+        price=350.0,
+        currency="INR",
+        materials=["Clay"],
+        media_urls=["https://example.com/cups.jpg"],
+        attributes={"craft_type": "Terracotta"},
+    )
+
+    validation = adapter.validate(listing)
+    assert validation.is_valid is True
+    assert len(validation.errors) == 0
+
+    result = adapter.publish(listing)
+    assert result.success is True
+    assert result.channel == "meta"
+    assert result.external_id == "meta-catalog-item-meta-test-1"
+    assert result.status == "published"
+    catalog_item = result.details.get("catalog_item", {})
+    assert catalog_item["name"] == "Terracotta Tea Cups"
+    assert catalog_item["price"] == "350.00"
+    assert catalog_item["currency"] == "INR"
+    assert catalog_item["availability"] == "in stock"
+
+
+def test_meta_adapter_validation_failure() -> None:
+    """Verify Meta adapter enforces required images and positive pricing."""
+    adapter = MetaPublishingAdapter()
+    # Missing media_urls and invalid price
+    invalid_listing = CanonicalListing(
+        id="meta-invalid-1",
+        title="Invalid Item",
+        description="Missing photo and price",
+        price=0.0,
+        media_urls=[],
+    )
+    validation = adapter.validate(invalid_listing)
+    assert validation.is_valid is False
+    assert any("price" in err for err in validation.errors)
+    assert any("image" in err for err in validation.errors)
+
+    result = adapter.publish(invalid_listing)
+    assert result.success is False
+    assert result.status == "validation_failed"
+
+
+def test_google_merchant_adapter_implements_protocol() -> None:
+    """Verify that GoogleMerchantPublishingAdapter implements PublishingAdapter."""
+    adapter = GoogleMerchantPublishingAdapter()
+    assert isinstance(adapter, PublishingAdapter)
+    assert adapter.channel_name == "google_merchant"
+
+
+def test_google_merchant_adapter_publish_success() -> None:
+    """Verify Google Merchant adapter formats Content API payload with identifier exemption."""
+    adapter = GoogleMerchantPublishingAdapter()
+    listing = CanonicalListing(
+        id="gm-prod-101",
+        title="Handcrafted Blue Pottery Ceramic Plate",
+        description="Authentic Jaipur floral design pottery",
+        price=850.0,
+        currency="INR",
+        media_urls=["https://example.com/plate.jpg"],
+        attributes={"craft_type": "Jaipur Blue Pottery"},
+    )
+
+    validation = adapter.validate(listing)
+    assert validation.is_valid is True
+
+    result = adapter.publish(listing)
+    assert result.success is True
+    assert result.channel == "google_merchant"
+    assert result.external_id == "online:en:IN:gm-prod-101"
+
+    payload = result.details.get("content_api_payload", {})
+    assert payload["identifier_exists"] is False  # Crucial for handmade crafts
+    assert payload["offer_id"] == "online:en:IN:gm-prod-101"
+    assert payload["price"]["value"] == "850.00"
+    assert payload["price"]["currency"] == "INR"
+
+
+def test_google_merchant_adapter_validation_failure() -> None:
+    """Verify Google Merchant validation catches missing images and titles."""
+    adapter = GoogleMerchantPublishingAdapter()
+    invalid_listing = CanonicalListing(
+        id="gm-invalid",
+        title="",
+        description="Missing title and image",
+        price=500.0,
+        media_urls=[],
+    )
+    validation = adapter.validate(invalid_listing)
+    assert validation.is_valid is False
+    assert len(validation.errors) >= 2
