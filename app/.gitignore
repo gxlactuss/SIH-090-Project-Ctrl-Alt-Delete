@@ -34,3 +34,5 @@ app.*.map.json
 /android/app/release
 
 .widget_preview/
+
+/config/secrets.json

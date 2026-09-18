@@ -4,7 +4,7 @@ set -euo pipefail
 SDK="${ANDROID_HOME:-$HOME/Library/Android/sdk}"
 ADB="$SDK/platform-tools/adb"
 EMULATOR="$SDK/emulator/emulator"
-AVD="${KAARIGAR_AVD:-kaarigar_720p}"
+AVD="${KAARIGAR_AVD:-kaarigar_s26_ultra}"
 PKG="com.kaarigar.kaarigar"
 
 cd "$(dirname "$0")/.."
