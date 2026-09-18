@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:kaarigar/core/utils/image_quality.dart';
-import 'package:kaarigar/features/onboarding/practice_screen.dart';
+import 'package:kirtikar/core/utils/image_quality.dart';
+import 'package:kirtikar/features/onboarding/practice_screen.dart';
 
 void main() {
   test('the good example passes the photo check', () {

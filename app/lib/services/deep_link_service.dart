@@ -45,9 +45,9 @@ class LinkTarget {
 }
 
 abstract final class DeepLinks {
-  static const String scheme = 'kaarigar';
+  static const String scheme = 'kirtikar';
 
-  static const String shareHost = 'kaarigar.example';
+  static const String shareHost = 'kirtikar.example';
 
   static LinkTarget? parse(Uri uri) {
     final segments = [

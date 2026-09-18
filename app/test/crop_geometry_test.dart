@@ -1,9 +1,9 @@
 import 'dart:ui';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:kaarigar/core/constants/app_constants.dart';
-import 'package:kaarigar/core/utils/photo_edit.dart';
-import 'package:kaarigar/features/capture/widgets/crop_geometry.dart';
+import 'package:kirtikar/core/constants/app_constants.dart';
+import 'package:kirtikar/core/utils/photo_edit.dart';
+import 'package:kirtikar/features/capture/widgets/crop_geometry.dart';
 
 void main() {
   const view = Size(360, 400);

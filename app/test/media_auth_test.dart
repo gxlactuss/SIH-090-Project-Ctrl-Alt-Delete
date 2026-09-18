@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:kaarigar/data/remote/media_auth.dart';
+import 'package:kirtikar/data/remote/media_auth.dart';
 
 void main() {
   MediaAuth auth({String? token = 'abc'}) =>

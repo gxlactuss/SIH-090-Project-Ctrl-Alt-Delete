@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:kaarigar/widgets/whole_word_text.dart';
+import 'package:kirtikar/widgets/whole_word_text.dart';
 
 void main() {
   test('no plain Text widgets in the app', () {

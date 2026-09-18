@@ -22,7 +22,7 @@ class AppDatabase {
   }
 
   Future<Database> _open() async {
-    final path = p.join(await getDatabasesPath(), 'kaarigar.db');
+    final path = p.join(await getDatabasesPath(), 'kirtikar.db');
     final db = await openDatabase(
       path,
       version: schemaVersion,

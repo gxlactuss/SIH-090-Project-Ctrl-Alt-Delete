@@ -1,16 +1,16 @@
 import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:kaarigar/data/local/listing_dao.dart';
-import 'package:kaarigar/data/models/fact_sheet.dart';
-import 'package:kaarigar/data/models/listing.dart';
-import 'package:kaarigar/data/models/listing_status.dart';
-import 'package:kaarigar/data/models/sale.dart';
-import 'package:kaarigar/data/models/seller_profile.dart';
-import 'package:kaarigar/data/models/suggestion.dart';
-import 'package:kaarigar/data/remote/api_client.dart';
-import 'package:kaarigar/data/repositories/listing_repository.dart';
-import 'package:kaarigar/state/catalog_controller.dart';
+import 'package:kirtikar/data/local/listing_dao.dart';
+import 'package:kirtikar/data/models/fact_sheet.dart';
+import 'package:kirtikar/data/models/listing.dart';
+import 'package:kirtikar/data/models/listing_status.dart';
+import 'package:kirtikar/data/models/sale.dart';
+import 'package:kirtikar/data/models/seller_profile.dart';
+import 'package:kirtikar/data/models/suggestion.dart';
+import 'package:kirtikar/data/remote/api_client.dart';
+import 'package:kirtikar/data/repositories/listing_repository.dart';
+import 'package:kirtikar/state/catalog_controller.dart';
 
 class _FakeApi implements ApiClient {
   _FakeApi(this.remote);
@@ -126,7 +126,7 @@ void main() {
         followUpQuestion: 'How big is it?',
         suggestedPriceInPaise: 60000,
         priceFloorInPaise: 48000,
-        previewUrl: 'https://kaarigar.example/p/l1',
+        previewUrl: 'https://kirtikar.example/p/l1',
         photoConsent: true,
         storyConsent: true,
         views: 12,

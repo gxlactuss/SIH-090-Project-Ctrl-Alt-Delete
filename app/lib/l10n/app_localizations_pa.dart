@@ -6,7 +6,7 @@ class AppLocalizationsPa extends AppLocalizations {
   AppLocalizationsPa([String locale = 'pa']) : super(locale);
 
   @override
-  String get appTitle => 'ਕਾਰੀਗਰ';
+  String get appTitle => 'ਕੀਰਤੀਕਰ';
 
   @override
   String get actionNext => 'ਅੱਗੇ';
@@ -1712,7 +1712,7 @@ class AppLocalizationsPa extends AppLocalizations {
   String get helpFaqEntry => 'ਲੋਕ ਜੋ ਪੁੱਛਦੇ ਹਨ';
 
   @override
-  String get helpAboutEntry => 'ਕਾਰੀਗਰ ਬਾਰੇ';
+  String get helpAboutEntry => 'ਕੀਰਤੀਕਰ ਬਾਰੇ';
 
   @override
   String get helpSupportEntry => 'ਕਿਸੇ ਬੰਦੇ ਨਾਲ ਗੱਲ ਕਰੋ';
@@ -1773,14 +1773,14 @@ class AppLocalizationsPa extends AppLocalizations {
       'ਸਿਰਫ਼ ਤੁਹਾਡੀ ਇਜਾਜ਼ਤ ਨਾਲ, ਅਤੇ ਹਰ ਚੀਜ਼ ਲਈ ਵੱਖਰੀ। ਤੁਸੀਂ ਇਸ ਨੂੰ ਕਦੇ ਵੀ ਵਾਪਸ ਲੈ ਸਕਦੇ ਹੋ।';
 
   @override
-  String get aboutTitle => 'ਕਾਰੀਗਰ ਬਾਰੇ';
+  String get aboutTitle => 'ਕੀਰਤੀਕਰ ਬਾਰੇ';
 
   @override
   String get aboutWhatTitle => 'ਇਹ ਕੀ ਹੈ';
 
   @override
   String get aboutWhat =>
-      'ਕਾਰੀਗਰ ਹੱਥ ਨਾਲ ਬਣੀਆਂ ਚੀਜ਼ਾਂ ਨੂੰ ONDC \'ਤੇ — ਭਾਰਤ ਦੇ ਖੁੱਲ੍ਹੇ ਖਰੀਦ-ਵੇਚ ਜਾਲ \'ਤੇ — ਪਹੁੰਚਾਉਂਦਾ ਹੈ, ਅਤੇ ਇਸ ਲਈ ਬਣਾਉਣ ਵਾਲੇ ਨੂੰ ਲਿਖਣਾ ਨਹੀਂ ਪੈਂਦਾ, ਬੋਲਣਾ ਪੈਂਦਾ ਹੈ। ਤੁਹਾਡੀ ਆਪਣੀ ਭਾਸ਼ਾ ਵਿੱਚ ਕੁਝ ਫੋਟੋਆਂ ਅਤੇ ਇੱਕ ਆਵਾਜ਼ ਸੁਨੇਹੇ ਤੋਂ ਅਜਿਹੀ ਸੂਚੀ ਬਣਦੀ ਹੈ ਜੋ ਦੇਸ਼ ਭਰ ਦੇ ਖਰੀਦਦਾਰ ਲੱਭ ਸਕਦੇ ਹਨ।';
+      'ਕੀਰਤੀਕਰ ਹੱਥ ਨਾਲ ਬਣੀਆਂ ਚੀਜ਼ਾਂ ਨੂੰ ONDC \'ਤੇ — ਭਾਰਤ ਦੇ ਖੁੱਲ੍ਹੇ ਖਰੀਦ-ਵੇਚ ਜਾਲ \'ਤੇ — ਪਹੁੰਚਾਉਂਦਾ ਹੈ, ਅਤੇ ਇਸ ਲਈ ਬਣਾਉਣ ਵਾਲੇ ਨੂੰ ਲਿਖਣਾ ਨਹੀਂ ਪੈਂਦਾ, ਬੋਲਣਾ ਪੈਂਦਾ ਹੈ। ਤੁਹਾਡੀ ਆਪਣੀ ਭਾਸ਼ਾ ਵਿੱਚ ਕੁਝ ਫੋਟੋਆਂ ਅਤੇ ਇੱਕ ਆਵਾਜ਼ ਸੁਨੇਹੇ ਤੋਂ ਅਜਿਹੀ ਸੂਚੀ ਬਣਦੀ ਹੈ ਜੋ ਦੇਸ਼ ਭਰ ਦੇ ਖਰੀਦਦਾਰ ਲੱਭ ਸਕਦੇ ਹਨ।';
 
   @override
   String get aboutWhyTitle => 'ਅਸੀਂ ਇਹ ਕਿਉਂ ਬਣਾਇਆ';
@@ -1968,7 +1968,7 @@ class AppLocalizationsPa extends AppLocalizations {
   String get updateAction => 'ਨਵਾਂ ਵਰਜਨ ਲਓ';
 
   @override
-  String get updateFailed => 'ਸਟੋਰ ਨਹੀਂ ਖੁੱਲ੍ਹਿਆ। ਉੱਥੇ ਕਾਰੀਗਰ ਲੱਭੋ।';
+  String get updateFailed => 'ਸਟੋਰ ਨਹੀਂ ਖੁੱਲ੍ਹਿਆ। ਉੱਥੇ ਕੀਰਤੀਕਰ ਲੱਭੋ।';
 
   @override
   String get emptyNudge => 'ਹੋਮ ਵਾਲਾ ਵੱਡਾ ਬਟਨ ਦਬਾ ਕੇ ਆਪਣੀ ਪਹਿਲੀ ਚੀਜ਼ ਜੋੜੋ।';

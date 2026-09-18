@@ -4,12 +4,12 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
-import 'package:kaarigar/data/remote/api_problem.dart';
-import 'package:kaarigar/data/remote/http_api.dart';
-import 'package:kaarigar/data/remote/upload_failure.dart';
-import 'package:kaarigar/l10n/app_localizations_en.dart';
-import 'package:kaarigar/widgets/api_problem_text.dart';
-import 'package:kaarigar/widgets/status_view.dart';
+import 'package:kirtikar/data/remote/api_problem.dart';
+import 'package:kirtikar/data/remote/http_api.dart';
+import 'package:kirtikar/data/remote/upload_failure.dart';
+import 'package:kirtikar/l10n/app_localizations_en.dart';
+import 'package:kirtikar/widgets/api_problem_text.dart';
+import 'package:kirtikar/widgets/status_view.dart';
 
 void main() {
   Future<ApiProblem> problemFor(int status) async {

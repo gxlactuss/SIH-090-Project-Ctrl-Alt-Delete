@@ -4,7 +4,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:kaarigar/widgets/app_logo.dart';
+import 'package:kirtikar/widgets/app_logo.dart';
 
 const _res = 'android/app/src/main/res';
 

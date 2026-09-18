@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:kaarigar/app.dart';
-import 'package:kaarigar/core/constants/app_constants.dart';
-import 'package:kaarigar/core/dev/dev_accounts.dart';
-import 'package:kaarigar/data/models/app_language.dart';
-import 'package:kaarigar/data/repositories/seller_repository.dart';
-import 'package:kaarigar/l10n/app_localizations.dart';
-import 'package:kaarigar/services/speech_service.dart';
-import 'package:kaarigar/state/providers.dart';
+import 'package:kirtikar/app.dart';
+import 'package:kirtikar/core/constants/app_constants.dart';
+import 'package:kirtikar/core/dev/dev_accounts.dart';
+import 'package:kirtikar/data/models/app_language.dart';
+import 'package:kirtikar/data/repositories/seller_repository.dart';
+import 'package:kirtikar/l10n/app_localizations.dart';
+import 'package:kirtikar/services/speech_service.dart';
+import 'package:kirtikar/state/providers.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -33,7 +33,7 @@ void main() {
 
     return MultiProvider(
       providers: appProviders(sellers: sellers, speech: speech),
-      child: const KaarigarApp(),
+      child: const KirtikarApp(),
     );
   }
 

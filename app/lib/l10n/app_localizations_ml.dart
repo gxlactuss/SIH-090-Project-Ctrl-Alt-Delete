@@ -6,7 +6,7 @@ class AppLocalizationsMl extends AppLocalizations {
   AppLocalizationsMl([String locale = 'ml']) : super(locale);
 
   @override
-  String get appTitle => 'കാരിഗർ';
+  String get appTitle => 'കീർത്തികർ';
 
   @override
   String get actionNext => 'അടുത്തത്';
@@ -1723,7 +1723,7 @@ class AppLocalizationsMl extends AppLocalizations {
   String get helpFaqEntry => 'ആളുകൾ ചോദിക്കുന്ന ചോദ്യങ്ങൾ';
 
   @override
-  String get helpAboutEntry => 'കാരിഗറിനെക്കുറിച്ച്';
+  String get helpAboutEntry => 'കീർത്തികറിനെക്കുറിച്ച്';
 
   @override
   String get helpSupportEntry => 'ഒരാളോട് സംസാരിക്കുക';
@@ -1784,14 +1784,14 @@ class AppLocalizationsMl extends AppLocalizations {
       'നിങ്ങൾ അനുവദിച്ചാൽ മാത്രം, ഓരോ സാധനത്തിനും വെവ്വേറെ. എപ്പോൾ വേണമെങ്കിലും തിരിച്ചെടുക്കാം.';
 
   @override
-  String get aboutTitle => 'കാരിഗറിനെക്കുറിച്ച്';
+  String get aboutTitle => 'കീർത്തികറിനെക്കുറിച്ച്';
 
   @override
   String get aboutWhatTitle => 'ഇത് എന്താണ്';
 
   @override
   String get aboutWhat =>
-      'കാരിഗർ കൈകൊണ്ട് ഉണ്ടാക്കിയ സാധനങ്ങൾ ONDC-യിൽ — ഇന്ത്യയുടെ തുറന്ന വാങ്ങൽ-വിൽപ്പന ശൃംഖലയിൽ — എത്തിക്കുന്നു, അതിന് ഉണ്ടാക്കുന്നയാൾ ടൈപ്പ് ചെയ്യേണ്ട, സംസാരിച്ചാൽ മതി. നിങ്ങളുടെ സ്വന്തം ഭാഷയിലുള്ള ഫോട്ടോകളും ഒരു ശബ്ദസന്ദേശവും രാജ്യമെമ്പാടുമുള്ള വാങ്ങുന്നവർക്ക് കണ്ടെത്താവുന്ന ഒരു ലിസ്റ്റിംഗ് ആകുന്നു.';
+      'കീർത്തികർ കൈകൊണ്ട് ഉണ്ടാക്കിയ സാധനങ്ങൾ ONDC-യിൽ — ഇന്ത്യയുടെ തുറന്ന വാങ്ങൽ-വിൽപ്പന ശൃംഖലയിൽ — എത്തിക്കുന്നു, അതിന് ഉണ്ടാക്കുന്നയാൾ ടൈപ്പ് ചെയ്യേണ്ട, സംസാരിച്ചാൽ മതി. നിങ്ങളുടെ സ്വന്തം ഭാഷയിലുള്ള ഫോട്ടോകളും ഒരു ശബ്ദസന്ദേശവും രാജ്യമെമ്പാടുമുള്ള വാങ്ങുന്നവർക്ക് കണ്ടെത്താവുന്ന ഒരു ലിസ്റ്റിംഗ് ആകുന്നു.';
 
   @override
   String get aboutWhyTitle => 'ഞങ്ങൾ ഇത് എന്തിന് ഉണ്ടാക്കി';
@@ -1982,7 +1982,8 @@ class AppLocalizationsMl extends AppLocalizations {
   String get updateAction => 'പുതിയ പതിപ്പ് നേടുക';
 
   @override
-  String get updateFailed => 'സ്റ്റോർ തുറന്നില്ല. അവിടെ കാരിഗർ എന്ന് തിരയുക.';
+  String get updateFailed =>
+      'സ്റ്റോർ തുറന്നില്ല. അവിടെ കീർത്തികർ എന്ന് തിരയുക.';
 
   @override
   String get emptyNudge => 'ഹോമിലെ വലിയ ബട്ടൺ അമർത്തി ആദ്യത്തെ സാധനം ചേർക്കുക.';

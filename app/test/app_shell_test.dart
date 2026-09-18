@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:kaarigar/data/models/capture_item.dart';
-import 'package:kaarigar/data/models/listing.dart';
-import 'package:kaarigar/data/models/sale.dart';
-import 'package:kaarigar/data/remote/api_client.dart';
-import 'package:kaarigar/features/shell/app_shell.dart';
-import 'package:kaarigar/l10n/app_localizations.dart';
-import 'package:kaarigar/services/speech_service.dart';
-import 'package:kaarigar/state/providers.dart';
-import 'package:kaarigar/state/queue_controller.dart';
-import 'package:kaarigar/core/theme/app_theme.dart';
-import 'package:kaarigar/data/repositories/seller_repository.dart';
+import 'package:kirtikar/data/models/capture_item.dart';
+import 'package:kirtikar/data/models/listing.dart';
+import 'package:kirtikar/data/models/sale.dart';
+import 'package:kirtikar/data/remote/api_client.dart';
+import 'package:kirtikar/features/shell/app_shell.dart';
+import 'package:kirtikar/l10n/app_localizations.dart';
+import 'package:kirtikar/services/speech_service.dart';
+import 'package:kirtikar/state/providers.dart';
+import 'package:kirtikar/state/queue_controller.dart';
+import 'package:kirtikar/core/theme/app_theme.dart';
+import 'package:kirtikar/data/repositories/seller_repository.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

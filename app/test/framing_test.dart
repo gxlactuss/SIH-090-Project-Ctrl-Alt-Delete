@@ -1,8 +1,8 @@
 import 'dart:ui';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:kaarigar/core/utils/framing.dart';
-import 'package:kaarigar/core/utils/image_quality.dart';
+import 'package:kirtikar/core/utils/framing.dart';
+import 'package:kirtikar/core/utils/image_quality.dart';
 
 void main() {
   const photo = Size(832, 1248);

@@ -5,22 +5,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:image/image.dart' as img;
-import 'package:kaarigar/core/theme/app_theme.dart';
-import 'package:kaarigar/data/local/capture_dao.dart';
-import 'package:kaarigar/data/models/capture_item.dart';
-import 'package:kaarigar/features/capture/capture_screen.dart';
-import 'package:kaarigar/core/utils/photo_edit.dart';
-import 'package:kaarigar/features/capture/widgets/crop_geometry.dart';
-import 'package:kaarigar/l10n/app_localizations.dart';
-import 'package:kaarigar/services/camera_service.dart';
-import 'package:kaarigar/core/utils/image_quality.dart';
-import 'package:kaarigar/services/connectivity_service.dart';
-import 'package:kaarigar/services/framing_service.dart';
-import 'package:kaarigar/services/permission_service.dart';
-import 'package:kaarigar/services/player_service.dart';
-import 'package:kaarigar/services/recorder_service.dart';
-import 'package:kaarigar/services/speech_service.dart';
-import 'package:kaarigar/state/queue_controller.dart';
+import 'package:kirtikar/core/theme/app_theme.dart';
+import 'package:kirtikar/data/local/capture_dao.dart';
+import 'package:kirtikar/data/models/capture_item.dart';
+import 'package:kirtikar/features/capture/capture_screen.dart';
+import 'package:kirtikar/core/utils/photo_edit.dart';
+import 'package:kirtikar/features/capture/widgets/crop_geometry.dart';
+import 'package:kirtikar/l10n/app_localizations.dart';
+import 'package:kirtikar/services/camera_service.dart';
+import 'package:kirtikar/core/utils/image_quality.dart';
+import 'package:kirtikar/services/connectivity_service.dart';
+import 'package:kirtikar/services/framing_service.dart';
+import 'package:kirtikar/services/permission_service.dart';
+import 'package:kirtikar/services/player_service.dart';
+import 'package:kirtikar/services/recorder_service.dart';
+import 'package:kirtikar/services/speech_service.dart';
+import 'package:kirtikar/state/queue_controller.dart';
 import 'package:provider/provider.dart';
 
 class _FakeDao extends CaptureDao {
@@ -141,7 +141,7 @@ void main() {
   late QueueController queue;
 
   setUp(() {
-    root = Directory.systemTemp.createTempSync('kaarigar_capture_screen');
+    root = Directory.systemTemp.createTempSync('kirtikar_capture_screen');
 
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(

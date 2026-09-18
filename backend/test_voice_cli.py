@@ -58,7 +58,7 @@ from app.services.voice.pipeline import VoiceStation
 
 def record_microphone(duration_seconds: int = 10) -> Path:
     """Record audio from Linux microphone using arecord."""
-    tmp_path = Path(tempfile.gettempdir()) / f"kaarigar_voice_{uuid.uuid4().hex[:8]}.wav"
+    tmp_path = Path(tempfile.gettempdir()) / f"kirtikar_voice_{uuid.uuid4().hex[:8]}.wav"
     print(f"\n🎙️  Recording for {duration_seconds} seconds... SPEAK NOW! (e.g. Hindi, Hinglish)")
     print("---------------------------------------------------------------")
     try:
@@ -91,7 +91,7 @@ def run_pipeline(
     output_json_path: Optional[Path] = None,
 ):
     print("\n===============================================================")
-    print("🚀 KAARIGAR MULTIMODAL (IMAGE + VOICE) TO CATALOG TEST")
+    print("🚀 KIRTIKAR MULTIMODAL (IMAGE + VOICE) TO CATALOG TEST")
     print("===============================================================")
     print(f"📁 Audio Input: {audio_path} ({audio_path.stat().st_size} bytes)")
     if image_path:
@@ -235,7 +235,7 @@ def run_pipeline(
         "imageUrls": [media_url],
         "suggestedPriceInPaise": suggested_price_in_paise,
         "priceFloorInPaise": price_floor_in_paise,
-        "previewUrl": f"https://kaarigar.app/preview/{str(ctx.listing_id)[:8]}",
+        "previewUrl": f"https://kirtikar.app/preview/{str(ctx.listing_id)[:8]}",
         "photoConsent": True,
         "storyConsent": True,
         "views": 0,
@@ -312,7 +312,7 @@ def run_pipeline(
     }
 
     print("\n---------------------------------------------------------------")
-    print("📱 Kaarigar Mobile App Model Preview:")
+    print("📱 Kirtikar Mobile App Model Preview:")
     print(f"   Listing ID    : {app_listing['id']}")
     print(f"   Status        : {app_listing['status']}")
     print(f"   Title         : {app_listing['title']}")
@@ -331,7 +331,7 @@ def run_pipeline(
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Test Kaarigar Multimodal Voice+Vision Pipeline")
+    parser = argparse.ArgumentParser(description="Test Kirtikar Multimodal Voice+Vision Pipeline")
     parser.add_argument("--file", type=str, help="Path to an existing audio file (.wav, .mp3, .m4a)")
     parser.add_argument("--image", "-i", type=str, help="Path to a craft photograph (.jpg, .png)")
     parser.add_argument("--record", action="store_true", help="Record audio directly from microphone")

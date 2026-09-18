@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:kaarigar/core/routing/app_routes.dart';
-import 'package:kaarigar/core/routing/link_router.dart';
-import 'package:kaarigar/data/models/fact_sheet.dart';
-import 'package:kaarigar/data/models/listing.dart';
-import 'package:kaarigar/data/models/listing_status.dart';
-import 'package:kaarigar/data/models/sale.dart';
-import 'package:kaarigar/data/models/seller_profile.dart';
-import 'package:kaarigar/data/remote/api_client.dart';
-import 'package:kaarigar/data/repositories/listing_repository.dart';
-import 'package:kaarigar/data/repositories/seller_repository.dart';
-import 'package:kaarigar/services/analytics_service.dart';
-import 'package:kaarigar/services/crash_reporter.dart';
-import 'package:kaarigar/services/deep_link_service.dart';
-import 'package:kaarigar/services/notification_service.dart';
+import 'package:kirtikar/core/routing/app_routes.dart';
+import 'package:kirtikar/core/routing/link_router.dart';
+import 'package:kirtikar/data/models/fact_sheet.dart';
+import 'package:kirtikar/data/models/listing.dart';
+import 'package:kirtikar/data/models/listing_status.dart';
+import 'package:kirtikar/data/models/sale.dart';
+import 'package:kirtikar/data/models/seller_profile.dart';
+import 'package:kirtikar/data/remote/api_client.dart';
+import 'package:kirtikar/data/repositories/listing_repository.dart';
+import 'package:kirtikar/data/repositories/seller_repository.dart';
+import 'package:kirtikar/services/analytics_service.dart';
+import 'package:kirtikar/services/crash_reporter.dart';
+import 'package:kirtikar/services/deep_link_service.dart';
+import 'package:kirtikar/services/notification_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class _FakeApi implements ApiClient {
@@ -251,15 +251,15 @@ void main() {
 
     test('the app scheme carries notification targets', () {
       expect(
-        DeepLinks.parse(Uri.parse('kaarigar://listing/l1')),
+        DeepLinks.parse(Uri.parse('kirtikar://listing/l1')),
         const LinkTarget.listing('l1'),
       );
       expect(
-        DeepLinks.parse(Uri.parse('kaarigar://review/l1')),
+        DeepLinks.parse(Uri.parse('kirtikar://review/l1')),
         const LinkTarget.review('l1'),
       );
       expect(
-        DeepLinks.parse(Uri.parse('kaarigar://queue')),
+        DeepLinks.parse(Uri.parse('kirtikar://queue')),
         const LinkTarget.queue(),
       );
     });
@@ -267,10 +267,10 @@ void main() {
     test('a link that is not ours opens nothing', () {
       for (final link in [
         'https://example.com/p/l1',
-        'https://kaarigar.example/',
-        'https://kaarigar.example/p',
-        'kaarigar://listing',
-        'kaarigar://nonsense/l1',
+        'https://kirtikar.example/',
+        'https://kirtikar.example/p',
+        'kirtikar://listing',
+        'kirtikar://nonsense/l1',
         'not a url at all',
       ]) {
         expect(

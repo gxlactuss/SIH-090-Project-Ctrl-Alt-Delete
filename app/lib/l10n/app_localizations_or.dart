@@ -6,7 +6,7 @@ class AppLocalizationsOr extends AppLocalizations {
   AppLocalizationsOr([String locale = 'or']) : super(locale);
 
   @override
-  String get appTitle => 'କାରିଗର';
+  String get appTitle => 'କୀର୍ତ୍ତିକର';
 
   @override
   String get actionNext => 'ଆଗକୁ';
@@ -1703,7 +1703,7 @@ class AppLocalizationsOr extends AppLocalizations {
   String get helpFaqEntry => 'ଲୋକେ ପଚାରୁଥିବା ପ୍ରଶ୍ନ';
 
   @override
-  String get helpAboutEntry => 'କାରିଗର ବିଷୟରେ';
+  String get helpAboutEntry => 'କୀର୍ତ୍ତିକର ବିଷୟରେ';
 
   @override
   String get helpSupportEntry => 'ଜଣେ ମଣିଷଙ୍କ ସହ କଥା ହୁଅନ୍ତୁ';
@@ -1764,14 +1764,14 @@ class AppLocalizationsOr extends AppLocalizations {
       'ଆପଣ ଅନୁମତି ଦେଲେ ହିଁ, ପ୍ରତ୍ୟେକ ଜିନିଷ ପାଇଁ ଅଲଗା। ଆପଣ ଯେକୌଣସି ସମୟରେ ଫେରାଇନେଇପାରିବେ।';
 
   @override
-  String get aboutTitle => 'କାରିଗର ବିଷୟରେ';
+  String get aboutTitle => 'କୀର୍ତ୍ତିକର ବିଷୟରେ';
 
   @override
   String get aboutWhatTitle => 'ଏହା କ\'ଣ';
 
   @override
   String get aboutWhat =>
-      'କାରିଗର ହାତତିଆରି ଜିନିଷକୁ ONDC ରେ — ଭାରତର କିଣାବିକାର ଖୋଲା ନେଟୱର୍କରେ — ପହଞ୍ଚାଏ, ଏବଂ ସେଥିପାଇଁ ତିଆରିକାରୀଙ୍କୁ ଲେଖିବାକୁ ପଡେ ନାହିଁ, କହିଲେ ଚଳେ। ଆପଣଙ୍କ ନିଜ ଭାଷାରେ କିଛି ଫଟୋ ଓ ଗୋଟିଏ ଭଏସ୍ ନୋଟ୍‌ରୁ ଏମିତି ତାଲିକା ତିଆରି ହୁଏ ଯାହା ଦେଶସାରା କ୍ରେତା ଖୋଜିପାରନ୍ତି।';
+      'କୀର୍ତ୍ତିକର ହାତତିଆରି ଜିନିଷକୁ ONDC ରେ — ଭାରତର କିଣାବିକାର ଖୋଲା ନେଟୱର୍କରେ — ପହଞ୍ଚାଏ, ଏବଂ ସେଥିପାଇଁ ତିଆରିକାରୀଙ୍କୁ ଲେଖିବାକୁ ପଡେ ନାହିଁ, କହିଲେ ଚଳେ। ଆପଣଙ୍କ ନିଜ ଭାଷାରେ କିଛି ଫଟୋ ଓ ଗୋଟିଏ ଭଏସ୍ ନୋଟ୍‌ରୁ ଏମିତି ତାଲିକା ତିଆରି ହୁଏ ଯାହା ଦେଶସାରା କ୍ରେତା ଖୋଜିପାରନ୍ତି।';
 
   @override
   String get aboutWhyTitle => 'ଆମେ ଏହା କାହିଁକି ତିଆରି କଲୁ';
@@ -1958,7 +1958,7 @@ class AppLocalizationsOr extends AppLocalizations {
   String get updateAction => 'ନୂଆ ସଂସ୍କରଣ ନିଅନ୍ତୁ';
 
   @override
-  String get updateFailed => 'ଷ୍ଟୋର ଖୋଲିଲା ନାହିଁ। ସେଠାରେ କାରିଗର ଖୋଜନ୍ତୁ।';
+  String get updateFailed => 'ଷ୍ଟୋର ଖୋଲିଲା ନାହିଁ। ସେଠାରେ କୀର୍ତ୍ତିକର ଖୋଜନ୍ତୁ।';
 
   @override
   String get emptyNudge => 'ହୋମ୍‌ର ବଡ ବଟନ୍ ଦବାଇ ଆପଣଙ୍କ ପ୍ରଥମ ଜିନିଷ ଯୋଡନ୍ତୁ।';

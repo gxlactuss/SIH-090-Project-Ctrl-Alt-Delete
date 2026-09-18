@@ -3,12 +3,12 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:kaarigar/core/utils/image_quality.dart';
-import 'package:kaarigar/data/local/capture_dao.dart';
-import 'package:kaarigar/data/models/capture_item.dart';
-import 'package:kaarigar/services/recorder_service.dart';
-import 'package:kaarigar/state/capture_controller.dart';
-import 'package:kaarigar/state/queue_controller.dart';
+import 'package:kirtikar/core/utils/image_quality.dart';
+import 'package:kirtikar/data/local/capture_dao.dart';
+import 'package:kirtikar/data/models/capture_item.dart';
+import 'package:kirtikar/services/recorder_service.dart';
+import 'package:kirtikar/state/capture_controller.dart';
+import 'package:kirtikar/state/queue_controller.dart';
 
 class _FakeDao extends CaptureDao {
   final List<CaptureItem> saved = [];
@@ -75,7 +75,7 @@ void main() {
   late QueueController queue;
 
   setUp(() {
-    root = Directory.systemTemp.createTempSync('kaarigar_capture_test');
+    root = Directory.systemTemp.createTempSync('kirtikar_capture_test');
     dao = _FakeDao();
     recorder = _FakeRecorder();
     queue = QueueController(dao: dao);

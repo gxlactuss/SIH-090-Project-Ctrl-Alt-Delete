@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:kaarigar/data/remote/server_check.dart';
-import 'package:kaarigar/widgets/dev_server_row.dart';
+import 'package:kirtikar/data/remote/server_check.dart';
+import 'package:kirtikar/widgets/dev_server_row.dart';
 
 class _FakeCheck implements ServerCheck {
   @override

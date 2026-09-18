@@ -13,7 +13,7 @@ val keyProperties = Properties().apply {
 val hasReleaseKey = keyProperties.getProperty("storeFile") != null
 
 android {
-    namespace = "com.kaarigar.kaarigar"
+    namespace = "com.kirtikar.kirtikar"
     compileSdk = 37
     ndkVersion = flutter.ndkVersion
 
@@ -23,7 +23,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.kaarigar.kaarigar"
+        applicationId = "com.kirtikar.kirtikar"
         minSdk = 24
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode

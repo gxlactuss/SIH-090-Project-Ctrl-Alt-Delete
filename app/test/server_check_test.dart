@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
-import 'package:kaarigar/data/remote/backend_session.dart';
-import 'package:kaarigar/data/remote/server_check.dart';
+import 'package:kirtikar/data/remote/backend_session.dart';
+import 'package:kirtikar/data/remote/server_check.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
@@ -25,7 +25,7 @@ void main() {
           return http.Response(
             jsonEncode({
               'status': 'ok',
-              'service': 'kaarigar',
+              'service': 'kirtikar',
               'version': '0.1',
             }),
             200,
@@ -47,7 +47,7 @@ void main() {
 
       expect(result.reachable, isTrue);
       expect(result.lines.first, contains('health: 200'));
-      expect(result.lines.first, contains('kaarigar 0.1'));
+      expect(result.lines.first, contains('kirtikar 0.1'));
       expect(result.lines.last, 'sign-in: ok');
       expect(seen.last.path, '/api/v1/auth/firebase');
     },

@@ -5,10 +5,10 @@ import 'dart:typed_data';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
-import 'package:kaarigar/data/models/app_language.dart';
-import 'package:kaarigar/data/remote/voice/sarvam_voice_api.dart';
-import 'package:kaarigar/data/remote/voice/voice_api.dart';
-import 'package:kaarigar/services/spoken_audio_cache.dart';
+import 'package:kirtikar/data/models/app_language.dart';
+import 'package:kirtikar/data/remote/voice/sarvam_voice_api.dart';
+import 'package:kirtikar/data/remote/voice/voice_api.dart';
+import 'package:kirtikar/services/spoken_audio_cache.dart';
 
 void main() {
   final hindi = AppLanguage.byCode('hi');
@@ -62,7 +62,7 @@ void main() {
     test(
       'transcribe uploads the recording with its model and language',
       () async {
-        final dir = Directory.systemTemp.createTempSync('kaarigar-sarvam');
+        final dir = Directory.systemTemp.createTempSync('kirtikar-sarvam');
         addTearDown(() => dir.deleteSync(recursive: true));
         final clip = File('${dir.path}/clip.m4a')
           ..writeAsBytesSync(List.filled(4000, 7));
@@ -186,7 +186,7 @@ void main() {
 
   group('generated speech is paid for once', () {
     test('the second request for a sentence comes from disk', () async {
-      final dir = Directory.systemTemp.createTempSync('kaarigar-spoken');
+      final dir = Directory.systemTemp.createTempSync('kirtikar-spoken');
       addTearDown(() => dir.deleteSync(recursive: true));
       final cache = SpokenAudioCache(directory: () async => dir);
 

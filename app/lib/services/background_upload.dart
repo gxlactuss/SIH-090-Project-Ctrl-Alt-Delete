@@ -35,11 +35,11 @@ void callbackDispatcher() {
 }
 
 abstract final class BackgroundUpload {
-  static const String periodicTask = 'kaarigar.upload.periodic';
+  static const String periodicTask = 'kirtikar.upload.periodic';
 
-  static const String soonTask = 'kaarigar.upload.soon';
+  static const String soonTask = 'kirtikar.upload.soon';
 
-  static const String appIsolateName = 'kaarigar.app_isolate';
+  static const String appIsolateName = 'kirtikar.app_isolate';
 
   static final Constraints _constraints = Constraints(
     networkType: NetworkType.connected,

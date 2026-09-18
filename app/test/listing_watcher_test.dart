@@ -1,12 +1,12 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:kaarigar/data/models/capture_item.dart';
-import 'package:kaarigar/data/models/fact_sheet.dart';
-import 'package:kaarigar/data/models/listing.dart';
-import 'package:kaarigar/data/models/listing_status.dart';
-import 'package:kaarigar/services/listing_watcher.dart';
-import 'package:kaarigar/state/catalog_controller.dart';
-import 'package:kaarigar/state/queue_controller.dart';
+import 'package:kirtikar/data/models/capture_item.dart';
+import 'package:kirtikar/data/models/fact_sheet.dart';
+import 'package:kirtikar/data/models/listing.dart';
+import 'package:kirtikar/data/models/listing_status.dart';
+import 'package:kirtikar/services/listing_watcher.dart';
+import 'package:kirtikar/state/catalog_controller.dart';
+import 'package:kirtikar/state/queue_controller.dart';
 
 class _ScriptedCatalog extends CatalogController {
   _ScriptedCatalog(List<Listing> listings) : super(listings: listings);

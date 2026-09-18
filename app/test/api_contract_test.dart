@@ -4,13 +4,13 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
-import 'package:kaarigar/data/models/craft_type.dart';
-import 'package:kaarigar/data/models/listing_status.dart';
-import 'package:kaarigar/data/models/seller_profile.dart';
-import 'package:kaarigar/data/remote/api_problem.dart';
-import 'package:kaarigar/data/remote/backend_session.dart';
-import 'package:kaarigar/data/remote/http_api.dart';
-import 'package:kaarigar/data/remote/server_check.dart';
+import 'package:kirtikar/data/models/craft_type.dart';
+import 'package:kirtikar/data/models/listing_status.dart';
+import 'package:kirtikar/data/models/seller_profile.dart';
+import 'package:kirtikar/data/remote/api_problem.dart';
+import 'package:kirtikar/data/remote/backend_session.dart';
+import 'package:kirtikar/data/remote/http_api.dart';
+import 'package:kirtikar/data/remote/server_check.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
@@ -203,7 +203,7 @@ void main() {
     ).run();
 
     expect(result.reachable, isTrue);
-    expect(result.lines.single, contains('kaarigar-backend 0.1.0'));
+    expect(result.lines.single, contains('kirtikar-backend 0.1.0'));
   });
 
   test(

@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:kaarigar/core/theme/app_theme.dart';
+import 'package:kirtikar/core/theme/app_theme.dart';
 
 void main() {
   final hardcoded = RegExp(r'fontSize:\s*([0-9]+(?:\.[0-9]+)?)\s*[,)]');

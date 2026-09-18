@@ -4,10 +4,10 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
-import 'package:kaarigar/data/models/listing_status.dart';
-import 'package:kaarigar/data/remote/api_routes.dart';
-import 'package:kaarigar/data/remote/http_api.dart';
-import 'package:kaarigar/data/remote/wire_json.dart';
+import 'package:kirtikar/data/models/listing_status.dart';
+import 'package:kirtikar/data/remote/api_routes.dart';
+import 'package:kirtikar/data/remote/http_api.dart';
+import 'package:kirtikar/data/remote/wire_json.dart';
 
 void main() {
   group('WireJson', () {

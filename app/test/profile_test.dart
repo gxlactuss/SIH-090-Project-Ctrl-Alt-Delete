@@ -2,29 +2,29 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:kaarigar/core/theme/app_theme.dart';
-import 'package:kaarigar/data/models/app_language.dart';
-import 'package:kaarigar/data/models/craft_type.dart';
-import 'package:kaarigar/data/models/fact_sheet.dart';
-import 'package:kaarigar/data/models/listing.dart';
-import 'package:kaarigar/data/models/listing_status.dart';
-import 'package:kaarigar/data/models/seller_profile.dart';
-import 'package:kaarigar/data/remote/api_client.dart';
-import 'package:kaarigar/data/repositories/listing_repository.dart';
-import 'package:kaarigar/data/repositories/seller_repository.dart';
-import 'package:kaarigar/features/onboarding/ondc_screen.dart';
-import 'package:kaarigar/features/profile/account_screen.dart';
-import 'package:kaarigar/features/profile/ondc_account_screen.dart';
-import 'package:kaarigar/features/profile/privacy_screen.dart';
-import 'package:kaarigar/features/profile/profile_screen.dart';
-import 'package:kaarigar/features/profile/storage_screen.dart';
-import 'package:kaarigar/l10n/app_localizations.dart';
-import 'package:kaarigar/services/permission_service.dart';
-import 'package:kaarigar/services/speech_service.dart';
-import 'package:kaarigar/services/storage_service.dart';
-import 'package:kaarigar/state/app_state.dart';
-import 'package:kaarigar/state/catalog_controller.dart';
-import 'package:kaarigar/state/queue_controller.dart';
+import 'package:kirtikar/core/theme/app_theme.dart';
+import 'package:kirtikar/data/models/app_language.dart';
+import 'package:kirtikar/data/models/craft_type.dart';
+import 'package:kirtikar/data/models/fact_sheet.dart';
+import 'package:kirtikar/data/models/listing.dart';
+import 'package:kirtikar/data/models/listing_status.dart';
+import 'package:kirtikar/data/models/seller_profile.dart';
+import 'package:kirtikar/data/remote/api_client.dart';
+import 'package:kirtikar/data/repositories/listing_repository.dart';
+import 'package:kirtikar/data/repositories/seller_repository.dart';
+import 'package:kirtikar/features/onboarding/ondc_screen.dart';
+import 'package:kirtikar/features/profile/account_screen.dart';
+import 'package:kirtikar/features/profile/ondc_account_screen.dart';
+import 'package:kirtikar/features/profile/privacy_screen.dart';
+import 'package:kirtikar/features/profile/profile_screen.dart';
+import 'package:kirtikar/features/profile/storage_screen.dart';
+import 'package:kirtikar/l10n/app_localizations.dart';
+import 'package:kirtikar/services/permission_service.dart';
+import 'package:kirtikar/services/speech_service.dart';
+import 'package:kirtikar/services/storage_service.dart';
+import 'package:kirtikar/state/app_state.dart';
+import 'package:kirtikar/state/catalog_controller.dart';
+import 'package:kirtikar/state/queue_controller.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -327,7 +327,7 @@ void main() {
 
   group('8.10 storage', () {
     test('clearing never touches a capture that is still waiting', () async {
-      final root = Directory.systemTemp.createTempSync('kaarigar_storage');
+      final root = Directory.systemTemp.createTempSync('kirtikar_storage');
       addTearDown(() => root.deleteSync(recursive: true));
 
       final storage = StorageService(documentsDirectory: () async => root);
@@ -353,7 +353,7 @@ void main() {
       tester,
     ) async {
       useCheapPhone(tester);
-      final root = Directory.systemTemp.createTempSync('kaarigar_storage_ui');
+      final root = Directory.systemTemp.createTempSync('kirtikar_storage_ui');
       addTearDown(() => root.deleteSync(recursive: true));
       final storage = StorageService(documentsDirectory: () async => root);
 

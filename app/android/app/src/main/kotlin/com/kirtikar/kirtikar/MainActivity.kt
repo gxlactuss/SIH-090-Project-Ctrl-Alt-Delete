@@ -1,4 +1,4 @@
-package com.kaarigar.kaarigar
+package com.kirtikar.kirtikar
 
 import io.flutter.embedding.android.FlutterActivity
 

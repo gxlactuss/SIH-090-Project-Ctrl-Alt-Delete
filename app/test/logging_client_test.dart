@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
-import 'package:kaarigar/data/remote/logging_client.dart';
+import 'package:kirtikar/data/remote/logging_client.dart';
 
 void main() {
   const jwt = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzMSJ9abc.c2lnbmF0dXJlLXZhbHVl';

@@ -2,19 +2,19 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:kaarigar/core/theme/app_theme.dart';
-import 'package:kaarigar/data/models/fact_sheet.dart';
-import 'package:kaarigar/data/models/listing.dart';
-import 'package:kaarigar/data/models/listing_status.dart';
-import 'package:kaarigar/data/remote/api_client.dart';
-import 'package:kaarigar/data/remote/mock_api.dart';
-import 'package:kaarigar/data/repositories/listing_repository.dart';
-import 'package:kaarigar/features/listings/listing_detail_screen.dart';
-import 'package:kaarigar/features/listings/listings_screen.dart';
-import 'package:kaarigar/l10n/app_localizations.dart';
-import 'package:kaarigar/services/speech_service.dart';
-import 'package:kaarigar/state/catalog_controller.dart';
-import 'package:kaarigar/widgets/listing_tile.dart';
+import 'package:kirtikar/core/theme/app_theme.dart';
+import 'package:kirtikar/data/models/fact_sheet.dart';
+import 'package:kirtikar/data/models/listing.dart';
+import 'package:kirtikar/data/models/listing_status.dart';
+import 'package:kirtikar/data/remote/api_client.dart';
+import 'package:kirtikar/data/remote/mock_api.dart';
+import 'package:kirtikar/data/repositories/listing_repository.dart';
+import 'package:kirtikar/features/listings/listing_detail_screen.dart';
+import 'package:kirtikar/features/listings/listings_screen.dart';
+import 'package:kirtikar/l10n/app_localizations.dart';
+import 'package:kirtikar/services/speech_service.dart';
+import 'package:kirtikar/state/catalog_controller.dart';
+import 'package:kirtikar/widgets/listing_tile.dart';
 import 'package:provider/provider.dart';
 
 class _FakeApi implements ApiClient {
@@ -399,7 +399,7 @@ void main() {
       'a duplicate reuses the fact sheet and takes only new photos',
       () async {
         final api = MockApi(uploadDuration: Duration.zero);
-        final dir = Directory.systemTemp.createTempSync('kaarigar_dup');
+        final dir = Directory.systemTemp.createTempSync('kirtikar_dup');
         addTearDown(() => dir.deleteSync(recursive: true));
         final photos = [
           for (final name in ['new1.jpg', 'new2.jpg'])

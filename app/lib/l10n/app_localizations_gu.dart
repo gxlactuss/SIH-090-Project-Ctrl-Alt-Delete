@@ -6,7 +6,7 @@ class AppLocalizationsGu extends AppLocalizations {
   AppLocalizationsGu([String locale = 'gu']) : super(locale);
 
   @override
-  String get appTitle => 'કારીગર';
+  String get appTitle => 'કીર્તિકર';
 
   @override
   String get actionNext => 'આગળ';
@@ -1702,7 +1702,7 @@ class AppLocalizationsGu extends AppLocalizations {
   String get helpFaqEntry => 'લોકો જે પૂછે છે';
 
   @override
-  String get helpAboutEntry => 'કારીગર વિશે';
+  String get helpAboutEntry => 'કીર્તિકર વિશે';
 
   @override
   String get helpSupportEntry => 'માણસ સાથે વાત કરો';
@@ -1763,14 +1763,14 @@ class AppLocalizationsGu extends AppLocalizations {
       'તમારી પરવાનગી હોય તો જ, અને દરેક વસ્તુ માટે અલગ. તમે તે ગમે ત્યારે પાછી લઈ શકો છો.';
 
   @override
-  String get aboutTitle => 'કારીગર વિશે';
+  String get aboutTitle => 'કીર્તિકર વિશે';
 
   @override
   String get aboutWhatTitle => 'આ શું છે';
 
   @override
   String get aboutWhat =>
-      'કારીગર હાથથી બનેલી વસ્તુઓને ONDC પર પહોંચાડે છે — ભારતનું ખરીદ-વેચાણનું ખુલ્લું નેટવર્ક — અને તે માટે બનાવનારે લખવું પડતું નથી, બોલવું પડે છે. તમારી પોતાની ભાષામાં થોડા ફોટા અને એક વૉઇસ નોટમાંથી એવી યાદી બને છે જે દેશભરના ખરીદનાર શોધી શકે.';
+      'કીર્તિકર હાથથી બનેલી વસ્તુઓને ONDC પર પહોંચાડે છે — ભારતનું ખરીદ-વેચાણનું ખુલ્લું નેટવર્ક — અને તે માટે બનાવનારે લખવું પડતું નથી, બોલવું પડે છે. તમારી પોતાની ભાષામાં થોડા ફોટા અને એક વૉઇસ નોટમાંથી એવી યાદી બને છે જે દેશભરના ખરીદનાર શોધી શકે.';
 
   @override
   String get aboutWhyTitle => 'અમે આ કેમ બનાવ્યું';
@@ -1956,7 +1956,7 @@ class AppLocalizationsGu extends AppLocalizations {
   String get updateAction => 'નવી આવૃત્તિ લો';
 
   @override
-  String get updateFailed => 'સ્ટોર ખૂલ્યો નહીં. ત્યાં કારીગર શોધો.';
+  String get updateFailed => 'સ્ટોર ખૂલ્યો નહીં. ત્યાં કીર્તિકર શોધો.';
 
   @override
   String get emptyNudge =>

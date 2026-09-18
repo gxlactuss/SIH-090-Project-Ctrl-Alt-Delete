@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:kaarigar/core/theme/app_theme.dart';
-import 'package:kaarigar/features/help/about_screen.dart';
-import 'package:kaarigar/features/help/faq_screen.dart';
-import 'package:kaarigar/features/help/help_content.dart';
-import 'package:kaarigar/features/help/help_screen.dart';
-import 'package:kaarigar/features/help/help_topic_screen.dart';
-import 'package:kaarigar/features/help/support_screen.dart';
-import 'package:kaarigar/features/help/terms_screen.dart';
-import 'package:kaarigar/l10n/app_localizations.dart';
-import 'package:kaarigar/services/speech_service.dart';
+import 'package:kirtikar/core/theme/app_theme.dart';
+import 'package:kirtikar/features/help/about_screen.dart';
+import 'package:kirtikar/features/help/faq_screen.dart';
+import 'package:kirtikar/features/help/help_content.dart';
+import 'package:kirtikar/features/help/help_screen.dart';
+import 'package:kirtikar/features/help/help_topic_screen.dart';
+import 'package:kirtikar/features/help/support_screen.dart';
+import 'package:kirtikar/features/help/terms_screen.dart';
+import 'package:kirtikar/l10n/app_localizations.dart';
+import 'package:kirtikar/services/speech_service.dart';
 import 'package:provider/provider.dart';
 
 void main() {

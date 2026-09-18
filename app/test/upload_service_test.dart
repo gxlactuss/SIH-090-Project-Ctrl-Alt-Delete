@@ -1,14 +1,14 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:kaarigar/data/local/capture_dao.dart';
-import 'package:kaarigar/data/models/capture_item.dart';
-import 'package:kaarigar/data/models/listing.dart';
-import 'package:kaarigar/data/models/sale.dart';
-import 'package:kaarigar/data/models/seller_profile.dart';
-import 'package:kaarigar/data/remote/api_client.dart';
-import 'package:kaarigar/data/remote/upload_failure.dart';
-import 'package:kaarigar/services/connectivity_service.dart';
-import 'package:kaarigar/services/upload_service.dart';
-import 'package:kaarigar/state/queue_controller.dart';
+import 'package:kirtikar/data/local/capture_dao.dart';
+import 'package:kirtikar/data/models/capture_item.dart';
+import 'package:kirtikar/data/models/listing.dart';
+import 'package:kirtikar/data/models/sale.dart';
+import 'package:kirtikar/data/models/seller_profile.dart';
+import 'package:kirtikar/data/remote/api_client.dart';
+import 'package:kirtikar/data/remote/upload_failure.dart';
+import 'package:kirtikar/services/connectivity_service.dart';
+import 'package:kirtikar/services/upload_service.dart';
+import 'package:kirtikar/state/queue_controller.dart';
 
 class _FakeApi implements ApiClient {
   final List<String> uploaded = [];

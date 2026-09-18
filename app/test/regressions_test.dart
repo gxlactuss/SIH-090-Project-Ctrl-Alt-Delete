@@ -2,27 +2,27 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:kaarigar/data/local/capture_dao.dart';
-import 'package:kaarigar/data/local/listing_dao.dart';
-import 'package:kaarigar/data/models/capture_item.dart';
-import 'package:kaarigar/data/models/fact_sheet.dart';
-import 'package:kaarigar/data/models/listing.dart';
-import 'package:kaarigar/data/models/listing_status.dart';
-import 'package:kaarigar/data/models/sale.dart';
-import 'package:kaarigar/data/models/seller_profile.dart';
-import 'package:kaarigar/data/remote/api_client.dart';
-import 'package:kaarigar/data/remote/upload_failure.dart';
-import 'package:kaarigar/data/repositories/listing_repository.dart';
-import 'package:kaarigar/features/review/review_screen.dart';
-import 'package:kaarigar/features/review/widgets/review_scaffold.dart';
-import 'package:kaarigar/l10n/app_localizations.dart';
+import 'package:kirtikar/data/local/capture_dao.dart';
+import 'package:kirtikar/data/local/listing_dao.dart';
+import 'package:kirtikar/data/models/capture_item.dart';
+import 'package:kirtikar/data/models/fact_sheet.dart';
+import 'package:kirtikar/data/models/listing.dart';
+import 'package:kirtikar/data/models/listing_status.dart';
+import 'package:kirtikar/data/models/sale.dart';
+import 'package:kirtikar/data/models/seller_profile.dart';
+import 'package:kirtikar/data/remote/api_client.dart';
+import 'package:kirtikar/data/remote/upload_failure.dart';
+import 'package:kirtikar/data/repositories/listing_repository.dart';
+import 'package:kirtikar/features/review/review_screen.dart';
+import 'package:kirtikar/features/review/widgets/review_scaffold.dart';
+import 'package:kirtikar/l10n/app_localizations.dart';
 import 'package:flutter_tts/flutter_tts.dart';
-import 'package:kaarigar/services/recorder_service.dart';
+import 'package:kirtikar/services/recorder_service.dart';
 import 'package:record/record.dart';
-import 'package:kaarigar/services/speech_service.dart';
-import 'package:kaarigar/state/catalog_controller.dart';
-import 'package:kaarigar/state/queue_controller.dart';
-import 'package:kaarigar/state/review_controller.dart';
+import 'package:kirtikar/services/speech_service.dart';
+import 'package:kirtikar/state/catalog_controller.dart';
+import 'package:kirtikar/state/queue_controller.dart';
+import 'package:kirtikar/state/review_controller.dart';
 import 'package:provider/provider.dart';
 
 class _FakeApi implements ApiClient {
@@ -287,7 +287,7 @@ void main() {
       final plugin = _FakeAudioRecorder();
       final recorder = RecorderService(recorder: plugin);
       final file = File(
-        '${Directory.systemTemp.createTempSync('kaarigar').path}/note.m4a',
+        '${Directory.systemTemp.createTempSync('kirtikar').path}/note.m4a',
       );
       file.writeAsBytesSync(List.filled(64, 1));
       addTearDown(() => file.parent.deleteSync(recursive: true));
@@ -316,7 +316,7 @@ void main() {
       final recorder = RecorderService(recorder: plugin);
 
       await recorder.start(
-        '/tmp/kaarigar-unused.m4a',
+        '/tmp/kirtikar-unused.m4a',
         maxDuration: const Duration(seconds: 30),
       );
       await Future<void>.delayed(const Duration(milliseconds: 300));

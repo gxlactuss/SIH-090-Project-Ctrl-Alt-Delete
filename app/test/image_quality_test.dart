@@ -3,8 +3,8 @@ import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:image/image.dart' as img;
-import 'package:kaarigar/core/constants/app_constants.dart';
-import 'package:kaarigar/core/utils/image_quality.dart';
+import 'package:kirtikar/core/constants/app_constants.dart';
+import 'package:kirtikar/core/utils/image_quality.dart';
 
 void main() {
   Uint8List textured({int brightness = 128, int spread = 60, int seed = 7}) {

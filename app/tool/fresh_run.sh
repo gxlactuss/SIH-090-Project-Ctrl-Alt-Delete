@@ -4,8 +4,8 @@ set -euo pipefail
 SDK="${ANDROID_HOME:-$HOME/Library/Android/sdk}"
 ADB="$SDK/platform-tools/adb"
 EMULATOR="$SDK/emulator/emulator"
-AVD="${KAARIGAR_AVD:-kaarigar_s26_ultra}"
-PKG="com.kaarigar.kaarigar"
+AVD="${KIRTIKAR_AVD:-kirtikar_s26_ultra}"
+PKG="com.kirtikar.kirtikar"
 
 cd "$(dirname "$0")/.."
 
@@ -25,5 +25,5 @@ done
 
 "$ADB" shell pm clear "$PKG" >/dev/null 2>&1 || true
 
-echo "Starting Kaarigar at screen 1.2…"
+echo "Starting Kirtikar at screen 1.2…"
 exec flutter run --dart-define=fresh=true

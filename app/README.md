@@ -1,6 +1,6 @@
-# kaarigar
+# kirtikar
 
-Kaarigar - artisans publish handmade products by speaking
+Kirtikar - artisans publish handmade products by speaking
 
 ## Getting Started
 

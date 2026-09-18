@@ -33,7 +33,7 @@ Future<void> main() async {
         voice: voice,
         backgroundUploads: BackgroundUpload.nudge,
       ),
-      child: const KaarigarApp(),
+      child: const KirtikarApp(),
     ),
   );
 }

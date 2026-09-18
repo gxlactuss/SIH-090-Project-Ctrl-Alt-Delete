@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:kaarigar/data/remote/api_client.dart';
-import 'package:kaarigar/services/update_service.dart';
+import 'package:kirtikar/data/remote/api_client.dart';
+import 'package:kirtikar/services/update_service.dart';
 
 class _VersionApi implements ApiClient {
   _VersionApi(this.answer);

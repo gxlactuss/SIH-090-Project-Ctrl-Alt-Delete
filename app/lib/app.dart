@@ -50,8 +50,8 @@ import 'state/app_state.dart';
 import 'state/review_controller.dart';
 import 'services/update_service.dart';
 
-class KaarigarApp extends StatelessWidget {
-  const KaarigarApp({super.key});
+class KirtikarApp extends StatelessWidget {
+  const KirtikarApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +59,7 @@ class KaarigarApp extends StatelessWidget {
     final router = context.maybeRead<LinkRouter>();
 
     return MaterialApp(
-      title: 'Kaarigar',
+      title: 'Kirtikar',
       debugShowCheckedModeBanner: false,
       navigatorKey: router?.navigatorKey,
       theme: AppTheme.forLanguage(language),

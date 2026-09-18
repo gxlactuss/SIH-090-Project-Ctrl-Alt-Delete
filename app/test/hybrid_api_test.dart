@@ -4,12 +4,12 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
-import 'package:kaarigar/data/models/fact_sheet.dart';
-import 'package:kaarigar/data/models/listing.dart';
-import 'package:kaarigar/data/models/listing_status.dart';
-import 'package:kaarigar/data/remote/http_api.dart';
-import 'package:kaarigar/data/remote/hybrid_api.dart';
-import 'package:kaarigar/data/remote/mock_api.dart';
+import 'package:kirtikar/data/models/fact_sheet.dart';
+import 'package:kirtikar/data/models/listing.dart';
+import 'package:kirtikar/data/models/listing_status.dart';
+import 'package:kirtikar/data/remote/http_api.dart';
+import 'package:kirtikar/data/remote/hybrid_api.dart';
+import 'package:kirtikar/data/remote/mock_api.dart';
 
 void main() {
   group('reading API_REAL_CALLS', () {

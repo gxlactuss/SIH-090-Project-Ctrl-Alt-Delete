@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:kaarigar/data/models/sale.dart';
-import 'package:kaarigar/data/repositories/seller_repository.dart';
-import 'package:kaarigar/services/deep_link_service.dart';
-import 'package:kaarigar/services/notification_service.dart';
+import 'package:kirtikar/data/models/sale.dart';
+import 'package:kirtikar/data/repositories/seller_repository.dart';
+import 'package:kirtikar/services/deep_link_service.dart';
+import 'package:kirtikar/services/notification_service.dart';
 
 class _Sellers implements SellerRepository {
   bool packBy = true;

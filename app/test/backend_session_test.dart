@@ -4,9 +4,9 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
-import 'package:kaarigar/data/remote/backend_session.dart';
-import 'package:kaarigar/data/remote/http_api.dart';
-import 'package:kaarigar/data/remote/upload_failure.dart';
+import 'package:kirtikar/data/remote/backend_session.dart';
+import 'package:kirtikar/data/remote/http_api.dart';
+import 'package:kirtikar/data/remote/upload_failure.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {

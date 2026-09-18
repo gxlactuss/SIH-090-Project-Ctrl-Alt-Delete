@@ -1,16 +1,16 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:kaarigar/data/local/capture_dao.dart';
-import 'package:kaarigar/data/models/capture_item.dart';
-import 'package:kaarigar/data/remote/mock_api.dart';
-import 'package:kaarigar/data/remote/upload_failure.dart';
-import 'package:kaarigar/data/repositories/seller_repository.dart';
-import 'package:kaarigar/services/background_upload.dart';
-import 'package:kaarigar/services/connectivity_service.dart';
-import 'package:kaarigar/services/notification_service.dart';
-import 'package:kaarigar/services/upload_service.dart';
-import 'package:kaarigar/state/queue_controller.dart';
+import 'package:kirtikar/data/local/capture_dao.dart';
+import 'package:kirtikar/data/models/capture_item.dart';
+import 'package:kirtikar/data/remote/mock_api.dart';
+import 'package:kirtikar/data/remote/upload_failure.dart';
+import 'package:kirtikar/data/repositories/seller_repository.dart';
+import 'package:kirtikar/services/background_upload.dart';
+import 'package:kirtikar/services/connectivity_service.dart';
+import 'package:kirtikar/services/notification_service.dart';
+import 'package:kirtikar/services/upload_service.dart';
+import 'package:kirtikar/state/queue_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class _FakeDao extends CaptureDao {
@@ -60,7 +60,7 @@ void main() {
 
   setUp(() {
     SharedPreferences.setMockInitialValues({});
-    files = Directory.systemTemp.createTempSync('kaarigar_bg');
+    files = Directory.systemTemp.createTempSync('kirtikar_bg');
     dao = _FakeDao();
     network = _FakeConnectivity();
     tray = DebugNotificationPresenter();

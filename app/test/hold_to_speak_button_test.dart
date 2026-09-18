@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:kaarigar/widgets/hold_to_speak_button.dart';
+import 'package:kirtikar/widgets/hold_to_speak_button.dart';
 
 void main() {
   late List<String> calls;

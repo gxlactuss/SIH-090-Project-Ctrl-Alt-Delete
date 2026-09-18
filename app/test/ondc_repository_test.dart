@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:kaarigar/data/repositories/ondc_repository.dart';
+import 'package:kirtikar/data/repositories/ondc_repository.dart';
 
 void main() {
   test('seller ids in the shapes ONDC uses are well formed', () {

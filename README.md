@@ -1,4 +1,4 @@
-# 🛍️ Kaarigar — AI-Powered Artisan Publishing Platform (SIH-090)
+# 🛍️ Kirtikar — AI-Powered Artisan Publishing Platform (SIH-090)
 
 **Problem Statement**: Smart Cataloging and Multimodal Market Linkage for Marginalized Indian Artisans  
 **Repository**: Project Ctrl-Alt-Delete  
@@ -11,7 +11,7 @@ This mono-repo powers the end-to-end publishing pipeline connecting rural Indian
 
 ```
 SIH-090-Project-Ctrl-Alt-Delete/
-├── app/                  # Mobile Client: Kaarigar (Flutter 3.47, Android)
+├── app/                  # Mobile Client: Kirtikar (Flutter 3.47, Android)
 │   ├── lib/
 │   │   ├── main.dart, app.dart   # Entry point, Firebase init, theme per language, routes
 │   │   ├── core/         # Config (build defines), theme, routing & deep links, constants, utils
@@ -67,7 +67,7 @@ SIH-090-Project-Ctrl-Alt-Delete/
 
 ## 📱 Mobile App (`app/`)
 
-Kaarigar is built for an artisan who may not read or type comfortably, on a cheap Android phone with a weak connection. Every screen can be read aloud, every important input can be spoken, and nothing is lost when the network drops.
+Kirtikar is built for an artisan who may not read or type comfortably, on a cheap Android phone with a weak connection. Every screen can be read aloud, every important input can be spoken, and nothing is lost when the network drops.
 
 ### Design principles
 - **Voice first**: every screen has a speak button and can read itself aloud; names, answers and edits can be spoken instead of typed.

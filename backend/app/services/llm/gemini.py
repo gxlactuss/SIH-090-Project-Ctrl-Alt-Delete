@@ -74,7 +74,7 @@ EXTRACTION_SCHEMA = {
     "required": ["title", "craft_type", "material", "story_summary"],
 }
 
-SYSTEM_INSTRUCTION = """You are an expert Indian Handicrafts Cataloging Assistant for Kaarigar (SIH-090).
+SYSTEM_INSTRUCTION = """You are an expert Indian Handicrafts Cataloging Assistant for Kirtikar (SIH-090).
 Your job is to take an artisan's spoken voice note (translated to English) and optional product photograph to extract structured product metadata for e-commerce publishing.
 
 RULES:

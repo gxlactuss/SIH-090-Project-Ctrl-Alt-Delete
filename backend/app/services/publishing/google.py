@@ -56,7 +56,7 @@ class GoogleMerchantPublishingAdapter:
             "offer_id": external_id,
             "title": listing.title[:150],
             "description": listing.description[:5000],
-            "link": f"https://shop.kaarigar.org/products/{listing.id}",
+            "link": f"https://shop.kirtikar.org/products/{listing.id}",
             "image_link": listing.media_urls[0] if listing.media_urls else None,
             "content_language": "en",
             "target_country": "IN",

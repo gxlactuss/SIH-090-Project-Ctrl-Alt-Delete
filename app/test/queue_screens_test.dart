@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:kaarigar/core/routing/app_routes.dart';
-import 'package:kaarigar/core/theme/app_theme.dart';
-import 'package:kaarigar/data/local/capture_dao.dart';
-import 'package:kaarigar/data/models/capture_item.dart';
-import 'package:kaarigar/data/remote/api_client.dart';
-import 'package:kaarigar/data/remote/upload_failure.dart';
-import 'package:kaarigar/features/queue/queue_item_screen.dart';
-import 'package:kaarigar/features/queue/queue_screen.dart';
-import 'package:kaarigar/l10n/app_localizations.dart';
-import 'package:kaarigar/services/connectivity_service.dart';
-import 'package:kaarigar/services/speech_service.dart';
-import 'package:kaarigar/services/upload_service.dart';
-import 'package:kaarigar/state/queue_controller.dart';
+import 'package:kirtikar/core/routing/app_routes.dart';
+import 'package:kirtikar/core/theme/app_theme.dart';
+import 'package:kirtikar/data/local/capture_dao.dart';
+import 'package:kirtikar/data/models/capture_item.dart';
+import 'package:kirtikar/data/remote/api_client.dart';
+import 'package:kirtikar/data/remote/upload_failure.dart';
+import 'package:kirtikar/features/queue/queue_item_screen.dart';
+import 'package:kirtikar/features/queue/queue_screen.dart';
+import 'package:kirtikar/l10n/app_localizations.dart';
+import 'package:kirtikar/services/connectivity_service.dart';
+import 'package:kirtikar/services/speech_service.dart';
+import 'package:kirtikar/services/upload_service.dart';
+import 'package:kirtikar/state/queue_controller.dart';
 import 'package:provider/provider.dart';
 
 class _SilentApi implements ApiClient {

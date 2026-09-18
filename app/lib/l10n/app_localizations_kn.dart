@@ -6,7 +6,7 @@ class AppLocalizationsKn extends AppLocalizations {
   AppLocalizationsKn([String locale = 'kn']) : super(locale);
 
   @override
-  String get appTitle => 'ಕಾರಿಗರ್';
+  String get appTitle => 'ಕೀರ್ತಿಕರ್';
 
   @override
   String get actionNext => 'ಮುಂದೆ';
@@ -1712,7 +1712,7 @@ class AppLocalizationsKn extends AppLocalizations {
   String get helpFaqEntry => 'ಜನರು ಕೇಳುವ ಪ್ರಶ್ನೆಗಳು';
 
   @override
-  String get helpAboutEntry => 'ಕಾರಿಗರ್ ಬಗ್ಗೆ';
+  String get helpAboutEntry => 'ಕೀರ್ತಿಕರ್ ಬಗ್ಗೆ';
 
   @override
   String get helpSupportEntry => 'ಒಬ್ಬ ವ್ಯಕ್ತಿಯೊಂದಿಗೆ ಮಾತನಾಡಿ';
@@ -1773,14 +1773,14 @@ class AppLocalizationsKn extends AppLocalizations {
       'ನೀವು ಅನುಮತಿಸಿದರೆ ಮಾತ್ರ, ಪ್ರತಿ ವಸ್ತುವಿಗೂ ಬೇರೆಯಾಗಿ. ನೀವು ಯಾವಾಗ ಬೇಕಾದರೂ ಹಿಂಪಡೆಯಬಹುದು.';
 
   @override
-  String get aboutTitle => 'ಕಾರಿಗರ್ ಬಗ್ಗೆ';
+  String get aboutTitle => 'ಕೀರ್ತಿಕರ್ ಬಗ್ಗೆ';
 
   @override
   String get aboutWhatTitle => 'ಇದು ಏನು';
 
   @override
   String get aboutWhat =>
-      'ಕಾರಿಗರ್ ಕೈಯಿಂದ ಮಾಡಿದ ವಸ್ತುಗಳನ್ನು ONDC ಗೆ — ಭಾರತದ ಮುಕ್ತ ಖರೀದಿ-ಮಾರಾಟ ಜಾಲಕ್ಕೆ — ತಲುಪಿಸುತ್ತದೆ, ಮತ್ತು ಅದಕ್ಕಾಗಿ ಮಾಡುವವರು ಬರೆಯಬೇಕಿಲ್ಲ, ಮಾತನಾಡಿದರೆ ಸಾಕು. ನಿಮ್ಮದೇ ಭಾಷೆಯಲ್ಲಿ ಕೆಲವು ಫೋಟೋಗಳು ಮತ್ತು ಒಂದು ಧ್ವನಿ ಸಂದೇಶದಿಂದ ದೇಶದಾದ್ಯಂತ ಖರೀದಿದಾರರು ಹುಡುಕಬಹುದಾದ ಪಟ್ಟಿ ತಯಾರಾಗುತ್ತದೆ.';
+      'ಕೀರ್ತಿಕರ್ ಕೈಯಿಂದ ಮಾಡಿದ ವಸ್ತುಗಳನ್ನು ONDC ಗೆ — ಭಾರತದ ಮುಕ್ತ ಖರೀದಿ-ಮಾರಾಟ ಜಾಲಕ್ಕೆ — ತಲುಪಿಸುತ್ತದೆ, ಮತ್ತು ಅದಕ್ಕಾಗಿ ಮಾಡುವವರು ಬರೆಯಬೇಕಿಲ್ಲ, ಮಾತನಾಡಿದರೆ ಸಾಕು. ನಿಮ್ಮದೇ ಭಾಷೆಯಲ್ಲಿ ಕೆಲವು ಫೋಟೋಗಳು ಮತ್ತು ಒಂದು ಧ್ವನಿ ಸಂದೇಶದಿಂದ ದೇಶದಾದ್ಯಂತ ಖರೀದಿದಾರರು ಹುಡುಕಬಹುದಾದ ಪಟ್ಟಿ ತಯಾರಾಗುತ್ತದೆ.';
 
   @override
   String get aboutWhyTitle => 'ನಾವು ಇದನ್ನು ಏಕೆ ಮಾಡಿದೆವು';
@@ -1968,7 +1968,7 @@ class AppLocalizationsKn extends AppLocalizations {
   String get updateAction => 'ಹೊಸ ಆವೃತ್ತಿ ಪಡೆಯಿರಿ';
 
   @override
-  String get updateFailed => 'ಸ್ಟೋರ್ ತೆರೆಯಲಿಲ್ಲ. ಅಲ್ಲಿ ಕಾರಿಗರ್ ಹುಡುಕಿ.';
+  String get updateFailed => 'ಸ್ಟೋರ್ ತೆರೆಯಲಿಲ್ಲ. ಅಲ್ಲಿ ಕೀರ್ತಿಕರ್ ಹುಡುಕಿ.';
 
   @override
   String get emptyNudge =>

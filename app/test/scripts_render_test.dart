@@ -5,29 +5,29 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:kaarigar/app.dart';
-import 'package:kaarigar/core/dev/demo_listings.dart';
-import 'package:kaarigar/core/routing/app_routes.dart';
-import 'package:kaarigar/core/theme/app_theme.dart';
-import 'package:kaarigar/data/models/app_language.dart';
-import 'package:kaarigar/data/models/capture_item.dart';
-import 'package:kaarigar/data/models/fact_sheet.dart';
-import 'package:kaarigar/data/models/listing.dart';
-import 'package:kaarigar/data/models/listing_status.dart';
-import 'package:kaarigar/data/models/sale.dart';
-import 'package:kaarigar/data/models/suggestion.dart';
-import 'package:kaarigar/data/remote/api_client.dart';
-import 'package:kaarigar/data/remote/upload_failure.dart';
-import 'package:kaarigar/data/repositories/seller_repository.dart';
-import 'package:kaarigar/features/help/help_content.dart';
-import 'package:kaarigar/l10n/app_localizations.dart';
-import 'package:kaarigar/services/speech_service.dart';
-import 'package:kaarigar/state/app_state.dart';
-import 'package:kaarigar/state/catalog_controller.dart';
-import 'package:kaarigar/state/providers.dart';
-import 'package:kaarigar/state/queue_controller.dart';
-import 'package:kaarigar/state/review_controller.dart';
-import 'package:kaarigar/state/sales_controller.dart';
+import 'package:kirtikar/app.dart';
+import 'package:kirtikar/core/dev/demo_listings.dart';
+import 'package:kirtikar/core/routing/app_routes.dart';
+import 'package:kirtikar/core/theme/app_theme.dart';
+import 'package:kirtikar/data/models/app_language.dart';
+import 'package:kirtikar/data/models/capture_item.dart';
+import 'package:kirtikar/data/models/fact_sheet.dart';
+import 'package:kirtikar/data/models/listing.dart';
+import 'package:kirtikar/data/models/listing_status.dart';
+import 'package:kirtikar/data/models/sale.dart';
+import 'package:kirtikar/data/models/suggestion.dart';
+import 'package:kirtikar/data/remote/api_client.dart';
+import 'package:kirtikar/data/remote/upload_failure.dart';
+import 'package:kirtikar/data/repositories/seller_repository.dart';
+import 'package:kirtikar/features/help/help_content.dart';
+import 'package:kirtikar/l10n/app_localizations.dart';
+import 'package:kirtikar/services/speech_service.dart';
+import 'package:kirtikar/state/app_state.dart';
+import 'package:kirtikar/state/catalog_controller.dart';
+import 'package:kirtikar/state/providers.dart';
+import 'package:kirtikar/state/queue_controller.dart';
+import 'package:kirtikar/state/review_controller.dart';
+import 'package:kirtikar/state/sales_controller.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -55,7 +55,7 @@ const ready = Listing(
   title: 'Blue pottery water jug',
   description: 'A hand-thrown jug, glazed blue, holds two litres of water.',
   imageUrls: ['assets/images/crafts/pottery.jpg'],
-  previewUrl: 'https://kaarigar.example/p/ready-1',
+  previewUrl: 'https://kirtikar.example/p/ready-1',
   factSheet: FactSheet(
     material: 'Clay',
     colour: 'Blue',
@@ -126,7 +126,7 @@ Future<void> _loadFonts() async {
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  final shots = Platform.environment['KAARIGAR_SHOTS'];
+  final shots = Platform.environment['KIRTIKAR_SHOTS'];
 
   setUpAll(_loadFonts);
 
@@ -216,7 +216,7 @@ Future<void> _walk(
         api: api,
         navigatorKey: navigatorKey,
       ),
-      child: const KaarigarApp(),
+      child: const KirtikarApp(),
     ),
   );
   await _advance(tester, const Duration(seconds: 5));

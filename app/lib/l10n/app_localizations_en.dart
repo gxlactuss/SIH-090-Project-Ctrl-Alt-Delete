@@ -6,7 +6,7 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appTitle => 'Kaarigar';
+  String get appTitle => 'Kirtikar';
 
   @override
   String get actionNext => 'Next';
@@ -1719,7 +1719,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get helpFaqEntry => 'Questions people ask';
 
   @override
-  String get helpAboutEntry => 'About Kaarigar';
+  String get helpAboutEntry => 'About Kirtikar';
 
   @override
   String get helpSupportEntry => 'Talk to a person';
@@ -1780,14 +1780,14 @@ class AppLocalizationsEn extends AppLocalizations {
       'Only if you allow it, for each product. You can take that back at any time.';
 
   @override
-  String get aboutTitle => 'About Kaarigar';
+  String get aboutTitle => 'About Kirtikar';
 
   @override
   String get aboutWhatTitle => 'What this is';
 
   @override
   String get aboutWhat =>
-      'Kaarigar puts handmade work on ONDC, India\'s open network for buying and selling, by letting the maker speak instead of type. Photos and a voice note in your own language become a listing that buyers across the country can find.';
+      'Kirtikar puts handmade work on ONDC, India\'s open network for buying and selling, by letting the maker speak instead of type. Photos and a voice note in your own language become a listing that buyers across the country can find.';
 
   @override
   String get aboutWhyTitle => 'Why we built it';
@@ -1977,7 +1977,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get updateFailed =>
-      'The store did not open. Search for Kaarigar there.';
+      'The store did not open. Search for Kirtikar there.';
 
   @override
   String get emptyNudge =>

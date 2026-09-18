@@ -6,7 +6,7 @@ class AppLocalizationsBn extends AppLocalizations {
   AppLocalizationsBn([String locale = 'bn']) : super(locale);
 
   @override
-  String get appTitle => 'কারিগর';
+  String get appTitle => 'কীর্তিকর';
 
   @override
   String get actionNext => 'পরের';
@@ -1701,7 +1701,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get helpFaqEntry => 'লোকে যা জিজ্ঞেস করেন';
 
   @override
-  String get helpAboutEntry => 'কারিগর সম্পর্কে';
+  String get helpAboutEntry => 'কীর্তিকর সম্পর্কে';
 
   @override
   String get helpSupportEntry => 'মানুষের সঙ্গে কথা বলুন';
@@ -1762,14 +1762,14 @@ class AppLocalizationsBn extends AppLocalizations {
       'শুধু আপনি অনুমতি দিলে, আর প্রতিটি জিনিসের জন্য আলাদা করে। আপনি যখন খুশি তা ফিরিয়ে নিতে পারেন।';
 
   @override
-  String get aboutTitle => 'কারিগর সম্পর্কে';
+  String get aboutTitle => 'কীর্তিকর সম্পর্কে';
 
   @override
   String get aboutWhatTitle => 'এটা কী';
 
   @override
   String get aboutWhat =>
-      'কারিগর হাতে বানানো জিনিস ONDC-তে পৌঁছে দেয় — ভারতের কেনাবেচার খোলা নেটওয়ার্ক — আর তার জন্য কারিগরকে লিখতে হয় না, শুধু বলতে হয়। আপনার নিজের ভাষায় কয়েকটা ছবি আর একটা ভয়েস নোট থেকে এমন তালিকা তৈরি হয় যা দেশজুড়ে ক্রেতারা খুঁজে পান।';
+      'কীর্তিকর হাতে বানানো জিনিস ONDC-তে পৌঁছে দেয় — ভারতের কেনাবেচার খোলা নেটওয়ার্ক — আর তার জন্য কারিগরকে লিখতে হয় না, শুধু বলতে হয়। আপনার নিজের ভাষায় কয়েকটা ছবি আর একটা ভয়েস নোট থেকে এমন তালিকা তৈরি হয় যা দেশজুড়ে ক্রেতারা খুঁজে পান।';
 
   @override
   String get aboutWhyTitle => 'আমরা কেন এটা বানিয়েছি';
@@ -1956,7 +1956,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get updateAction => 'নতুন সংস্করণ নিন';
 
   @override
-  String get updateFailed => 'স্টোর খোলেনি। সেখানে কারিগর খুঁজুন।';
+  String get updateFailed => 'স্টোর খোলেনি। সেখানে কীর্তিকর খুঁজুন।';
 
   @override
   String get emptyNudge => 'হোমের বড় বোতাম চেপে আপনার প্রথম জিনিস যোগ করুন।';

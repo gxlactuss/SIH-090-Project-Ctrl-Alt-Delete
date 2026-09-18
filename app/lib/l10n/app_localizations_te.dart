@@ -6,7 +6,7 @@ class AppLocalizationsTe extends AppLocalizations {
   AppLocalizationsTe([String locale = 'te']) : super(locale);
 
   @override
-  String get appTitle => 'కారీగర్';
+  String get appTitle => 'కీర్తికర్';
 
   @override
   String get actionNext => 'తర్వాత';
@@ -1708,7 +1708,7 @@ class AppLocalizationsTe extends AppLocalizations {
   String get helpFaqEntry => 'ప్రజలు అడిగే ప్రశ్నలు';
 
   @override
-  String get helpAboutEntry => 'కారీగర్ గురించి';
+  String get helpAboutEntry => 'కీర్తికర్ గురించి';
 
   @override
   String get helpSupportEntry => 'ఒక వ్యక్తితో మాట్లాడండి';
@@ -1769,14 +1769,14 @@ class AppLocalizationsTe extends AppLocalizations {
       'మీరు అనుమతిస్తేనే, ప్రతి వస్తువుకు విడిగా. ఎప్పుడైనా వెనక్కి తీసుకోవచ్చు.';
 
   @override
-  String get aboutTitle => 'కారీగర్ గురించి';
+  String get aboutTitle => 'కీర్తికర్ గురించి';
 
   @override
   String get aboutWhatTitle => 'ఇది ఏమిటి';
 
   @override
   String get aboutWhat =>
-      'కారీగర్ చేతితో చేసిన వస్తువులను ONDC కి — భారతదేశపు బహిరంగ కొనుగోలు-అమ్మకాల నెట్‌వర్క్‌కి — చేరుస్తుంది, దానికోసం తయారీదారు టైప్ చేయాల్సిన అవసరం లేదు, మాట్లాడితే చాలు. మీ సొంత భాషలో కొన్ని ఫోటోలు, ఒక వాయిస్ నోట్ దేశవ్యాప్తంగా కొనుగోలుదారులు కనుగొనగల జాబితాగా మారుతాయి.';
+      'కీర్తికర్ చేతితో చేసిన వస్తువులను ONDC కి — భారతదేశపు బహిరంగ కొనుగోలు-అమ్మకాల నెట్‌వర్క్‌కి — చేరుస్తుంది, దానికోసం తయారీదారు టైప్ చేయాల్సిన అవసరం లేదు, మాట్లాడితే చాలు. మీ సొంత భాషలో కొన్ని ఫోటోలు, ఒక వాయిస్ నోట్ దేశవ్యాప్తంగా కొనుగోలుదారులు కనుగొనగల జాబితాగా మారుతాయి.';
 
   @override
   String get aboutWhyTitle => 'మేం దీన్ని ఎందుకు తయారుచేశాం';
@@ -1964,7 +1964,8 @@ class AppLocalizationsTe extends AppLocalizations {
   String get updateAction => 'కొత్త వెర్షన్ పొందండి';
 
   @override
-  String get updateFailed => 'స్టోర్ తెరుచుకోలేదు. అక్కడ కారీగర్ కోసం వెతకండి.';
+  String get updateFailed =>
+      'స్టోర్ తెరుచుకోలేదు. అక్కడ కీర్తికర్ కోసం వెతకండి.';
 
   @override
   String get emptyNudge =>
