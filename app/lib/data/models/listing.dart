@@ -55,6 +55,91 @@ class Listing {
   List<Suggestion> get acceptedSuggestions =>
       suggestions.where((s) => s.accepted == true).toList();
 
+  Map<String, Object?> toJson() => {
+    'id': id,
+    'status': status.name,
+    'title': title,
+    'description': description,
+    'imageUrls': imageUrls,
+    'followUpQuestion': followUpQuestion,
+    'suggestedPriceInPaise': suggestedPriceInPaise,
+    'priceFloorInPaise': priceFloorInPaise,
+    'previewUrl': previewUrl,
+    'photoConsent': photoConsent,
+    'storyConsent': storyConsent,
+    'views': views,
+    'templateListingId': templateListingId,
+    'factSheet': {
+      'material': factSheet.material,
+      'size': factSheet.size,
+      'colour': factSheet.colour,
+      'technique': factSheet.technique,
+      'quantity': factSheet.quantity,
+      'priceInPaise': factSheet.priceInPaise,
+      'hoursToMake': factSheet.hoursToMake,
+      'materialCostInPaise': factSheet.materialCostInPaise,
+      'isOneOfAKind': factSheet.isOneOfAKind,
+    },
+    'suggestions': [
+      for (final suggestion in suggestions)
+        {
+          'id': suggestion.id,
+          'spokenPrompt': suggestion.spokenPrompt,
+          'textIfAccepted': suggestion.textIfAccepted,
+          'accepted': suggestion.accepted,
+        },
+    ],
+  };
+
+  factory Listing.fromJson(Map<String, Object?> json) {
+    final status = ListingStatus.values
+        .where((s) => s.name == json['status'])
+        .firstOrNull;
+    if (status == null) {
+      throw FormatException('Unknown listing status: ${json['status']}');
+    }
+
+    final sheet = (json['factSheet'] as Map?)?.cast<String, Object?>() ?? {};
+    int? whole(Object? value) => (value as num?)?.toInt();
+
+    return Listing(
+      id: json['id'] as String,
+      status: status,
+      title: json['title'] as String?,
+      description: json['description'] as String?,
+      imageUrls: (json['imageUrls'] as List?)?.cast<String>() ?? const [],
+      followUpQuestion: json['followUpQuestion'] as String?,
+      suggestedPriceInPaise: whole(json['suggestedPriceInPaise']),
+      priceFloorInPaise: whole(json['priceFloorInPaise']),
+      previewUrl: json['previewUrl'] as String?,
+      photoConsent: json['photoConsent'] as bool? ?? false,
+      storyConsent: json['storyConsent'] as bool? ?? false,
+      views: whole(json['views']) ?? 0,
+      templateListingId: json['templateListingId'] as String?,
+      factSheet: FactSheet(
+        material: sheet['material'] as String?,
+        size: sheet['size'] as String?,
+        colour: sheet['colour'] as String?,
+        technique: sheet['technique'] as String?,
+        quantity: whole(sheet['quantity']),
+        priceInPaise: whole(sheet['priceInPaise']),
+        hoursToMake: (sheet['hoursToMake'] as num?)?.toDouble(),
+        materialCostInPaise: whole(sheet['materialCostInPaise']),
+        isOneOfAKind: sheet['isOneOfAKind'] as bool? ?? false,
+      ),
+      suggestions: [
+        for (final raw in (json['suggestions'] as List? ?? const []))
+          if (raw is Map)
+            Suggestion(
+              id: raw['id'] as String,
+              spokenPrompt: raw['spokenPrompt'] as String,
+              textIfAccepted: raw['textIfAccepted'] as String,
+              accepted: raw['accepted'] as bool?,
+            ),
+      ],
+    );
+  }
+
   Listing copyWith({
     ListingStatus? status,
     FactSheet? factSheet,
@@ -80,8 +165,9 @@ class Listing {
       description: description ?? this.description,
       imageUrls: imageUrls ?? this.imageUrls,
       suggestions: suggestions ?? this.suggestions,
-      followUpQuestion:
-          clearFollowUpQuestion ? null : followUpQuestion ?? this.followUpQuestion,
+      followUpQuestion: clearFollowUpQuestion
+          ? null
+          : followUpQuestion ?? this.followUpQuestion,
       suggestedPriceInPaise:
           suggestedPriceInPaise ?? this.suggestedPriceInPaise,
       priceFloorInPaise: priceFloorInPaise ?? this.priceFloorInPaise,

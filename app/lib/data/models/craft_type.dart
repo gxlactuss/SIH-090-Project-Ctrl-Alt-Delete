@@ -31,15 +31,15 @@ enum CraftType {
   }
 
   String label(AppLocalizations l10n) => switch (this) {
-        CraftType.weaving => l10n.craftWeaving,
-        CraftType.pottery => l10n.craftPottery,
-        CraftType.woodwork => l10n.craftWoodwork,
-        CraftType.metalwork => l10n.craftMetalwork,
-        CraftType.jewellery => l10n.craftJewellery,
-        CraftType.embroidery => l10n.craftEmbroidery,
-        CraftType.painting => l10n.craftPainting,
-        CraftType.leather => l10n.craftLeather,
-        CraftType.bamboo => l10n.craftBamboo,
-        CraftType.other => l10n.craftOther,
-      };
+    CraftType.weaving => l10n.craftWeaving,
+    CraftType.pottery => l10n.craftPottery,
+    CraftType.woodwork => l10n.craftWoodwork,
+    CraftType.metalwork => l10n.craftMetalwork,
+    CraftType.jewellery => l10n.craftJewellery,
+    CraftType.embroidery => l10n.craftEmbroidery,
+    CraftType.painting => l10n.craftPainting,
+    CraftType.leather => l10n.craftLeather,
+    CraftType.bamboo => l10n.craftBamboo,
+    CraftType.other => l10n.craftOther,
+  };
 }

@@ -30,29 +30,29 @@ class Sale {
   final bool isRead;
 
   Sale copyWith({bool? isRead}) => Sale(
-        id: id,
-        listingTitle: listingTitle,
-        quantity: quantity,
-        amountInPaise: amountInPaise,
-        placedAt: placedAt,
-        packByDate: packByDate,
-        listingId: listingId,
-        imageUrl: imageUrl,
-        buyerArea: buyerArea,
-        isRead: isRead ?? this.isRead,
-      );
+    id: id,
+    listingTitle: listingTitle,
+    quantity: quantity,
+    amountInPaise: amountInPaise,
+    placedAt: placedAt,
+    packByDate: packByDate,
+    listingId: listingId,
+    imageUrl: imageUrl,
+    buyerArea: buyerArea,
+    isRead: isRead ?? this.isRead,
+  );
 
   factory Sale.fromJson(Map<String, dynamic> json) => Sale(
-        id: json['id'] as String,
-        listingId: json['listing_id'] as String?,
-        listingTitle: json['listing_title'] as String? ?? '',
-        quantity: (json['quantity'] as num?)?.toInt() ?? 1,
-        amountInPaise: (json['amount_in_paise'] as num?)?.toInt() ?? 0,
-        placedAt: DateTime.parse(json['placed_at'] as String),
-        packByDate: json['pack_by'] == null
-            ? null
-            : DateTime.parse(json['pack_by'] as String),
-        imageUrl: json['image_url'] as String?,
-        buyerArea: json['buyer_area'] as String?,
-      );
+    id: json['id'] as String,
+    listingId: json['listing_id'] as String?,
+    listingTitle: json['listing_title'] as String? ?? '',
+    quantity: (json['quantity'] as num?)?.toInt() ?? 1,
+    amountInPaise: (json['amount_in_paise'] as num?)?.toInt() ?? 0,
+    placedAt: DateTime.parse(json['placed_at'] as String),
+    packByDate: json['pack_by'] == null
+        ? null
+        : DateTime.parse(json['pack_by'] as String),
+    imageUrl: json['image_url'] as String?,
+    buyerArea: json['buyer_area'] as String?,
+  );
 }

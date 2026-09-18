@@ -14,9 +14,9 @@ class Suggestion {
   bool get isAnswered => accepted != null;
 
   Suggestion copyWith({bool? accepted}) => Suggestion(
-        id: id,
-        spokenPrompt: spokenPrompt,
-        textIfAccepted: textIfAccepted,
-        accepted: accepted ?? this.accepted,
-      );
+    id: id,
+    spokenPrompt: spokenPrompt,
+    textIfAccepted: textIfAccepted,
+    accepted: accepted ?? this.accepted,
+  );
 }
