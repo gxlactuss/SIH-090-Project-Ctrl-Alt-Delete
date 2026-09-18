@@ -39,6 +39,8 @@ output/
 *.wav
 generated_assets/
 *listing*.json
+temp_check/
+
 
 
 
