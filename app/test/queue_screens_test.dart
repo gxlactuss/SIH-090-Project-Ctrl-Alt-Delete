@@ -125,8 +125,8 @@ void main() {
           if (id is! String) return null;
           return switch (settings.name) {
             AppRoutes.queueItem => MaterialPageRoute<void>(
-                builder: (_) => QueueItemScreen(captureId: id),
-              ),
+              builder: (_) => QueueItemScreen(captureId: id),
+            ),
             _ => null,
           };
         },
@@ -136,8 +136,9 @@ void main() {
 
   final l10n = lookupAppLocalizations(const Locale('en'));
 
-  testWidgets('4.1 shows every state, and works with no network',
-      (tester) async {
+  testWidgets('4.1 shows every state, and works with no network', (
+    tester,
+  ) async {
     useCheapPhone(tester);
     network.online = false;
     queue
@@ -170,8 +171,9 @@ void main() {
     expect(find.text(l10n.queueEmptyTitle), findsOneWidget);
   });
 
-  testWidgets('4.2 gives the reason in plain language and a retry',
-      (tester) async {
+  testWidgets('4.2 gives the reason in plain language and a retry', (
+    tester,
+  ) async {
     useCheapPhone(tester);
     queue.add(capture('one', error: UploadFailure.network.id));
 
@@ -189,14 +191,13 @@ void main() {
     expect(api.uploaded, ['one']);
   });
 
-  testWidgets('4.2 offers no retry when retrying cannot possibly work',
-      (tester) async {
+  testWidgets('4.2 offers no retry when retrying cannot possibly work', (
+    tester,
+  ) async {
     useCheapPhone(tester);
     queue.add(capture('gone', error: UploadFailure.missingFiles.id));
 
-    await tester.pumpWidget(
-      harness(const QueueItemScreen(captureId: 'gone')),
-    );
+    await tester.pumpWidget(harness(const QueueItemScreen(captureId: 'gone')));
     await tester.pump();
 
     expect(find.text(l10n.failureMissingFiles), findsOneWidget);
@@ -204,14 +205,13 @@ void main() {
     expect(find.text(l10n.queueDelete), findsOneWidget);
   });
 
-  testWidgets('4.2 asks before deleting, and says what is lost',
-      (tester) async {
+  testWidgets('4.2 asks before deleting, and says what is lost', (
+    tester,
+  ) async {
     useCheapPhone(tester);
     queue.add(capture('one', error: UploadFailure.server.id));
 
-    await tester.pumpWidget(
-      harness(const QueueItemScreen(captureId: 'one')),
-    );
+    await tester.pumpWidget(harness(const QueueItemScreen(captureId: 'one')));
     await tester.pump();
 
     await tester.tap(find.text(l10n.queueDelete));
@@ -231,14 +231,13 @@ void main() {
     expect(queue.byId('one'), isNull);
   });
 
-  testWidgets('4.2 for something already with us is leaveable, never a trap',
-      (tester) async {
+  testWidgets('4.2 for something already with us is leaveable, never a trap', (
+    tester,
+  ) async {
     useCheapPhone(tester);
     queue.add(capture('sent', uploadedAt: DateTime(2026, 3, 14, 10, 35)));
 
-    await tester.pumpWidget(
-      harness(const QueueItemScreen(captureId: 'sent')),
-    );
+    await tester.pumpWidget(harness(const QueueItemScreen(captureId: 'sent')));
     await tester.pump();
 
     expect(find.text(l10n.processingGoHome), findsOneWidget);

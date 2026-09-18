@@ -10,13 +10,9 @@ import 'package:kaarigar/services/connectivity_service.dart';
 import 'package:kaarigar/services/upload_service.dart';
 import 'package:kaarigar/state/queue_controller.dart';
 
-/// Section 4's promise: nothing captured is ever silently lost. Every one of
-/// these tests is about what the seller is told when something goes wrong.
-
 class _FakeApi implements ApiClient {
   final List<String> uploaded = [];
 
-  /// Ids that should fail, and how.
   final Map<String, UploadFailure> failures = {};
 
   final List<double> progressReported = [];
@@ -38,6 +34,10 @@ class _FakeApi implements ApiClient {
   }
 
   @override
+  Future<void> deleteAccount() => throw UnimplementedError();
+  @override
+  Future<int?> minimumSupportedBuild() => throw UnimplementedError();
+  @override
   Future<SellerProfile> createProfile(SellerProfile draft) =>
       throw UnimplementedError();
   @override
@@ -49,41 +49,35 @@ class _FakeApi implements ApiClient {
     required String listingId,
     required String voiceReplyPath,
     String? field,
-  }) =>
-      throw UnimplementedError();
+  }) => throw UnimplementedError();
 
   @override
   Future<Listing> patchListing({
     required String listingId,
     required Map<String, Object?> changes,
-  }) =>
-      throw UnimplementedError();
+  }) => throw UnimplementedError();
   @override
   Future<Listing> reviseListing({
     required String listingId,
     required String voiceInstructionPath,
-  }) =>
-      throw UnimplementedError();
+  }) => throw UnimplementedError();
   @override
   Future<Listing> resolveSuggestions({
     required String listingId,
     required Map<String, bool> decisions,
-  }) =>
-      throw UnimplementedError();
+  }) => throw UnimplementedError();
   @override
   Future<Listing> publish({
     required String listingId,
     required bool photoConsent,
     required bool storyConsent,
-  }) =>
-      throw UnimplementedError();
+  }) => throw UnimplementedError();
   @override
   Future<Listing> setConsent({
     required String listingId,
     required bool photoConsent,
     required bool storyConsent,
-  }) =>
-      throw UnimplementedError();
+  }) => throw UnimplementedError();
   @override
   Future<Listing> republish(String listingId) => throw UnimplementedError();
   @override
@@ -137,7 +131,6 @@ class _FakeDao extends CaptureDao {
   Future<void> delete(String id) async => rows.remove(id);
 }
 
-/// A network we can switch off, which is the state this app is written for.
 class _FakeConnectivity extends ConnectivityService {
   bool online = true;
 
@@ -181,11 +174,11 @@ void main() {
   tearDown(() => uploads.dispose());
 
   CaptureItem capture(String id, {int minutesAgo = 0}) => CaptureItem(
-        id: id,
-        photoPaths: ['/tmp/$id-1.jpg'],
-        voiceNotePath: '/tmp/$id.m4a',
-        createdAt: DateTime(2026, 1, 1).add(Duration(minutes: minutesAgo)),
-      );
+    id: id,
+    photoPaths: ['/tmp/$id-1.jpg'],
+    voiceNotePath: '/tmp/$id.m4a',
+    createdAt: DateTime(2026, 1, 1).add(Duration(minutes: minutesAgo)),
+  );
 
   Future<void> queueUp(List<CaptureItem> items) async {
     for (final item in items) {
@@ -203,11 +196,8 @@ void main() {
 
     await uploads.drain();
 
-    // Oldest first: the seller's first product goes live first, rather than
-    // three being half sent.
     expect(api.uploaded, ['first', 'second', 'third']);
     expect(queue.pendingCount, 0);
-    // And the database agrees, so a restart does not send them again.
     expect(dao.rows.values.every((r) => r.uploadedAt != null), isTrue);
   });
 
@@ -216,26 +206,24 @@ void main() {
     await uploads.drain();
 
     final item = queue.byId('one')!;
-    // "Where did my photo go" is the question 4.1 exists to answer, so the
-    // item does not vanish the moment it is sent.
     expect(queue.stateOf(item), QueueItemState.processing);
     expect(queue.items.length, 1);
   });
 
-  test('with no network nothing is sent and nothing is marked failed',
-      () async {
-    network.goOffline();
-    await queueUp([capture('one')]);
+  test(
+    'with no network nothing is sent and nothing is marked failed',
+    () async {
+      network.goOffline();
+      await queueUp([capture('one')]);
 
-    await uploads.drain();
+      await uploads.drain();
 
-    expect(api.uploaded, isEmpty);
-    final item = queue.byId('one')!;
-    expect(queue.stateOf(item), QueueItemState.waiting);
-    // No error is recorded: there is nothing wrong with this capture, and
-    // telling the seller it failed would be a lie.
-    expect(item.lastError, isNull);
-  });
+      expect(api.uploaded, isEmpty);
+      final item = queue.byId('one')!;
+      expect(queue.stateOf(item), QueueItemState.waiting);
+      expect(item.lastError, isNull);
+    },
+  );
 
   test('the signal coming back drains the queue on its own', () async {
     network.goOffline();
@@ -244,7 +232,6 @@ void main() {
     expect(api.uploaded, isEmpty);
 
     network.goOnline();
-    // Let the listener's drain run.
     await Future<void>.delayed(Duration.zero);
 
     expect(api.uploaded, ['one']);
@@ -264,8 +251,6 @@ void main() {
     expect(queue.failureOf(failed), UploadFailure.server);
     expect(failed.attempts, 1);
 
-    // The second is left alone: it was about to fail for the same reason,
-    // and two error rows for one broken connection is one too many.
     expect(api.uploaded, isEmpty);
     expect(queue.stateOf(queue.byId('second')!), QueueItemState.waiting);
   });
@@ -275,8 +260,6 @@ void main() {
     await queueUp([capture('one')]);
     await uploads.drain();
 
-    // It waits for a person. An upload loop that keeps failing by itself
-    // flattens the battery of the seller's only phone.
     expect(queue.nextToUpload, isNull);
     await uploads.drain();
     expect(api.uploaded, isEmpty);
@@ -293,7 +276,6 @@ void main() {
 
     expect(api.uploaded, ['one']);
     expect(queue.byId('one')!.lastError, isNull);
-    // The attempt count is history, not a countdown, so it is kept.
     expect(queue.byId('one')!.attempts, 1);
   });
 
@@ -304,14 +286,10 @@ void main() {
 
     final failure = queue.failureOf(queue.byId('one')!)!;
     expect(failure, UploadFailure.missingFiles);
-    // 4.2 reads this to decide whether to offer a retry at all.
     expect(failure.isRetryable, isFalse);
   });
 
   test('the counts and the list follow every change to the queue', () async {
-    // Worked out once per change and kept. A count that outlived the change
-    // after it would leave the chip saying something is waiting once it has
-    // gone, or nothing waiting while it sits there.
     await queueUp([
       capture('old', minutesAgo: 0),
       capture('new', minutesAgo: 10),
@@ -323,7 +301,6 @@ void main() {
     queue.markFailed('old', UploadFailure.network);
     expect(queue.pendingCount, 2);
     expect(queue.failedCount, 1);
-    // A failed item waits for the seller, so the other one goes next.
     expect(queue.nextToUpload!.id, 'new');
 
     await queue.clearFailure('old');
@@ -345,8 +322,6 @@ void main() {
     await uploads.drain();
 
     expect(api.progressReported, isNotEmpty);
-    // And it is cleared when the upload ends, so nothing is left showing a
-    // half-full bar.
     expect(queue.uploadingId, isNull);
     expect(queue.progress, 0);
   });
@@ -356,7 +331,6 @@ void main() {
     await queueUp([capture('one')]);
     await uploads.drain();
 
-    // A fresh controller, as if the app had been closed and reopened.
     final reopened = QueueController(dao: dao);
     await reopened.load();
 

@@ -40,7 +40,9 @@ class QueueScreen extends StatelessWidget {
                 padding: const EdgeInsets.only(bottom: 16),
                 child: ScreenHeader(
                   title: l10n.queueTitle,
-                  subtitle: items.isEmpty ? l10n.queueEmptyBody : l10n.queueBody,
+                  subtitle: items.isEmpty
+                      ? l10n.queueEmptyBody
+                      : l10n.queueBody,
                   utteranceKey: 'screen:queue',
                   subtitleGap: 8,
                   subtitleStyle: const TextStyle(
@@ -93,13 +95,13 @@ class _QueueRow extends StatelessWidget {
       label: spoken.join('. '),
       child: InkWell(
         borderRadius: BorderRadius.circular(AppTheme.radius),
-        onTap: () => Navigator.of(context).pushNamed(
-          AppRoutes.queueItem,
-          arguments: item.id,
+        onTap: () =>
+            Navigator.of(context)
+                .pushNamed(AppRoutes.queueItem, arguments: item.id),
+        onLongPress: () => context.read<SpeechService>().speakAll(
+          spoken,
+          key: 'queue:${item.id}',
         ),
-        onLongPress: () => context
-            .read<SpeechService>()
-            .speakAll(spoken, key: 'queue:${item.id}'),
         child: Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(

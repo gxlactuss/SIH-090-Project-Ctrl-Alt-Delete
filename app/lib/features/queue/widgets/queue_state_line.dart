@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -25,28 +24,28 @@ class QueueStateLine extends StatelessWidget {
     AppLocalizations l10n,
     QueueItemState state,
     double progress,
-  ) =>
-      switch (state) {
-        QueueItemState.waiting => l10n.queueStateWaiting,
-        QueueItemState.uploading =>
-          l10n.queueStateUploading((progress * 100).round()),
-        QueueItemState.processing => l10n.queueStateProcessing,
-        QueueItemState.failed => l10n.queueStateFailed,
-      };
+  ) => switch (state) {
+    QueueItemState.waiting => l10n.queueStateWaiting,
+    QueueItemState.uploading => l10n.queueStateUploading(
+      (progress * 100).round(),
+    ),
+    QueueItemState.processing => l10n.queueStateProcessing,
+    QueueItemState.failed => l10n.queueStateFailed,
+  };
 
   static IconData icon(QueueItemState state) => switch (state) {
-        QueueItemState.waiting => Icons.schedule,
-        QueueItemState.uploading => Icons.cloud_upload,
-        QueueItemState.processing => Icons.hourglass_bottom,
-        QueueItemState.failed => Icons.error_outline,
-      };
+    QueueItemState.waiting => Icons.schedule,
+    QueueItemState.uploading => Icons.cloud_upload,
+    QueueItemState.processing => Icons.hourglass_bottom,
+    QueueItemState.failed => Icons.error_outline,
+  };
 
   static Color colour(QueueItemState state) => switch (state) {
-        QueueItemState.waiting => AppColors.muted,
-        QueueItemState.uploading => AppColors.terracotta,
-        QueueItemState.processing => AppColors.success,
-        QueueItemState.failed => AppColors.danger,
-      };
+    QueueItemState.waiting => AppColors.muted,
+    QueueItemState.uploading => AppColors.terracotta,
+    QueueItemState.processing => AppColors.success,
+    QueueItemState.failed => AppColors.danger,
+  };
 
   static String failureMessage(AppLocalizations l10n, UploadFailure failure) =>
       switch (failure) {

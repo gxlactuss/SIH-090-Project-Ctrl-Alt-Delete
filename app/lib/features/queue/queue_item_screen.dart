@@ -71,8 +71,9 @@ class QueueItemScreen extends StatelessWidget {
 
     final (item, state) = selected;
     final failure = queue.failureOf(item);
-    final reason =
-        failure == null ? null : QueueStateLine.failureMessage(l10n, failure);
+    final reason = failure == null
+        ? null
+        : QueueStateLine.failureMessage(l10n, failure);
 
     final when = DateFormat.MMMd(Localizations.localeOf(context).toString())
         .add_jm()
@@ -184,8 +185,9 @@ class QueueItemScreen extends StatelessWidget {
                     BigActionButton(
                       label: l10n.processingGoHome,
                       icon: Icons.home,
-                      onPressed: () => Navigator.of(context)
-                          .popUntil((route) => route.isFirst),
+                      onPressed: () =>
+                          Navigator.of(context)
+                              .popUntil((route) => route.isFirst),
                       spokenLabel:
                           '${l10n.processingGoHome}. ${l10n.processingLeave}',
                     ),
