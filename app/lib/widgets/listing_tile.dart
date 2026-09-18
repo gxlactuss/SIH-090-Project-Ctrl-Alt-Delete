@@ -3,13 +3,15 @@ import 'package:provider/provider.dart';
 
 import '../core/theme/app_colors.dart';
 import '../core/theme/app_theme.dart';
-import '../core/utils/image_decode.dart';
 import '../core/utils/money.dart';
 import '../data/models/listing.dart';
 import '../data/models/listing_status.dart';
 import '../l10n/app_localizations.dart';
 import '../services/speech_service.dart';
 import 'whole_word_text.dart';
+import 'app_image.dart';
+
+String listingImageHeroTag(String listingId) => 'listing-image:$listingId';
 
 class ListingTile extends StatelessWidget {
   const ListingTile({super.key, required this.listing, this.onTap});
@@ -98,41 +100,17 @@ class _Thumbnail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final url = listing.imageUrls.isEmpty ? null : listing.imageUrls.first;
-    final decodeWidth = decodeWidthFor(context, 76);
-
-    final Widget image;
-    if (url == null) {
-      image = const _ThumbnailFallback();
-    } else if (url.startsWith('assets/')) {
-      image = Image.asset(url, fit: BoxFit.cover, cacheWidth: decodeWidth);
-    } else {
-      image = Image.network(
-        url,
-        fit: BoxFit.cover,
-        cacheWidth: decodeWidth,
-        errorBuilder: (_, _, _) => const _ThumbnailFallback(),
-        loadingBuilder: (context, child, progress) =>
-            progress == null ? child : const _ThumbnailFallback(),
-      );
-    }
-
-    return ClipRRect(
+    final image = ClipRRect(
       borderRadius: BorderRadius.circular(10),
-      child: SizedBox(width: 76, height: 76, child: image),
+      child: SizedBox(
+        width: 76,
+        height: 76,
+        child: AppImage(url, decodeSize: 76),
+      ),
     );
-  }
-}
 
-class _ThumbnailFallback extends StatelessWidget {
-  const _ThumbnailFallback();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: AppColors.cream,
-      alignment: Alignment.center,
-      child: const Icon(Icons.image, size: 30, color: AppColors.muted),
-    );
+    if (url == null) return image;
+    return Hero(tag: listingImageHeroTag(listing.id), child: image);
   }
 }
 

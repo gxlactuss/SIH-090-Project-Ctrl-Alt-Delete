@@ -8,6 +8,7 @@ import '../core/routing/app_routes.dart';
 import '../core/theme/app_colors.dart';
 import '../core/theme/app_theme.dart';
 import '../data/remote/api_client.dart';
+import '../data/remote/hybrid_api.dart';
 import '../data/remote/mock_api.dart';
 import '../l10n/app_localizations.dart';
 import '../state/catalog_controller.dart';
@@ -24,13 +25,18 @@ class DevSimulateButton extends StatelessWidget {
     final listing = api.simulatePolished(listingId: listingId);
 
     context.read<CatalogController>().replace(listing);
-    Navigator.of(context).pushNamed(AppRoutes.polished, arguments: listing);
+    Navigator.of(context).pushNamed(AppRoutes.review, arguments: listing);
   }
 
   @override
   Widget build(BuildContext context) {
-    final api = context.maybeRead<ApiClient>();
-    if (!DevAccounts.enabled || kReleaseMode || api is! MockApi) {
+    final client = context.maybeRead<ApiClient>();
+    final api = switch (client) {
+      MockApi() => client,
+      HybridApi() => client.mock,
+      _ => null,
+    };
+    if (!DevAccounts.enabled || kReleaseMode || api == null) {
       return const SizedBox.shrink();
     }
 

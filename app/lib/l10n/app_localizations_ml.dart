@@ -21,15 +21,6 @@ class AppLocalizationsMl extends AppLocalizations {
   String get actionDone => 'കഴിഞ്ഞു';
 
   @override
-  String get actionRetry => 'വീണ്ടും ശ്രമിക്കുക';
-
-  @override
-  String get actionYes => 'അതെ';
-
-  @override
-  String get actionNo => 'ഇല്ല';
-
-  @override
   String get actionListen => 'കേൾക്കുക';
 
   @override
@@ -48,9 +39,6 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get languageHint => 'നിങ്ങൾ സംസാരിക്കുന്ന ഭാഷയിൽ അമർത്തുക';
-
-  @override
-  String get welcomeTitle => 'കാരിഗർ എന്തു ചെയ്യുന്നു';
 
   @override
   String get welcomeCard1Title => 'മൂന്ന് ഫോട്ടോ എടുക്കുക';
@@ -163,6 +151,17 @@ class AppLocalizationsMl extends AppLocalizations {
   String get otpWrong => 'കോഡ് ശരിയല്ല. വീണ്ടും നൽകുക.';
 
   @override
+  String get phoneSendFailed =>
+      'കോഡ് അയയ്ക്കാൻ കഴിഞ്ഞില്ല. നെറ്റ്‌വർക്ക് നോക്കി വീണ്ടും ശ്രമിക്കുക.';
+
+  @override
+  String get otpExpired => 'കോഡിന്റെ സമയം കഴിഞ്ഞു. വീണ്ടും അയയ്ക്കുക.';
+
+  @override
+  String get authTooManyTries =>
+      'പലതവണ ശ്രമിച്ചു. കുറച്ചു കഴിഞ്ഞ് വീണ്ടും ശ്രമിക്കുക.';
+
+  @override
   String get otpChangeNumber => 'നമ്പർ മാറ്റുക';
 
   @override
@@ -238,7 +237,15 @@ class AppLocalizationsMl extends AppLocalizations {
       'ONDC-യിലാണ് വാങ്ങുന്നവർ നിങ്ങൾ ഉണ്ടാക്കിയത് കണ്ട് വാങ്ങുന്നത്. പണം നേരിട്ട് നിങ്ങൾക്ക് വരും, ഞങ്ങളിലൂടെയല്ല.';
 
   @override
+  String get ondcMalformed =>
+      'ഇത് ഒരു സെല്ലർ ഐഡി പോലെ തോന്നുന്നില്ല. ദയവായി പരിശോധിക്കുക, അല്ലെങ്കിൽ കോഡ് വീണ്ടും സ്കാൻ ചെയ്യുക.';
+
+  @override
   String get ondcEmailLabel => 'ONDC ഇമെയിൽ';
+
+  @override
+  String get ondcEmailMalformed =>
+      'ഇത് ഒരു ഇമെയിൽ വിലാസം പോലെ തോന്നുന്നില്ല. ദയവായി അത് പരിശോധിക്കൂ.';
 
   @override
   String get ondcSellerIdLabel => 'വിൽപ്പനക്കാരന്റെ ഐഡി';
@@ -253,9 +260,6 @@ class AppLocalizationsMl extends AppLocalizations {
   String get ondcLinking => 'ബന്ധിപ്പിക്കുന്നു…';
 
   @override
-  String get ondcLinked => 'അക്കൗണ്ട് ബന്ധിപ്പിച്ചു';
-
-  @override
   String get ondcFailed => 'ആ അക്കൗണ്ട് കണ്ടെത്താനായില്ല. ദയവായി പരിശോധിക്കുക.';
 
   @override
@@ -266,69 +270,44 @@ class AppLocalizationsMl extends AppLocalizations {
       'കുഴപ്പമില്ല. നിങ്ങൾക്ക് സാധനങ്ങൾ തയ്യാറാക്കി വയ്ക്കാം. അക്കൗണ്ട് ബന്ധിപ്പിച്ചാലുടൻ എല്ലാം ഒരുമിച്ച് പോകും.';
 
   @override
-  String get practiceTitle => 'ഒരിക്കൽ പരിശീലിക്കാം';
+  String get practiceTitle => 'നല്ല ഫോട്ടോ എങ്ങനെ എടുക്കാം';
 
   @override
   String get practiceIntro =>
-      'ഇത് പരിശീലനം മാത്രം. ഇവിടെ ഒന്നും ശരിക്കും വിൽക്കില്ല, ഒന്നും നിങ്ങളുടെ ഫോണിൽ നിന്ന് പുറത്തുപോകില്ല.';
+      'ഒരേ കലം, ഒരിക്കൽ നന്നായും ഒരിക്കൽ മോശമായും എടുത്തത്. രണ്ടും കാണാൻ നീക്കുക.';
 
   @override
-  String get practiceStart => 'പരിശീലനം തുടങ്ങുക';
+  String get practiceGoodBadge => 'ഇങ്ങനെ ചെയ്യുക';
 
   @override
-  String practicePhotoStep(int current, int total) {
-    return 'ഫോട്ടോ $current, ആകെ $total';
-  }
+  String get practiceGoodTitle => 'നല്ല ഫോട്ടോ';
 
   @override
-  String get practicePhotoWhole => 'സാധനം മുഴുവനായി കാണിക്കുക';
+  String get practiceGoodTip1 => 'വ്യക്തം: ഫോൺ അനങ്ങാതെ പിടിച്ചു';
 
   @override
-  String get practicePhotoDetail => 'അടുത്തുനിന്ന് ഒന്ന് എടുക്കുക';
+  String get practiceGoodTip2 => 'വെളിച്ചം: ജനലിനോ വാതിലിനോ അടുത്ത് എടുത്തത്';
 
   @override
-  String get practicePhotoScale => 'വലിപ്പം മനസ്സിലാകാൻ അരികിൽ കൈ വയ്ക്കുക';
+  String get practiceGoodTip3 => 'സാധനം മുഴുവനും ഫോട്ടോയിലുണ്ട്';
 
   @override
-  String get practiceTakePhoto => 'ഫോട്ടോ എടുക്കുക';
+  String get practiceBadBadge => 'ഇങ്ങനെ ചെയ്യരുത്';
 
   @override
-  String get practiceVoiceTitle => 'ഇനി ഇത് എന്താണെന്ന് പറയുക';
+  String get practiceBadTitle => 'മോശം ഫോട്ടോ';
 
   @override
-  String get practiceVoiceBody =>
-      'ഇത് എന്താണ്, എന്തുകൊണ്ട് ഉണ്ടാക്കി, എത്ര വലുതാണ്, എത്ര സമയമെടുത്തു, വില എത്ര.';
+  String get practiceBadTip1 => 'മങ്ങിയത്: ഫോൺ അനങ്ങി';
 
   @override
-  String get practiceHoldToSpeak => 'അമർത്തിപ്പിടിച്ച് പറയുക';
+  String get practiceBadTip2 => 'വാങ്ങുന്നവർക്ക് വിശദാംശങ്ങൾ കാണാനാവില്ല';
 
   @override
-  String get practiceReviewTitle => 'ഇനി നിങ്ങളെ വായിച്ചു കേൾപ്പിക്കും';
-
-  @override
-  String get practiceReviewBody =>
-      'ശരിക്കുള്ള ഉപയോഗത്തിൽ ആപ്പ് മനസ്സിലാക്കിയത് വായിച്ചു കേൾപ്പിക്കും. എന്തെങ്കിലും തെറ്റാണെങ്കിൽ അവിടെ വച്ചുതന്നെ പറഞ്ഞ് തിരുത്താം.';
-
-  @override
-  String get practiceDoneTitle => 'പരിശീലനം കഴിഞ്ഞു';
-
-  @override
-  String get practiceNothingPublished =>
-      'ഒന്നും എവിടേക്കും അയച്ചിട്ടില്ല. അത് പരിശീലനം മാത്രമായിരുന്നു.';
-
-  @override
-  String get practiceAgain => 'ഒരിക്കൽ കൂടി പരിശീലിക്കുക';
+  String get practiceBadTip3 => 'ആപ്പ് നിങ്ങളോട് വീണ്ടും ഫോട്ടോ എടുക്കാൻ പറയും';
 
   @override
   String get practiceFinish => 'ആപ്പ് തുറക്കുക';
-
-  @override
-  String onboardingDoneTitle(String name) {
-    return 'എല്ലാം തയ്യാർ, $name';
-  }
-
-  @override
-  String get onboardingDoneBody => 'ഇനി നിങ്ങൾക്ക് ആദ്യത്തെ സാധനം ചേർക്കാം.';
 
   @override
   String get navHome => 'ഹോം';
@@ -377,6 +356,9 @@ class AppLocalizationsMl extends AppLocalizations {
   String get homeRecent => 'നിങ്ങളുടെ പുതിയ സാധനങ്ങൾ';
 
   @override
+  String get homeNextTitle => 'ഇനി ചെയ്യേണ്ടത്';
+
+  @override
   String get homeEmptyTitle => 'ഇവിടെ ഇതുവരെ ഒന്നുമില്ല';
 
   @override
@@ -384,17 +366,11 @@ class AppLocalizationsMl extends AppLocalizations {
       'മുകളിലെ വലിയ ബട്ടൺ അമർത്തി ആദ്യത്തെ സാധനം ചേർക്കുക.';
 
   @override
-  String get homeSeeAll => 'എല്ലാം കാണുക';
-
-  @override
   String get offlineNoNetwork => 'ഇപ്പോൾ നെറ്റ്‌വർക്ക് ഇല്ല';
 
   @override
   String get offlineNothingLost =>
       'ഒന്നും നഷ്ടപ്പെട്ടിട്ടില്ല. നെറ്റ്‌വർക്ക് വരുമ്പോൾ സ്വയം പോകും.';
-
-  @override
-  String get offlineSeeQueue => 'എന്താണ് ബാക്കിയെന്ന് കാണുക';
 
   @override
   String get statusQueued => 'അയയ്ക്കാൻ ബാക്കി';
@@ -419,12 +395,6 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get listingNoPrice => 'വില പറഞ്ഞിട്ടില്ല';
-
-  @override
-  String get comingSoonTitle => 'ഉടൻ വരുന്നു';
-
-  @override
-  String get comingSoonBody => 'ആപ്പിന്റെ ഈ ഭാഗം ഇപ്പോഴും നിർമ്മാണത്തിലാണ്.';
 
   @override
   String get captureTitle => 'സാധനം ചേർക്കുക';
@@ -481,13 +451,7 @@ class AppLocalizationsMl extends AppLocalizations {
   String get captureLeaveCancel => 'ഇവിടെ നിൽക്കുക';
 
   @override
-  String get shotReviewTitle => 'ഈ ഫോട്ടോ കൊള്ളാമോ?';
-
-  @override
   String get shotReviewChecking => 'ഫോട്ടോ പരിശോധിക്കുന്നു…';
-
-  @override
-  String get shotReviewKeep => 'ഈ ഫോട്ടോ സൂക്ഷിക്കുക';
 
   @override
   String get shotReviewRetake => 'വീണ്ടും എടുക്കുക';
@@ -533,13 +497,39 @@ class AppLocalizationsMl extends AppLocalizations {
   String get photoSetMain => 'ആദ്യത്തെ ഫോട്ടോ';
 
   @override
-  String get photoSetMakeMain => 'ഇത് ആദ്യത്തെ ഫോട്ടോ ആക്കുക';
-
-  @override
   String get photoSetRetakeThis => 'ഇത് വീണ്ടും എടുക്കുക';
 
   @override
   String get photoSetConfirm => 'ഈ ഫോട്ടോകൾ കൊള്ളാം';
+
+  @override
+  String get photoEditOpen => 'ഫോട്ടോ മുറിക്കുക അല്ലെങ്കിൽ തിരിക്കുക';
+
+  @override
+  String get photoEditTitle => 'ഫോട്ടോ മുറിക്കുക';
+
+  @override
+  String get photoEditBody =>
+      'മുറിക്കാൻ ചതുരത്തിന്റെ മൂലയോ അരികോ വലിക്കുക. നീക്കാൻ ചതുരത്തിനുള്ളിൽ നിന്ന് വലിക്കുക.';
+
+  @override
+  String get photoEditTurn => 'തിരിക്കുക';
+
+  @override
+  String get photoEditStraighten => 'നേരെയാക്കുക';
+
+  @override
+  String get photoEditReset => 'വീണ്ടും തുടങ്ങുക';
+
+  @override
+  String get photoEditDone => 'ഈ ഫോട്ടോ ഉപയോഗിക്കുക';
+
+  @override
+  String get photoEditCancel => 'തിരികെ പോകുക';
+
+  @override
+  String get photoEditFailed =>
+      'ഈ മാറ്റം സേവ് ചെയ്യാനായില്ല. വീണ്ടും ശ്രമിക്കുക.';
 
   @override
   String get photoIssueTooDark => 'വളരെ ഇരുണ്ടത്, വ്യക്തമായി കാണുന്നില്ല';
@@ -587,9 +577,6 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get voiceBackToPhotos => 'ഫോട്ടോകളിലേക്ക് മടങ്ങുക';
-
-  @override
-  String get playbackTitle => 'നിങ്ങൾ പറഞ്ഞത് കേൾക്കുക';
 
   @override
   String get playbackPlay => 'കേൾക്കുക';
@@ -730,18 +717,6 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get processingGoHome => 'ഹോമിലേക്ക് പോകുക';
-
-  @override
-  String get processingStepSent => 'നിങ്ങളുടെ ഫോണിൽ നിന്ന് അയച്ചു';
-
-  @override
-  String get processingStepListening => 'നിങ്ങൾ പറഞ്ഞത് കേൾക്കുന്നു';
-
-  @override
-  String get processingStepWriting => 'വിവരണം എഴുതുന്നു';
-
-  @override
-  String get processingStepReady => 'നിങ്ങൾക്ക് പരിശോധിക്കാൻ തയ്യാർ';
 
   @override
   String get attentionTitle => 'ഒരു ചോദ്യം';
@@ -910,9 +885,6 @@ class AppLocalizationsMl extends AppLocalizations {
   String get priceSayIt => 'വില പറയുക';
 
   @override
-  String get priceTypeIt => 'വില എഴുതുക';
-
-  @override
   String get priceConfirm => 'ഈ വില ശരിയാണ്';
 
   @override
@@ -1054,9 +1026,6 @@ class AppLocalizationsMl extends AppLocalizations {
   String get reviewLeaveCancel => 'തുടരുക';
 
   @override
-  String get reviewSaveFailed => 'അത് സേവ് ആയില്ല. ദയവായി വീണ്ടും ശ്രമിക്കുക.';
-
-  @override
   String get statusSoldOut => 'എല്ലാം വിറ്റു';
 
   @override
@@ -1064,21 +1033,6 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get listingsTitle => 'നിങ്ങളുടെ സാധനങ്ങൾ';
-
-  @override
-  String get listingsFilterAll => 'എല്ലാം';
-
-  @override
-  String get listingsFilterDrafts => 'തയ്യാറാകുന്നവ';
-
-  @override
-  String get listingsFilterAttention => 'നിങ്ങളെ വേണം';
-
-  @override
-  String get listingsFilterLive => 'വിൽപ്പനയിൽ';
-
-  @override
-  String get listingsFilterSoldOut => 'എല്ലാം വിറ്റു';
 
   @override
   String get listingsEmptyTitle => 'നിങ്ങൾ ഇതുവരെ ഒന്നും ഉണ്ടാക്കിയിട്ടില്ല';
@@ -1174,6 +1128,9 @@ class AppLocalizationsMl extends AppLocalizations {
   String get quickStockSaved => 'സേവ് ചെയ്തു';
 
   @override
+  String get actionUndo => 'പഴയതുപോലെ ആക്കുക';
+
+  @override
   String get unpublishTitle => 'വിൽപ്പനയിൽ നിന്ന് മാറ്റണോ?';
 
   @override
@@ -1213,9 +1170,6 @@ class AppLocalizationsMl extends AppLocalizations {
   String get listingActionFailed => 'അത് നടന്നില്ല. ദയവായി വീണ്ടും ശ്രമിക്കുക.';
 
   @override
-  String get salesTitle => 'എന്ത് വിറ്റു';
-
-  @override
   String get salesNew => 'പുതിയത്';
 
   @override
@@ -1252,9 +1206,6 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get salesPackedAlready => 'ഇതിന്റെ തീയതി കഴിഞ്ഞു';
-
-  @override
-  String get salesSeeEarnings => 'നിങ്ങൾ എത്ര സമ്പാദിച്ചു എന്ന് കാണുക';
 
   @override
   String get saleTitle => 'ഈ ഓർഡർ';
@@ -1347,9 +1298,6 @@ class AppLocalizationsMl extends AppLocalizations {
       'മാർക്കറ്റ് അതിന്റെ പങ്ക് എടുത്തശേഷം നിങ്ങൾക്ക് കിട്ടുന്നത് ഇതാണ്.';
 
   @override
-  String get profileOverviewTitle => 'നിങ്ങൾ';
-
-  @override
   String get profileVillageLabel => 'ഗ്രാമം അല്ലെങ്കിൽ ക്ലസ്റ്റർ';
 
   @override
@@ -1387,9 +1335,6 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get editProfileTitle => 'നിങ്ങളുടെ വിവരങ്ങൾ';
-
-  @override
-  String get editProfilePhoto => 'നിങ്ങളുടെ ഫോട്ടോ';
 
   @override
   String get editProfileAddPhoto => 'നിങ്ങളുടെ ഒരു ഫോട്ടോ ചേർക്കുക';
@@ -1509,6 +1454,13 @@ class AppLocalizationsMl extends AppLocalizations {
       'നിങ്ങൾ ഫോണിൽ ഉണ്ടാക്കിയത് ഞങ്ങളിലെത്തുമ്പോൾ അറിയിക്കും.';
 
   @override
+  String get notifyPackBy => 'പാക്ക് ചെയ്യാൻ സമയമാകുമ്പോൾ';
+
+  @override
+  String get notifyPackByWhy =>
+      'ഒരു വിൽപ്പന പാക്ക് ചെയ്യേണ്ട തീയതിയുടെ തലേദിവസവും അന്നും ഞങ്ങൾ നിങ്ങളെ ഓർമ്മിപ്പിക്കും.';
+
+  @override
   String get notificationsBlocked =>
       'ഈ ഫോൺ നിങ്ങൾക്ക് ഒന്നും അയയ്ക്കാൻ ഞങ്ങളെ അനുവദിക്കുന്നില്ല. ഫോണിന്റെ സെറ്റിംഗ്സിൽ ഇത് ഓൺ ചെയ്യാം.';
 
@@ -1537,9 +1489,6 @@ class AppLocalizationsMl extends AppLocalizations {
   @override
   String get voiceAutoReadWhy =>
       'ഇത് ഓഫാണെങ്കിൽ, നിങ്ങൾ സ്പീക്കർ അമർത്തുമ്പോൾ മാത്രമേ ഞങ്ങൾ സംസാരിക്കൂ.';
-
-  @override
-  String get voiceVolume => 'എത്ര ഉച്ചത്തിൽ';
 
   @override
   String get voiceUnavailable =>
@@ -1764,11 +1713,11 @@ class AppLocalizationsMl extends AppLocalizations {
   String get helpVideoComing => 'ഇതിനായി ഒരു ചെറിയ വീഡിയോ ഉടൻ വരുന്നു.';
 
   @override
-  String get helpPractice => 'ഒരിക്കൽ കൂടി പരിശീലിക്കുക';
+  String get helpPractice => 'നല്ല ഫോട്ടോ എങ്ങനെ എടുക്കാം';
 
   @override
   String get helpPracticeBody =>
-      'എല്ലാം വീണ്ടും ചെയ്തുനോക്കുക. ഒന്നും എവിടേക്കും അയയ്ക്കില്ല.';
+      'ഒരേ കലത്തിന്റെ ഒരു നല്ല ഫോട്ടോയും ഒരു മോശം ഫോട്ടോയും.';
 
   @override
   String get helpFaqEntry => 'ആളുകൾ ചോദിക്കുന്ന ചോദ്യങ്ങൾ';
@@ -1781,9 +1730,6 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get helpTermsEntry => 'നിബന്ധനകളും സ്വകാര്യതയും';
-
-  @override
-  String get helpVersionEntry => 'ഈ ആപ്പിനെക്കുറിച്ച്';
 
   @override
   String get faqTitle => 'ആളുകൾ ചോദിക്കുന്ന ചോദ്യങ്ങൾ';
@@ -1876,9 +1822,6 @@ class AppLocalizationsMl extends AppLocalizations {
       'ഒരു പണിയുടെ വില അത് ഉണ്ടാക്കിയ ആളുടെ കൈയിൽ തന്നെ ആകണം.';
 
   @override
-  String get aboutTeamTitle => 'ആരാണ് ഉണ്ടാക്കിയത്';
-
-  @override
   String get supportTitle => 'ഒരാളോട് സംസാരിക്കുക';
 
   @override
@@ -1942,7 +1885,21 @@ class AppLocalizationsMl extends AppLocalizations {
   String get termsOpenFull => 'മുഴുവൻ വാചകം വായിക്കുക';
 
   @override
-  String get versionTitle => 'ഈ ആപ്പിനെക്കുറിച്ച്';
+  String get termsAgreeTitle => 'തുടങ്ങുന്നതിനു മുൻപ്';
+
+  @override
+  String get termsAgreeBody =>
+      'ഇവയ്ക്കാണ് നിങ്ങൾ സമ്മതം നൽകുന്നത്. കേൾക്കാൻ സ്പീക്കർ അമർത്തുക.';
+
+  @override
+  String get termsAgreeCheck => 'ഞാൻ നിബന്ധനകൾ അംഗീകരിക്കുന്നു';
+
+  @override
+  String get termsAgreeContinue => 'തുടരുക';
+
+  @override
+  String get termsAgreeNeeded =>
+      'ആദ്യം “ഞാൻ നിബന്ധനകൾ അംഗീകരിക്കുന്നു” ടിക്ക് ചെയ്യുക.';
 
   @override
   String versionNumber(String version) {
@@ -1950,13 +1907,7 @@ class AppLocalizationsMl extends AppLocalizations {
   }
 
   @override
-  String get versionUpToDate => 'ഇതാണ് ഏറ്റവും പുതിയ പതിപ്പ്';
-
-  @override
   String get versionCheck => 'പുതിയ പതിപ്പ് നോക്കുക';
-
-  @override
-  String get versionChecking => 'നോക്കുന്നു…';
 
   @override
   String get versionLicences => 'ലൈസൻസുകൾ';
@@ -2064,37 +2015,17 @@ class AppLocalizationsMl extends AppLocalizations {
   String get devSimulateResult => 'Dev: show a finished product';
 
   @override
-  String get polishedTitle => 'നിങ്ങളുടെ സാധനം തയ്യാർ';
+  String get errorNotAllowed =>
+      'ഈ അക്കൗണ്ടിന് ഇത് ചെയ്യാൻ കഴിയില്ല. സഹായത്തിന് ഞങ്ങളെ വിളിക്കുക.';
 
   @override
-  String get polishedBody =>
-      'ഫോട്ടോ നോക്കി ഞങ്ങൾ എഴുതിയത് വായിക്കുക. വിൽപ്പനയ്ക്ക് വയ്ക്കുക, അല്ലെങ്കിൽ എന്തും മാറ്റുക.';
+  String get errorNotFound => 'ഇത് ഇപ്പോൾ ഇവിടെ ഇല്ല.';
 
   @override
-  String get polishedPublish => 'വിൽപ്പനയ്ക്ക് വയ്ക്കുക';
+  String get errorConflict =>
+      'ഇത് മറ്റെവിടെയോ മാറ്റിയിരിക്കുന്നു. ദയവായി വീണ്ടും തുറന്ന് ഒരിക്കൽ കൂടി ശ്രമിക്കുക.';
 
   @override
-  String get polishedChange => 'മാറ്റങ്ങൾ വരുത്തുക';
-
-  @override
-  String get polishedChangeHow => 'എങ്ങനെ മാറ്റങ്ങൾ വരുത്തണം?';
-
-  @override
-  String get polishedChangeType => 'എഴുതി മാറ്റുക';
-
-  @override
-  String get polishedChangeSay => 'പറഞ്ഞ് മാറ്റുക';
-
-  @override
-  String get polishedTitleLabel => 'പേര്';
-
-  @override
-  String get polishedDescriptionLabel => 'വിവരണം';
-
-  @override
-  String get polishedSayHint =>
-      'ബട്ടൺ അമർത്തിപ്പിടിച്ച് എന്ത് മാറ്റണമെന്ന് പറയുക, ഉദാഹരണത്തിന് “പേര് ചെറുതാക്കുക”.';
-
-  @override
-  String get polishedUpdating => 'നിങ്ങളുടെ മാറ്റങ്ങൾ വരുത്തുന്നു…';
+  String get errorInvalid =>
+      'ചില വിവരങ്ങൾ സ്വീകരിച്ചില്ല. ദയവായി പരിശോധിച്ച് വീണ്ടും ശ്രമിക്കുക.';
 }

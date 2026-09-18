@@ -27,7 +27,8 @@ void main() {
     expect(
       offenders,
       isEmpty,
-      reason: 'Text below ${AppTheme.minTextSize}sp. Use '
+      reason:
+          'Text below ${AppTheme.minTextSize}sp. Use '
           'AppTheme.minTextSize for secondary text, AppTheme.bodyTextSize '
           'for body copy, or the theme:\n${offenders.join('\n')}',
     );

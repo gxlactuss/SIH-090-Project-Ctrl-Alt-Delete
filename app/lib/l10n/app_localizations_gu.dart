@@ -21,15 +21,6 @@ class AppLocalizationsGu extends AppLocalizations {
   String get actionDone => 'થઈ ગયું';
 
   @override
-  String get actionRetry => 'ફરી પ્રયત્ન કરો';
-
-  @override
-  String get actionYes => 'હા';
-
-  @override
-  String get actionNo => 'ના';
-
-  @override
   String get actionListen => 'સાંભળો';
 
   @override
@@ -48,9 +39,6 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get languageHint => 'તમે જે ભાષા બોલો છો તેના પર દબાવો';
-
-  @override
-  String get welcomeTitle => 'કારીગર શું કરે છે';
 
   @override
   String get welcomeCard1Title => 'ત્રણ ફોટા પાડો';
@@ -162,6 +150,17 @@ class AppLocalizationsGu extends AppLocalizations {
   String get otpWrong => 'કોડ સાચો નથી. ફરી લખો.';
 
   @override
+  String get phoneSendFailed =>
+      'કોડ મોકલી શકાયો નહીં. નેટવર્ક તપાસો અને ફરી પ્રયત્ન કરો.';
+
+  @override
+  String get otpExpired => 'કોડનો સમય પૂરો થઈ ગયો. ફરી મોકલો.';
+
+  @override
+  String get authTooManyTries =>
+      'ઘણી વાર પ્રયત્ન થયો. થોડી વાર પછી ફરી પ્રયત્ન કરો.';
+
+  @override
   String get otpChangeNumber => 'નંબર બદલો';
 
   @override
@@ -237,7 +236,15 @@ class AppLocalizationsGu extends AppLocalizations {
       'ONDC એ જગ્યા છે જ્યાં ગ્રાહકો તમારી વસ્તુ જુએ છે અને ખરીદે છે. પૈસા સીધા તમને મળે છે, અમારી પાસે થઈને નહીં.';
 
   @override
+  String get ondcMalformed =>
+      'આ સેલર આઈડી જેવું લાગતું નથી. કૃપા કરીને તપાસો, અથવા કોડ ફરી સ્કેન કરો.';
+
+  @override
   String get ondcEmailLabel => 'ONDC ઇમેઇલ';
+
+  @override
+  String get ondcEmailMalformed =>
+      'આ ઇમેઇલ સરનામું હોય એવું લાગતું નથી. કૃપા કરીને તે તપાસો.';
 
   @override
   String get ondcSellerIdLabel => 'વેચનાર આઇડી';
@@ -252,9 +259,6 @@ class AppLocalizationsGu extends AppLocalizations {
   String get ondcLinking => 'જોડી રહ્યા છીએ…';
 
   @override
-  String get ondcLinked => 'ખાતું જોડાઈ ગયું';
-
-  @override
   String get ondcFailed => 'આ ખાતું મળ્યું નહીં. ફરી તપાસો.';
 
   @override
@@ -265,69 +269,44 @@ class AppLocalizationsGu extends AppLocalizations {
       'કોઈ વાંધો નહીં. તમે વસ્તુઓ તૈયાર કરી રાખી શકો છો. ખાતું જોડાતાં જ બધું એકસાથે મોકલાઈ જશે.';
 
   @override
-  String get practiceTitle => 'એક વાર અભ્યાસ કરી લઈએ';
+  String get practiceTitle => 'સારો ફોટો કેવી રીતે લેવો';
 
   @override
   String get practiceIntro =>
-      'આ ફક્ત અભ્યાસ છે. અહીં કંઈ ખરેખર વેચાશે નહીં અને કંઈ તમારા ફોનની બહાર નહીં જાય.';
+      'એક જ માટલું, એક વાર સારી રીતે અને એક વાર ખરાબ રીતે લીધેલું. બંને જોવા સરકાવો.';
 
   @override
-  String get practiceStart => 'અભ્યાસ શરૂ કરો';
+  String get practiceGoodBadge => 'આવું કરો';
 
   @override
-  String practicePhotoStep(int current, int total) {
-    return 'ફોટો $current, કુલ $total';
-  }
+  String get practiceGoodTitle => 'સારો ફોટો';
 
   @override
-  String get practicePhotoWhole => 'આખી વસ્તુ બતાવો';
+  String get practiceGoodTip1 => 'સ્પષ્ટ: ફોન સ્થિર રાખ્યો હતો';
 
   @override
-  String get practicePhotoDetail => 'નજીકથી એક ફોટો પાડો';
+  String get practiceGoodTip2 => 'અજવાળું: બારી કે દરવાજા પાસે લીધેલો';
 
   @override
-  String get practicePhotoScale => 'બાજુમાં હાથ મૂકો, જેથી માપ ખબર પડે';
+  String get practiceGoodTip3 => 'આખી વસ્તુ ફોટામાં છે';
 
   @override
-  String get practiceTakePhoto => 'ફોટો પાડો';
+  String get practiceBadBadge => 'આવું ન કરો';
 
   @override
-  String get practiceVoiceTitle => 'હવે બોલીને કહો કે આ શું છે';
+  String get practiceBadTitle => 'ખરાબ ફોટો';
 
   @override
-  String get practiceVoiceBody =>
-      'આ શું છે, શેનું બનેલું છે, કેટલું મોટું છે, કેટલો સમય લાગ્યો, અને કિંમત કેટલી.';
+  String get practiceBadTip1 => 'ઝાંખો: ફોન હલી ગયો';
 
   @override
-  String get practiceHoldToSpeak => 'દબાવીને બોલો';
+  String get practiceBadTip2 => 'ખરીદનાર બારીકાઈ જોઈ શકતા નથી';
 
   @override
-  String get practiceReviewTitle => 'હવે તમને વાંચીને સંભળાવવામાં આવશે';
-
-  @override
-  String get practiceReviewBody =>
-      'ખરેખર ઉપયોગ વખતે ઍપ જે સમજી તે વાંચીને સંભળાવશે. કંઈ ખોટું હોય તો તમે ત્યાં જ બોલીને સુધારી શકો.';
-
-  @override
-  String get practiceDoneTitle => 'અભ્યાસ પૂરો થયો';
-
-  @override
-  String get practiceNothingPublished =>
-      'ક્યાંય કંઈ મોકલાયું નથી. એ ફક્ત અભ્યાસ હતો.';
-
-  @override
-  String get practiceAgain => 'ફરી એક વાર અભ્યાસ કરો';
+  String get practiceBadTip3 => 'એપ તમને ફરીથી ફોટો લેવા કહેશે';
 
   @override
   String get practiceFinish => 'ઍપ ખોલો';
-
-  @override
-  String onboardingDoneTitle(String name) {
-    return 'બધું તૈયાર છે, $name';
-  }
-
-  @override
-  String get onboardingDoneBody => 'હવે તમે તમારી પહેલી વસ્તુ ઉમેરી શકો છો.';
 
   @override
   String get navHome => 'હોમ';
@@ -376,6 +355,9 @@ class AppLocalizationsGu extends AppLocalizations {
   String get homeRecent => 'તમારી તાજેતરની વસ્તુઓ';
 
   @override
+  String get homeNextTitle => 'હવે આ કરવાનું છે';
+
+  @override
   String get homeEmptyTitle => 'અહીં હજી કંઈ નથી';
 
   @override
@@ -383,17 +365,11 @@ class AppLocalizationsGu extends AppLocalizations {
       'ઉપરનું મોટું બટન દબાવીને તમારી પહેલી વસ્તુ ઉમેરો.';
 
   @override
-  String get homeSeeAll => 'બધું જુઓ';
-
-  @override
   String get offlineNoNetwork => 'અત્યારે નેટવર્ક નથી';
 
   @override
   String get offlineNothingLost =>
       'કંઈ ખોવાયું નથી. નેટવર્ક આવતાં જ તે આપમેળે જશે.';
-
-  @override
-  String get offlineSeeQueue => 'શું બાકી છે તે જુઓ';
 
   @override
   String get statusQueued => 'મોકલવાનું બાકી';
@@ -418,12 +394,6 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get listingNoPrice => 'કિંમત કહી નથી';
-
-  @override
-  String get comingSoonTitle => 'જલ્દી આવી રહ્યું છે';
-
-  @override
-  String get comingSoonBody => 'ઍપનો આ ભાગ હજી બની રહ્યો છે.';
 
   @override
   String get captureTitle => 'વસ્તુ ઉમેરો';
@@ -480,13 +450,7 @@ class AppLocalizationsGu extends AppLocalizations {
   String get captureLeaveCancel => 'અહીં જ રહો';
 
   @override
-  String get shotReviewTitle => 'આ ફોટો બરાબર છે?';
-
-  @override
   String get shotReviewChecking => 'ફોટો તપાસી રહ્યા છીએ…';
-
-  @override
-  String get shotReviewKeep => 'આ ફોટો રાખો';
 
   @override
   String get shotReviewRetake => 'ફરી પાડો';
@@ -531,13 +495,38 @@ class AppLocalizationsGu extends AppLocalizations {
   String get photoSetMain => 'પહેલો ફોટો';
 
   @override
-  String get photoSetMakeMain => 'આને પહેલો ફોટો બનાવો';
-
-  @override
   String get photoSetRetakeThis => 'આ ફરી પાડો';
 
   @override
   String get photoSetConfirm => 'આ ફોટા બરાબર છે';
+
+  @override
+  String get photoEditOpen => 'ફોટો કાપો અથવા ફેરવો';
+
+  @override
+  String get photoEditTitle => 'ફોટો કાપો';
+
+  @override
+  String get photoEditBody =>
+      'કાપવા માટે ચોકઠાનો ખૂણો કે કિનારી ખેંચો. ખસેડવા માટે ચોકઠાની અંદરથી ખેંચો.';
+
+  @override
+  String get photoEditTurn => 'ફેરવો';
+
+  @override
+  String get photoEditStraighten => 'સીધો કરો';
+
+  @override
+  String get photoEditReset => 'ફરી શરૂ કરો';
+
+  @override
+  String get photoEditDone => 'આ ફોટો વાપરો';
+
+  @override
+  String get photoEditCancel => 'પાછા જાઓ';
+
+  @override
+  String get photoEditFailed => 'આ ફેરફાર સાચવી શકાયો નહીં. ફરી પ્રયત્ન કરો.';
 
   @override
   String get photoIssueTooDark => 'બહુ અંધારો, બરાબર દેખાતો નથી';
@@ -584,9 +573,6 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get voiceBackToPhotos => 'ફોટા પર પાછા જાઓ';
-
-  @override
-  String get playbackTitle => 'તમે જે કહ્યું તે સાંભળો';
 
   @override
   String get playbackPlay => 'સાંભળો';
@@ -725,18 +711,6 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get processingGoHome => 'હોમ પર જાઓ';
-
-  @override
-  String get processingStepSent => 'તમારા ફોનથી મોકલ્યું';
-
-  @override
-  String get processingStepListening => 'તમે જે કહ્યું તે સાંભળી રહ્યા છીએ';
-
-  @override
-  String get processingStepWriting => 'વર્ણન લખી રહ્યા છીએ';
-
-  @override
-  String get processingStepReady => 'તમે જોઈ શકો તે માટે તૈયાર';
 
   @override
   String get attentionTitle => 'એક પ્રશ્ન';
@@ -902,9 +876,6 @@ class AppLocalizationsGu extends AppLocalizations {
   String get priceSayIt => 'કિંમત કહો';
 
   @override
-  String get priceTypeIt => 'કિંમત લખો';
-
-  @override
   String get priceConfirm => 'આ કિંમત બરાબર છે';
 
   @override
@@ -1043,9 +1014,6 @@ class AppLocalizationsGu extends AppLocalizations {
   String get reviewLeaveCancel => 'આગળ વધો';
 
   @override
-  String get reviewSaveFailed => 'તે સચવાયું નહીં. કૃપા કરીને ફરી પ્રયત્ન કરો.';
-
-  @override
   String get statusSoldOut => 'બધું વેચાઈ ગયું';
 
   @override
@@ -1053,21 +1021,6 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get listingsTitle => 'તમારી વસ્તુઓ';
-
-  @override
-  String get listingsFilterAll => 'બધી';
-
-  @override
-  String get listingsFilterDrafts => 'તૈયાર થઈ રહી છે';
-
-  @override
-  String get listingsFilterAttention => 'તમારી જરૂર છે';
-
-  @override
-  String get listingsFilterLive => 'વેચાણ પર';
-
-  @override
-  String get listingsFilterSoldOut => 'બધું વેચાયું';
 
   @override
   String get listingsEmptyTitle => 'તમે હજી કંઈ બનાવ્યું નથી';
@@ -1162,6 +1115,9 @@ class AppLocalizationsGu extends AppLocalizations {
   String get quickStockSaved => 'સાચવ્યું';
 
   @override
+  String get actionUndo => 'પહેલાં જેવું કરો';
+
+  @override
   String get unpublishTitle => 'વેચાણમાંથી હટાવવું છે?';
 
   @override
@@ -1201,9 +1157,6 @@ class AppLocalizationsGu extends AppLocalizations {
   String get listingActionFailed => 'તે થયું નહીં. કૃપા કરીને ફરી પ્રયત્ન કરો.';
 
   @override
-  String get salesTitle => 'શું વેચાયું';
-
-  @override
   String get salesNew => 'નવું';
 
   @override
@@ -1240,9 +1193,6 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get salesPackedAlready => 'આની તારીખ વીતી ગઈ છે';
-
-  @override
-  String get salesSeeEarnings => 'તમે કેટલું કમાયા તે જુઓ';
 
   @override
   String get saleTitle => 'આ ઑર્ડર';
@@ -1334,9 +1284,6 @@ class AppLocalizationsGu extends AppLocalizations {
       'બજાર પોતાનો હિસ્સો લીધા પછી તમને જે મળે છે તે આ છે.';
 
   @override
-  String get profileOverviewTitle => 'તમે';
-
-  @override
   String get profileVillageLabel => 'ગામ અથવા ક્લસ્ટર';
 
   @override
@@ -1374,9 +1321,6 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get editProfileTitle => 'તમારી માહિતી';
-
-  @override
-  String get editProfilePhoto => 'તમારો ફોટો';
 
   @override
   String get editProfileAddPhoto => 'તમારો ફોટો ઉમેરો';
@@ -1495,6 +1439,13 @@ class AppLocalizationsGu extends AppLocalizations {
       'તમે ફોન પર જે બનાવ્યું તે અમારી પાસે પહોંચે ત્યારે જણાવીશું.';
 
   @override
+  String get notifyPackBy => 'જ્યારે પેક કરવાનો સમય થાય';
+
+  @override
+  String get notifyPackByWhy =>
+      'જે વેચાણ પેક કરવાનું છે, તેની તારીખના એક દિવસ પહેલાં અને તે જ દિવસે અમે તમને યાદ અપાવીશું.';
+
+  @override
   String get notificationsBlocked =>
       'આ ફોન અમને તમને કંઈ મોકલવા દેતો નથી. તમે ફોનના સેટિંગ્સમાં તે ચાલુ કરી શકો છો.';
 
@@ -1522,9 +1473,6 @@ class AppLocalizationsGu extends AppLocalizations {
   @override
   String get voiceAutoReadWhy =>
       'આ બંધ હોય તો તમે સ્પીકર દબાવો ત્યારે જ અમે બોલીએ છીએ.';
-
-  @override
-  String get voiceVolume => 'કેટલો મોટો અવાજ';
 
   @override
   String get voiceUnavailable =>
@@ -1745,11 +1693,10 @@ class AppLocalizationsGu extends AppLocalizations {
   String get helpVideoComing => 'આ માટે એક નાનો વીડિયો જલ્દી આવી રહ્યો છે.';
 
   @override
-  String get helpPractice => 'ફરી એક વાર અભ્યાસ કરો';
+  String get helpPractice => 'સારો ફોટો કેવી રીતે લેવો';
 
   @override
-  String get helpPracticeBody =>
-      'બધું ફરીથી કરીને જુઓ. ક્યાંય કંઈ મોકલાશે નહીં.';
+  String get helpPracticeBody => 'એક જ માટલાનો એક સારો અને એક ખરાબ ફોટો.';
 
   @override
   String get helpFaqEntry => 'લોકો જે પૂછે છે';
@@ -1762,9 +1709,6 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get helpTermsEntry => 'શરતો અને ગોપનીયતા';
-
-  @override
-  String get helpVersionEntry => 'આ ઍપ વિશે';
 
   @override
   String get faqTitle => 'લોકો જે પૂછે છે';
@@ -1856,9 +1800,6 @@ class AppLocalizationsGu extends AppLocalizations {
   String get aboutMission => 'કોઈ કામની કિંમત તે કામ કરનારના હાથમાં જ રહે.';
 
   @override
-  String get aboutTeamTitle => 'કોણે બનાવ્યું';
-
-  @override
   String get supportTitle => 'માણસ સાથે વાત કરો';
 
   @override
@@ -1920,7 +1861,20 @@ class AppLocalizationsGu extends AppLocalizations {
   String get termsOpenFull => 'પૂરું લખાણ વાંચો';
 
   @override
-  String get versionTitle => 'આ ઍપ વિશે';
+  String get termsAgreeTitle => 'શરૂ કરતા પહેલાં';
+
+  @override
+  String get termsAgreeBody =>
+      'તમે આ વાતો માટે સંમતિ આપો છો. સાંભળવા માટે સ્પીકર દબાવો.';
+
+  @override
+  String get termsAgreeCheck => 'હું શરતો સાથે સંમત છું';
+
+  @override
+  String get termsAgreeContinue => 'આગળ વધો';
+
+  @override
+  String get termsAgreeNeeded => 'પહેલાં “હું શરતો સાથે સંમત છું” પર ટિક કરો.';
 
   @override
   String versionNumber(String version) {
@@ -1928,13 +1882,7 @@ class AppLocalizationsGu extends AppLocalizations {
   }
 
   @override
-  String get versionUpToDate => 'આ સૌથી નવી આવૃત્તિ છે';
-
-  @override
   String get versionCheck => 'નવી આવૃત્તિ જુઓ';
-
-  @override
-  String get versionChecking => 'જોઈ રહ્યા છીએ…';
 
   @override
   String get versionLicences => 'લાઇસન્સ';
@@ -2042,37 +1990,17 @@ class AppLocalizationsGu extends AppLocalizations {
   String get devSimulateResult => 'Dev: show a finished product';
 
   @override
-  String get polishedTitle => 'તમારી વસ્તુ તૈયાર છે';
+  String get errorNotAllowed =>
+      'આ ખાતું આ કરી શકતું નથી. મદદ માટે અમને ફોન કરો.';
 
   @override
-  String get polishedBody =>
-      'ફોટો જુઓ અને અમે જે લખ્યું તે વાંચો. વેચાણ પર મૂકો, અથવા કંઈ પણ બદલો.';
+  String get errorNotFound => 'આ હવે અહીં નથી.';
 
   @override
-  String get polishedPublish => 'વેચાણ પર મૂકો';
+  String get errorConflict =>
+      'આ બીજે ક્યાંક બદલાયું છે. કૃપા કરીને ફરી ખોલીને ફરી પ્રયત્ન કરો.';
 
   @override
-  String get polishedChange => 'ફેરફાર કરો';
-
-  @override
-  String get polishedChangeHow => 'તમે ફેરફાર કેવી રીતે કરવા માગો છો?';
-
-  @override
-  String get polishedChangeType => 'લખીને બદલો';
-
-  @override
-  String get polishedChangeSay => 'બોલીને બદલો';
-
-  @override
-  String get polishedTitleLabel => 'નામ';
-
-  @override
-  String get polishedDescriptionLabel => 'વર્ણન';
-
-  @override
-  String get polishedSayHint =>
-      'બટન દબાવી રાખો અને શું બદલવું તે કહો, જેમ કે “નામ ટૂંકું કરો”.';
-
-  @override
-  String get polishedUpdating => 'તમારા ફેરફાર થઈ રહ્યા છે…';
+  String get errorInvalid =>
+      'કેટલીક વિગતો સ્વીકારાઈ નહીં. કૃપા કરીને તપાસીને ફરી પ્રયત્ન કરો.';
 }

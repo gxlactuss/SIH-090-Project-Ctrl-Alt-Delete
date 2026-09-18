@@ -21,15 +21,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get actionDone => 'Done';
 
   @override
-  String get actionRetry => 'Try again';
-
-  @override
-  String get actionYes => 'Yes';
-
-  @override
-  String get actionNo => 'No';
-
-  @override
   String get actionListen => 'Listen';
 
   @override
@@ -48,9 +39,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get languageHint => 'Tap the language you speak';
-
-  @override
-  String get welcomeTitle => 'What Kaarigar does';
 
   @override
   String get welcomeCard1Title => 'Take three photos';
@@ -163,6 +151,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get otpWrong => 'That code is not right. Enter it again.';
 
   @override
+  String get phoneSendFailed =>
+      'The code could not be sent. Check the network and try again.';
+
+  @override
+  String get otpExpired => 'The code has expired. Send it again.';
+
+  @override
+  String get authTooManyTries => 'Too many tries. Wait a while and try again.';
+
+  @override
   String get otpChangeNumber => 'Change the number';
 
   @override
@@ -238,7 +236,15 @@ class AppLocalizationsEn extends AppLocalizations {
       'ONDC is where buyers see and buy what you make. The money goes straight to you, never through us.';
 
   @override
+  String get ondcMalformed =>
+      'That does not look like a seller ID. Please check it, or scan the code again.';
+
+  @override
   String get ondcEmailLabel => 'ONDC email';
+
+  @override
+  String get ondcEmailMalformed =>
+      'That does not look like an email address. Please check it.';
 
   @override
   String get ondcSellerIdLabel => 'Seller ID';
@@ -253,9 +259,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ondcLinking => 'Linking…';
 
   @override
-  String get ondcLinked => 'Account linked';
-
-  @override
   String get ondcFailed => 'We could not find that account. Please check it.';
 
   @override
@@ -266,78 +269,50 @@ class AppLocalizationsEn extends AppLocalizations {
       'That is fine. You can still get your products ready. The moment an account is linked, everything goes out together.';
 
   @override
-  String get practiceTitle => 'Let us practise once';
+  String get practiceTitle => 'How to take a good photo';
 
   @override
   String get practiceIntro =>
-      'This is only practice. Nothing here is really sold and nothing leaves your phone.';
+      'The same pot, taken well and taken badly. Swipe to see both.';
 
   @override
-  String get practiceStart => 'Start the practice';
+  String get practiceGoodBadge => 'Do this';
 
   @override
-  String practicePhotoStep(int current, int total) {
-    return 'Photo $current of $total';
-  }
+  String get practiceGoodTitle => 'A good photo';
 
   @override
-  String get practicePhotoWhole => 'Show the whole product';
+  String get practiceGoodTip1 => 'Sharp: the phone was held still';
 
   @override
-  String get practicePhotoDetail => 'Take one from close up';
+  String get practiceGoodTip2 => 'Bright: taken near a window or a door';
 
   @override
-  String get practicePhotoScale => 'Put a hand beside it, so the size shows';
+  String get practiceGoodTip3 => 'The whole product is in the photo';
 
   @override
-  String get practiceTakePhoto => 'Take the photo';
+  String get practiceBadBadge => 'Do not do this';
 
   @override
-  String get practiceVoiceTitle => 'Now say what it is';
+  String get practiceBadTitle => 'A bad photo';
 
   @override
-  String get practiceVoiceBody =>
-      'What it is, what it is made of, how big it is, how long it took, and the price.';
+  String get practiceBadTip1 => 'Blurry: the phone moved';
 
   @override
-  String get practiceHoldToSpeak => 'Hold and speak';
+  String get practiceBadTip2 => 'Buyers cannot see the details';
 
   @override
-  String get practiceReviewTitle => 'Now it is read back to you';
-
-  @override
-  String get practiceReviewBody =>
-      'In the real run the app reads back what it understood. If anything is wrong, you correct it right there by speaking.';
-
-  @override
-  String get practiceDoneTitle => 'Practice finished';
-
-  @override
-  String get practiceNothingPublished =>
-      'Nothing was sent anywhere. That was only practice.';
-
-  @override
-  String get practiceAgain => 'Practise once more';
+  String get practiceBadTip3 => 'The app will ask you to take it again';
 
   @override
   String get practiceFinish => 'Open the app';
-
-  @override
-  String onboardingDoneTitle(String name) {
-    return 'Everything is ready, $name';
-  }
-
-  @override
-  String get onboardingDoneBody => 'You can add your first product now.';
 
   @override
   String get navHome => 'Home';
 
   @override
   String get navListings => 'Products';
-
-  @override
-  String get navSales => 'Sales';
 
   @override
   String get navProfile => 'Profile';
@@ -380,6 +355,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeRecent => 'Your recent products';
 
   @override
+  String get homeNextTitle => 'Next thing to do';
+
+  @override
   String get homeEmptyTitle => 'Nothing here yet';
 
   @override
@@ -387,17 +365,11 @@ class AppLocalizationsEn extends AppLocalizations {
       'Press the big button above to add your first product.';
 
   @override
-  String get homeSeeAll => 'See all';
-
-  @override
   String get offlineNoNetwork => 'No network right now';
 
   @override
   String get offlineNothingLost =>
       'Nothing is lost. It will send itself when the network comes back.';
-
-  @override
-  String get offlineSeeQueue => 'See what is waiting';
 
   @override
   String get statusQueued => 'Waiting to send';
@@ -422,12 +394,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get listingNoPrice => 'Price not said';
-
-  @override
-  String get comingSoonTitle => 'Coming soon';
-
-  @override
-  String get comingSoonBody => 'This part of the app is still being built.';
 
   @override
   String get captureTitle => 'Add a product';
@@ -485,13 +451,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get captureLeaveCancel => 'Stay here';
 
   @override
-  String get shotReviewTitle => 'Is this photo good?';
-
-  @override
   String get shotReviewChecking => 'Checking the photo…';
-
-  @override
-  String get shotReviewKeep => 'Keep this photo';
 
   @override
   String get shotReviewRetake => 'Take it again';
@@ -517,6 +477,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'The product cannot be seen in this photo. Put it inside the outline and come closer.';
 
   @override
+  String get qualityOutOfFrame =>
+      'Only part of the product is in this photo. Put the whole product inside the outline.';
+
+  @override
   String get qualityWarningTitle => 'Take this one again';
 
   @override
@@ -533,13 +497,39 @@ class AppLocalizationsEn extends AppLocalizations {
   String get photoSetMain => 'First photo';
 
   @override
-  String get photoSetMakeMain => 'Make this the first photo';
-
-  @override
   String get photoSetRetakeThis => 'Take this one again';
 
   @override
   String get photoSetConfirm => 'These photos are good';
+
+  @override
+  String get photoEditOpen => 'Crop or turn this photo';
+
+  @override
+  String get photoEditTitle => 'Crop the photo';
+
+  @override
+  String get photoEditBody =>
+      'Drag a corner or an edge of the box to crop. Drag inside the box to move it.';
+
+  @override
+  String get photoEditTurn => 'Turn';
+
+  @override
+  String get photoEditStraighten => 'Straighten';
+
+  @override
+  String get photoEditReset => 'Start again';
+
+  @override
+  String get photoEditDone => 'Use this photo';
+
+  @override
+  String get photoEditCancel => 'Go back';
+
+  @override
+  String get photoEditFailed =>
+      'This change could not be saved. Please try again.';
 
   @override
   String get photoIssueTooDark => 'Too dark to see clearly';
@@ -555,6 +545,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get photoIssueUnreadable => 'This photo did not save';
+
+  @override
+  String get photoIssueOutOfFrame => 'Product not fully in the photo';
 
   @override
   String get voiceTitle => 'Now say what it is';
@@ -584,9 +577,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get voiceBackToPhotos => 'Back to the photos';
-
-  @override
-  String get playbackTitle => 'Listen to what you said';
 
   @override
   String get playbackPlay => 'Listen';
@@ -728,18 +718,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get processingGoHome => 'Go to the home screen';
-
-  @override
-  String get processingStepSent => 'Sent from your phone';
-
-  @override
-  String get processingStepListening => 'Listening to what you said';
-
-  @override
-  String get processingStepWriting => 'Writing the description';
-
-  @override
-  String get processingStepReady => 'Ready for you to check';
 
   @override
   String get attentionTitle => 'One question';
@@ -907,9 +885,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get priceSayIt => 'Say the price';
 
   @override
-  String get priceTypeIt => 'Type the price';
-
-  @override
   String get priceConfirm => 'This price is right';
 
   @override
@@ -1050,9 +1025,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reviewLeaveCancel => 'Keep going';
 
   @override
-  String get reviewSaveFailed => 'That did not save. Please try again.';
-
-  @override
   String get statusSoldOut => 'All sold';
 
   @override
@@ -1060,21 +1032,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get listingsTitle => 'Your products';
-
-  @override
-  String get listingsFilterAll => 'All';
-
-  @override
-  String get listingsFilterDrafts => 'Being made ready';
-
-  @override
-  String get listingsFilterAttention => 'Need you';
-
-  @override
-  String get listingsFilterLive => 'On sale';
-
-  @override
-  String get listingsFilterSoldOut => 'All sold';
 
   @override
   String get listingsEmptyTitle => 'You have not made anything yet';
@@ -1170,6 +1127,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get quickStockSaved => 'Saved';
 
   @override
+  String get actionUndo => 'Undo';
+
+  @override
   String get unpublishTitle => 'Take it off sale?';
 
   @override
@@ -1209,9 +1169,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get listingActionFailed => 'That did not work. Please try again.';
 
   @override
-  String get salesTitle => 'What has sold';
-
-  @override
   String get salesNew => 'New';
 
   @override
@@ -1248,9 +1205,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get salesPackedAlready => 'This one is past its date';
-
-  @override
-  String get salesSeeEarnings => 'See what you have earned';
 
   @override
   String get saleTitle => 'This order';
@@ -1345,9 +1299,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'This is what comes to you, after the marketplace has taken its share.';
 
   @override
-  String get profileOverviewTitle => 'You';
-
-  @override
   String get profileVillageLabel => 'Village or cluster';
 
   @override
@@ -1385,9 +1336,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get editProfileTitle => 'Your details';
-
-  @override
-  String get editProfilePhoto => 'Your photo';
 
   @override
   String get editProfileAddPhoto => 'Add a photo of yourself';
@@ -1506,6 +1454,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'We tell you when what you made on your phone has reached us.';
 
   @override
+  String get notifyPackBy => 'When it is time to pack';
+
+  @override
+  String get notifyPackByWhy =>
+      'We remind you the day before a sale has to be packed, and on the day.';
+
+  @override
   String get notificationsBlocked =>
       'This phone is not letting us send you anything. You can turn it on in the phone\'s settings.';
 
@@ -1533,9 +1488,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get voiceAutoReadWhy =>
       'When this is off, we only speak when you press a speaker.';
-
-  @override
-  String get voiceVolume => 'How loud';
 
   @override
   String get voiceUnavailable =>
@@ -1758,11 +1710,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get helpVideoComing => 'A short video for this is on the way.';
 
   @override
-  String get helpPractice => 'Practise once more';
+  String get helpPractice => 'How to take a good photo';
 
   @override
-  String get helpPracticeBody =>
-      'Go through the whole thing again. Nothing is sent anywhere.';
+  String get helpPracticeBody => 'A good photo and a bad one of the same pot.';
 
   @override
   String get helpFaqEntry => 'Questions people ask';
@@ -1775,9 +1726,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get helpTermsEntry => 'Terms and privacy';
-
-  @override
-  String get helpVersionEntry => 'About this app';
 
   @override
   String get faqTitle => 'Questions people ask';
@@ -1870,9 +1818,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Put the price of a piece of work in the hands of the person who made it.';
 
   @override
-  String get aboutTeamTitle => 'Who built it';
-
-  @override
   String get supportTitle => 'Talk to a person';
 
   @override
@@ -1936,7 +1881,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get termsOpenFull => 'Read the full text';
 
   @override
-  String get versionTitle => 'About this app';
+  String get termsAgreeTitle => 'Before we start';
+
+  @override
+  String get termsAgreeBody =>
+      'This is what you agree to. Press the speaker to hear it.';
+
+  @override
+  String get termsAgreeCheck => 'I agree to the terms';
+
+  @override
+  String get termsAgreeContinue => 'Continue';
+
+  @override
+  String get termsAgreeNeeded => 'Tick “I agree to the terms” first.';
 
   @override
   String versionNumber(String version) {
@@ -1944,13 +1902,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get versionUpToDate => 'This is the newest version';
-
-  @override
   String get versionCheck => 'Check for a new version';
-
-  @override
-  String get versionChecking => 'Checking…';
 
   @override
   String get versionLicences => 'Licences';
@@ -2030,4 +1982,46 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get emptyNudge =>
       'Press the big button on the home screen to add your first product.';
+
+  @override
+  String get productsInProgress => 'In progress';
+
+  @override
+  String get productsListed => 'Listed';
+
+  @override
+  String get productsSold => 'Sold';
+
+  @override
+  String get voiceTypeInstead => 'Type it instead';
+
+  @override
+  String get voiceSpeakInstead => 'Speak instead';
+
+  @override
+  String get voiceTypeTitle => 'Now write what it is';
+
+  @override
+  String get voiceTypeHint => 'Type here…';
+
+  @override
+  String get voiceTypeSave => 'Use this description';
+
+  @override
+  String get devSimulateResult => 'Dev: show a finished product';
+
+  @override
+  String get errorNotAllowed =>
+      'This account cannot do that. Please call us for help.';
+
+  @override
+  String get errorNotFound => 'This is no longer there.';
+
+  @override
+  String get errorConflict =>
+      'This was changed somewhere else. Please open it again and try once more.';
+
+  @override
+  String get errorInvalid =>
+      'Some details were not accepted. Please check them and try again.';
 }

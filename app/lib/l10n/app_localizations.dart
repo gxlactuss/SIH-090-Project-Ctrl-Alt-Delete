@@ -5,9 +5,17 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
+import 'app_localizations_bn.dart';
 import 'app_localizations_en.dart';
+import 'app_localizations_gu.dart';
 import 'app_localizations_hi.dart';
+import 'app_localizations_kn.dart';
+import 'app_localizations_ml.dart';
 import 'app_localizations_mr.dart';
+import 'app_localizations_or.dart';
+import 'app_localizations_pa.dart';
+import 'app_localizations_ta.dart';
+import 'app_localizations_te.dart';
 
 abstract class AppLocalizations {
   AppLocalizations(String locale)
@@ -31,9 +39,17 @@ abstract class AppLocalizations {
       ];
 
   static const List<Locale> supportedLocales = <Locale>[
+    Locale('bn'),
     Locale('en'),
+    Locale('gu'),
     Locale('hi'),
+    Locale('kn'),
+    Locale('ml'),
     Locale('mr'),
+    Locale('or'),
+    Locale('pa'),
+    Locale('ta'),
+    Locale('te'),
   ];
 
   String get appTitle;
@@ -46,12 +62,6 @@ abstract class AppLocalizations {
 
   String get actionDone;
 
-  String get actionRetry;
-
-  String get actionYes;
-
-  String get actionNo;
-
   String get actionListen;
 
   String get actionStopListening;
@@ -63,8 +73,6 @@ abstract class AppLocalizations {
   String get languageTitle;
 
   String get languageHint;
-
-  String get welcomeTitle;
 
   String get welcomeCard1Title;
 
@@ -130,6 +138,12 @@ abstract class AppLocalizations {
 
   String get otpWrong;
 
+  String get phoneSendFailed;
+
+  String get otpExpired;
+
+  String get authTooManyTries;
+
   String get otpChangeNumber;
 
   String get otpAutoRead;
@@ -178,7 +192,11 @@ abstract class AppLocalizations {
 
   String get ondcExplain;
 
+  String get ondcMalformed;
+
   String get ondcEmailLabel;
+
+  String get ondcEmailMalformed;
 
   String get ondcSellerIdLabel;
 
@@ -187,8 +205,6 @@ abstract class AppLocalizations {
   String get ondcLink;
 
   String get ondcLinking;
-
-  String get ondcLinked;
 
   String get ondcFailed;
 
@@ -200,45 +216,31 @@ abstract class AppLocalizations {
 
   String get practiceIntro;
 
-  String get practiceStart;
+  String get practiceGoodBadge;
 
-  String practicePhotoStep(int current, int total);
+  String get practiceGoodTitle;
 
-  String get practicePhotoWhole;
+  String get practiceGoodTip1;
 
-  String get practicePhotoDetail;
+  String get practiceGoodTip2;
 
-  String get practicePhotoScale;
+  String get practiceGoodTip3;
 
-  String get practiceTakePhoto;
+  String get practiceBadBadge;
 
-  String get practiceVoiceTitle;
+  String get practiceBadTitle;
 
-  String get practiceVoiceBody;
+  String get practiceBadTip1;
 
-  String get practiceHoldToSpeak;
+  String get practiceBadTip2;
 
-  String get practiceReviewTitle;
-
-  String get practiceReviewBody;
-
-  String get practiceDoneTitle;
-
-  String get practiceNothingPublished;
-
-  String get practiceAgain;
+  String get practiceBadTip3;
 
   String get practiceFinish;
-
-  String onboardingDoneTitle(String name);
-
-  String get onboardingDoneBody;
 
   String get navHome;
 
   String get navListings;
-
-  String get navSales;
 
   String get navProfile;
 
@@ -254,17 +256,15 @@ abstract class AppLocalizations {
 
   String get homeRecent;
 
+  String get homeNextTitle;
+
   String get homeEmptyTitle;
 
   String get homeEmptyBody;
 
-  String get homeSeeAll;
-
   String get offlineNoNetwork;
 
   String get offlineNothingLost;
-
-  String get offlineSeeQueue;
 
   String get statusQueued;
 
@@ -281,10 +281,6 @@ abstract class AppLocalizations {
   String get listingUntitled;
 
   String get listingNoPrice;
-
-  String get comingSoonTitle;
-
-  String get comingSoonBody;
 
   String get captureTitle;
 
@@ -320,11 +316,7 @@ abstract class AppLocalizations {
 
   String get captureLeaveCancel;
 
-  String get shotReviewTitle;
-
   String get shotReviewChecking;
-
-  String get shotReviewKeep;
 
   String get shotReviewRetake;
 
@@ -338,6 +330,8 @@ abstract class AppLocalizations {
 
   String get qualityNoSubject;
 
+  String get qualityOutOfFrame;
+
   String get qualityWarningTitle;
 
   String get qualityKeepAnyway;
@@ -348,11 +342,27 @@ abstract class AppLocalizations {
 
   String get photoSetMain;
 
-  String get photoSetMakeMain;
-
   String get photoSetRetakeThis;
 
   String get photoSetConfirm;
+
+  String get photoEditOpen;
+
+  String get photoEditTitle;
+
+  String get photoEditBody;
+
+  String get photoEditTurn;
+
+  String get photoEditStraighten;
+
+  String get photoEditReset;
+
+  String get photoEditDone;
+
+  String get photoEditCancel;
+
+  String get photoEditFailed;
 
   String get photoIssueTooDark;
 
@@ -363,6 +373,8 @@ abstract class AppLocalizations {
   String get photoIssueNoSubject;
 
   String get photoIssueUnreadable;
+
+  String get photoIssueOutOfFrame;
 
   String get voiceTitle;
 
@@ -379,8 +391,6 @@ abstract class AppLocalizations {
   String get voiceFailed;
 
   String get voiceBackToPhotos;
-
-  String get playbackTitle;
 
   String get playbackPlay;
 
@@ -459,14 +469,6 @@ abstract class AppLocalizations {
   String get processingLeave;
 
   String get processingGoHome;
-
-  String get processingStepSent;
-
-  String get processingStepListening;
-
-  String get processingStepWriting;
-
-  String get processingStepReady;
 
   String get attentionTitle;
 
@@ -570,8 +572,6 @@ abstract class AppLocalizations {
 
   String get priceSayIt;
 
-  String get priceTypeIt;
-
   String get priceConfirm;
 
   String get stockTitle;
@@ -660,23 +660,11 @@ abstract class AppLocalizations {
 
   String get reviewLeaveCancel;
 
-  String get reviewSaveFailed;
-
   String get statusSoldOut;
 
   String get statusUnpublished;
 
   String get listingsTitle;
-
-  String get listingsFilterAll;
-
-  String get listingsFilterDrafts;
-
-  String get listingsFilterAttention;
-
-  String get listingsFilterLive;
-
-  String get listingsFilterSoldOut;
 
   String get listingsEmptyTitle;
 
@@ -726,6 +714,8 @@ abstract class AppLocalizations {
 
   String get quickStockSaved;
 
+  String get actionUndo;
+
   String get unpublishTitle;
 
   String get unpublishBody;
@@ -750,8 +740,6 @@ abstract class AppLocalizations {
 
   String get listingActionFailed;
 
-  String get salesTitle;
-
   String get salesNew;
 
   String get salesEmptyTitle;
@@ -769,8 +757,6 @@ abstract class AppLocalizations {
   String get salesPackByTomorrow;
 
   String get salesPackedAlready;
-
-  String get salesSeeEarnings;
 
   String get saleTitle;
 
@@ -818,8 +804,6 @@ abstract class AppLocalizations {
 
   String get earningsNote;
 
-  String get profileOverviewTitle;
-
   String get profileVillageLabel;
 
   String get profileNotSet;
@@ -845,8 +829,6 @@ abstract class AppLocalizations {
   String get profileAccountEntry;
 
   String get editProfileTitle;
-
-  String get editProfilePhoto;
 
   String get editProfileAddPhoto;
 
@@ -918,6 +900,10 @@ abstract class AppLocalizations {
 
   String get notifyUploadWhy;
 
+  String get notifyPackBy;
+
+  String get notifyPackByWhy;
+
   String get notificationsBlocked;
 
   String get voiceSettingsTitle;
@@ -935,8 +921,6 @@ abstract class AppLocalizations {
   String get voiceAutoRead;
 
   String get voiceAutoReadWhy;
-
-  String get voiceVolume;
 
   String get voiceUnavailable;
 
@@ -1076,8 +1060,6 @@ abstract class AppLocalizations {
 
   String get helpTermsEntry;
 
-  String get helpVersionEntry;
-
   String get faqTitle;
 
   String get faqQ1;
@@ -1130,8 +1112,6 @@ abstract class AppLocalizations {
 
   String get aboutMission;
 
-  String get aboutTeamTitle;
-
   String get supportTitle;
 
   String get supportBody;
@@ -1166,15 +1146,19 @@ abstract class AppLocalizations {
 
   String get termsOpenFull;
 
-  String get versionTitle;
+  String get termsAgreeTitle;
+
+  String get termsAgreeBody;
+
+  String get termsAgreeCheck;
+
+  String get termsAgreeContinue;
+
+  String get termsAgreeNeeded;
 
   String versionNumber(String version);
 
-  String get versionUpToDate;
-
   String get versionCheck;
-
-  String get versionChecking;
 
   String get versionLicences;
 
@@ -1221,6 +1205,32 @@ abstract class AppLocalizations {
   String get updateFailed;
 
   String get emptyNudge;
+
+  String get productsInProgress;
+
+  String get productsListed;
+
+  String get productsSold;
+
+  String get voiceTypeInstead;
+
+  String get voiceSpeakInstead;
+
+  String get voiceTypeTitle;
+
+  String get voiceTypeHint;
+
+  String get voiceTypeSave;
+
+  String get devSimulateResult;
+
+  String get errorNotAllowed;
+
+  String get errorNotFound;
+
+  String get errorConflict;
+
+  String get errorInvalid;
 }
 
 class _AppLocalizationsDelegate
@@ -1233,8 +1243,19 @@ class _AppLocalizationsDelegate
   }
 
   @override
-  bool isSupported(Locale locale) =>
-      <String>['en', 'hi', 'mr'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>[
+    'bn',
+    'en',
+    'gu',
+    'hi',
+    'kn',
+    'ml',
+    'mr',
+    'or',
+    'pa',
+    'ta',
+    'te',
+  ].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -1242,12 +1263,28 @@ class _AppLocalizationsDelegate
 
 AppLocalizations lookupAppLocalizations(Locale locale) {
   switch (locale.languageCode) {
+    case 'bn':
+      return AppLocalizationsBn();
     case 'en':
       return AppLocalizationsEn();
+    case 'gu':
+      return AppLocalizationsGu();
     case 'hi':
       return AppLocalizationsHi();
+    case 'kn':
+      return AppLocalizationsKn();
+    case 'ml':
+      return AppLocalizationsMl();
     case 'mr':
       return AppLocalizationsMr();
+    case 'or':
+      return AppLocalizationsOr();
+    case 'pa':
+      return AppLocalizationsPa();
+    case 'ta':
+      return AppLocalizationsTa();
+    case 'te':
+      return AppLocalizationsTe();
   }
 
   throw FlutterError(

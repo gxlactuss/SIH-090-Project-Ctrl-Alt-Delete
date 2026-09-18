@@ -127,28 +127,29 @@ abstract final class AppTheme {
       ),
 
       filledButtonTheme: FilledButtonThemeData(
-        style: FilledButton.styleFrom(
-          minimumSize: const Size.fromHeight(minTapTarget),
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-          shape: shape,
-          textStyle: font(
-            const TextStyle(fontSize: 21, fontWeight: FontWeight.w600),
-          ),
-        ).copyWith(
-          backgroundColor: WidgetStateProperty.resolveWith(
-            (states) => states.contains(WidgetState.disabled)
-                ? null
-                : states.contains(WidgetState.pressed) ||
-                        states.contains(WidgetState.hovered)
+        style:
+            FilledButton.styleFrom(
+              minimumSize: const Size.fromHeight(minTapTarget),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              shape: shape,
+              textStyle: font(
+                const TextStyle(fontSize: 21, fontWeight: FontWeight.w600),
+              ),
+            ).copyWith(
+              backgroundColor: WidgetStateProperty.resolveWith(
+                (states) => states.contains(WidgetState.disabled)
+                    ? null
+                    : states.contains(WidgetState.pressed) ||
+                          states.contains(WidgetState.hovered)
                     ? AppColors.primaryPressed
                     : AppColors.terracotta,
-          ),
-          foregroundColor: WidgetStateProperty.resolveWith(
-            (states) =>
-                states.contains(WidgetState.disabled) ? null : Colors.white,
-          ),
-          overlayColor: const WidgetStatePropertyAll(Colors.transparent),
-        ),
+              ),
+              foregroundColor: WidgetStateProperty.resolveWith(
+                (states) =>
+                    states.contains(WidgetState.disabled) ? null : Colors.white,
+              ),
+              overlayColor: const WidgetStatePropertyAll(Colors.transparent),
+            ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(

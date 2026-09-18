@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../core/routing/app_routes.dart';
 import '../core/theme/app_colors.dart';
+import '../core/theme/app_motion.dart';
 import '../l10n/app_localizations.dart';
 import '../services/connectivity_service.dart';
 import '../services/speech_service.dart';
@@ -15,11 +16,38 @@ class OfflineBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
     final offline = context.select((ConnectivityService c) => c.isOffline);
     final pending = context.select((QueueController q) => q.pendingCount);
+    final visible = offline || pending > 0;
+    final duration = AppMotion.of(context, AppMotion.medium);
 
-    if (!offline && pending == 0) return const SizedBox.shrink();
+    return AnimatedSize(
+      duration: duration,
+      curve: AppMotion.standard,
+      alignment: Alignment.bottomCenter,
+      child: AnimatedSwitcher(
+        duration: duration,
+        child: visible
+            ? _Banner(
+                key: const ValueKey('banner'),
+                offline: offline,
+                pending: pending,
+              )
+            : const SizedBox(key: ValueKey('hidden'), width: double.infinity),
+      ),
+    );
+  }
+}
+
+class _Banner extends StatelessWidget {
+  const _Banner({super.key, required this.offline, required this.pending});
+
+  final bool offline;
+  final int pending;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
 
     final lines = <String>[
       if (offline) l10n.offlineNoNetwork,

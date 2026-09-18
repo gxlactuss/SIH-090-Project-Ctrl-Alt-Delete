@@ -21,15 +21,6 @@ class AppLocalizationsMr extends AppLocalizations {
   String get actionDone => 'झाले';
 
   @override
-  String get actionRetry => 'पुन्हा प्रयत्न करा';
-
-  @override
-  String get actionYes => 'होय';
-
-  @override
-  String get actionNo => 'नाही';
-
-  @override
   String get actionListen => 'ऐका';
 
   @override
@@ -48,9 +39,6 @@ class AppLocalizationsMr extends AppLocalizations {
 
   @override
   String get languageHint => 'तुम्ही बोलता ती भाषा दाबा';
-
-  @override
-  String get welcomeTitle => 'कारागीर काय करतो';
 
   @override
   String get welcomeCard1Title => 'तीन फोटो काढा';
@@ -163,6 +151,17 @@ class AppLocalizationsMr extends AppLocalizations {
   String get otpWrong => 'कोड बरोबर नाही. पुन्हा टाका.';
 
   @override
+  String get phoneSendFailed =>
+      'कोड पाठवता आला नाही. नेटवर्क तपासा आणि पुन्हा प्रयत्न करा.';
+
+  @override
+  String get otpExpired => 'कोडची वेळ संपली. पुन्हा पाठवा.';
+
+  @override
+  String get authTooManyTries =>
+      'खूप वेळा प्रयत्न झाले. थोड्या वेळाने पुन्हा प्रयत्न करा.';
+
+  @override
   String get otpChangeNumber => 'नंबर बदला';
 
   @override
@@ -238,7 +237,15 @@ class AppLocalizationsMr extends AppLocalizations {
       'ओएनडीसी ही अशी जागा आहे जिथे ग्राहक तुमची वस्तू बघतात आणि विकत घेतात. पैसे थेट तुम्हाला मिळतात, आमच्याकडे येत नाहीत.';
 
   @override
+  String get ondcMalformed =>
+      'हा सेलर आयडी वाटत नाही. कृपया तपासा, किंवा कोड पुन्हा स्कॅन करा.';
+
+  @override
   String get ondcEmailLabel => 'ओएनडीसी ईमेल';
+
+  @override
+  String get ondcEmailMalformed =>
+      'हा ईमेल पत्ता बरोबर वाटत नाही. कृपया तो तपासा.';
 
   @override
   String get ondcSellerIdLabel => 'विक्रेता आयडी';
@@ -253,9 +260,6 @@ class AppLocalizationsMr extends AppLocalizations {
   String get ondcLinking => 'जोडत आहोत…';
 
   @override
-  String get ondcLinked => 'खाते जोडले गेले';
-
-  @override
   String get ondcFailed => 'हे खाते सापडले नाही. पुन्हा तपासा.';
 
   @override
@@ -266,78 +270,50 @@ class AppLocalizationsMr extends AppLocalizations {
       'हरकत नाही. तुम्ही वस्तू तयार करून ठेवू शकता. खाते जोडले की सगळे एकदम पाठवले जाईल.';
 
   @override
-  String get practiceTitle => 'एकदा सराव करूया';
+  String get practiceTitle => 'चांगला फोटो कसा काढावा';
 
   @override
   String get practiceIntro =>
-      'हा फक्त सराव आहे. इथे काहीही खरोखर विकले जाणार नाही आणि कुठेही जाणार नाही.';
+      'एकच मडके, एकदा चांगले आणि एकदा वाईट काढलेले. दोन्ही पाहण्यासाठी सरकवा.';
 
   @override
-  String get practiceStart => 'सराव सुरू करा';
+  String get practiceGoodBadge => 'असे करा';
 
   @override
-  String practicePhotoStep(int current, int total) {
-    return 'फोटो $current, एकूण $total';
-  }
+  String get practiceGoodTitle => 'चांगला फोटो';
 
   @override
-  String get practicePhotoWhole => 'पूर्ण वस्तू दाखवा';
+  String get practiceGoodTip1 => 'स्पष्ट: फोन स्थिर धरला होता';
 
   @override
-  String get practicePhotoDetail => 'जवळून एक फोटो काढा';
+  String get practiceGoodTip2 => 'उजेड: खिडकी किंवा दाराजवळ काढला';
 
   @override
-  String get practicePhotoScale => 'शेजारी हात ठेवा, म्हणजे आकार कळेल';
+  String get practiceGoodTip3 => 'संपूर्ण वस्तू फोटोत आहे';
 
   @override
-  String get practiceTakePhoto => 'फोटो काढा';
+  String get practiceBadBadge => 'असे करू नका';
 
   @override
-  String get practiceVoiceTitle => 'आता बोलून सांगा';
+  String get practiceBadTitle => 'वाईट फोटो';
 
   @override
-  String get practiceVoiceBody =>
-      'ही वस्तू काय आहे, कशाची बनली आहे, केवढी आहे, किती दिवस लागले, आणि किंमत किती.';
+  String get practiceBadTip1 => 'अस्पष्ट: फोन हलला';
 
   @override
-  String get practiceHoldToSpeak => 'दाबून बोला';
+  String get practiceBadTip2 => 'खरेदीदारांना बारकावे दिसत नाहीत';
 
   @override
-  String get practiceReviewTitle => 'आता तुम्हाला वाचून दाखवले जाईल';
-
-  @override
-  String get practiceReviewBody =>
-      'खऱ्या वेळी ॲपला जे समजले ते तुम्हाला वाचून दाखवेल. काही चुकले असेल तर तुम्ही तिथेच बोलून दुरुस्त करू शकता.';
-
-  @override
-  String get practiceDoneTitle => 'सराव पूर्ण झाला';
-
-  @override
-  String get practiceNothingPublished =>
-      'काहीही कुठेही पाठवले गेले नाही. तो फक्त सराव होता.';
-
-  @override
-  String get practiceAgain => 'आणखी एकदा सराव करा';
+  String get practiceBadTip3 => 'अॅप तुम्हाला पुन्हा फोटो काढायला सांगेल';
 
   @override
   String get practiceFinish => 'ॲप सुरू करा';
-
-  @override
-  String onboardingDoneTitle(String name) {
-    return 'सर्व तयार आहे, $name';
-  }
-
-  @override
-  String get onboardingDoneBody => 'आता तुम्ही तुमची पहिली वस्तू टाकू शकता.';
 
   @override
   String get navHome => 'होम';
 
   @override
   String get navListings => 'वस्तू';
-
-  @override
-  String get navSales => 'विक्री';
 
   @override
   String get navProfile => 'प्रोफाइल';
@@ -380,13 +356,13 @@ class AppLocalizationsMr extends AppLocalizations {
   String get homeRecent => 'तुमच्या अलीकडच्या वस्तू';
 
   @override
+  String get homeNextTitle => 'आता हे करायचे आहे';
+
+  @override
   String get homeEmptyTitle => 'इथे अजून काही नाही';
 
   @override
   String get homeEmptyBody => 'वरचे मोठे बटण दाबून तुमची पहिली वस्तू टाका.';
-
-  @override
-  String get homeSeeAll => 'सर्व पहा';
 
   @override
   String get offlineNoNetwork => 'आत्ता नेटवर्क नाही';
@@ -394,9 +370,6 @@ class AppLocalizationsMr extends AppLocalizations {
   @override
   String get offlineNothingLost =>
       'काहीही हरवलेले नाही. नेटवर्क आल्यावर ते आपोआप जाईल.';
-
-  @override
-  String get offlineSeeQueue => 'काय बाकी आहे ते पहा';
 
   @override
   String get statusQueued => 'पाठवायचे बाकी';
@@ -421,12 +394,6 @@ class AppLocalizationsMr extends AppLocalizations {
 
   @override
   String get listingNoPrice => 'किंमत सांगितली नाही';
-
-  @override
-  String get comingSoonTitle => 'लवकरच येत आहे';
-
-  @override
-  String get comingSoonBody => 'ॲपचा हा भाग अजून तयार होत आहे.';
 
   @override
   String get captureTitle => 'वस्तू टाका';
@@ -483,13 +450,7 @@ class AppLocalizationsMr extends AppLocalizations {
   String get captureLeaveCancel => 'इथेच थांबा';
 
   @override
-  String get shotReviewTitle => 'हा फोटो ठीक आहे का?';
-
-  @override
   String get shotReviewChecking => 'फोटो तपासला जात आहे…';
-
-  @override
-  String get shotReviewKeep => 'हा फोटो ठेवा';
 
   @override
   String get shotReviewRetake => 'पुन्हा घ्या';
@@ -514,6 +475,10 @@ class AppLocalizationsMr extends AppLocalizations {
       'या फोटोत वस्तू दिसत नाही. ती चौकटीत ठेवा आणि जवळ येऊन घ्या.';
 
   @override
+  String get qualityOutOfFrame =>
+      'या फोटोत वस्तूचा फक्त एक भाग आहे. पूर्ण वस्तू चौकटीत ठेवा.';
+
+  @override
   String get qualityWarningTitle => 'हा फोटो पुन्हा घ्या';
 
   @override
@@ -530,13 +495,38 @@ class AppLocalizationsMr extends AppLocalizations {
   String get photoSetMain => 'पहिला फोटो';
 
   @override
-  String get photoSetMakeMain => 'हा पहिला फोटो करा';
-
-  @override
   String get photoSetRetakeThis => 'हा पुन्हा घ्या';
 
   @override
   String get photoSetConfirm => 'हे फोटो ठीक आहेत';
+
+  @override
+  String get photoEditOpen => 'फोटो कापा किंवा फिरवा';
+
+  @override
+  String get photoEditTitle => 'फोटो कापा';
+
+  @override
+  String get photoEditBody =>
+      'कापण्यासाठी चौकटीचा कोपरा किंवा कड ओढा. हलवण्यासाठी चौकटीच्या आतून ओढा.';
+
+  @override
+  String get photoEditTurn => 'फिरवा';
+
+  @override
+  String get photoEditStraighten => 'सरळ करा';
+
+  @override
+  String get photoEditReset => 'पुन्हा सुरू करा';
+
+  @override
+  String get photoEditDone => 'हाच फोटो वापरा';
+
+  @override
+  String get photoEditCancel => 'मागे जा';
+
+  @override
+  String get photoEditFailed => 'हा बदल जतन झाला नाही. पुन्हा प्रयत्न करा.';
 
   @override
   String get photoIssueTooDark => 'खूप अंधारा आहे, नीट दिसत नाही';
@@ -552,6 +542,9 @@ class AppLocalizationsMr extends AppLocalizations {
 
   @override
   String get photoIssueUnreadable => 'हा फोटो साठवला गेला नाही';
+
+  @override
+  String get photoIssueOutOfFrame => 'वस्तू पूर्ण फोटोत नाही';
 
   @override
   String get voiceTitle => 'आता ती काय आहे ते बोलून सांगा';
@@ -580,9 +573,6 @@ class AppLocalizationsMr extends AppLocalizations {
 
   @override
   String get voiceBackToPhotos => 'फोटोंकडे परत जा';
-
-  @override
-  String get playbackTitle => 'तुम्ही जे सांगितले ते ऐका';
 
   @override
   String get playbackPlay => 'ऐका';
@@ -722,18 +712,6 @@ class AppLocalizationsMr extends AppLocalizations {
 
   @override
   String get processingGoHome => 'होमवर जा';
-
-  @override
-  String get processingStepSent => 'तुमच्या फोनवरून पाठवले';
-
-  @override
-  String get processingStepListening => 'तुम्ही सांगितलेले ऐकले जात आहे';
-
-  @override
-  String get processingStepWriting => 'वर्णन लिहिले जात आहे';
-
-  @override
-  String get processingStepReady => 'तुम्ही बघण्यासाठी तयार';
 
   @override
   String get attentionTitle => 'एक प्रश्न';
@@ -899,9 +877,6 @@ class AppLocalizationsMr extends AppLocalizations {
   String get priceSayIt => 'किंमत सांगा';
 
   @override
-  String get priceTypeIt => 'किंमत लिहा';
-
-  @override
   String get priceConfirm => 'ही किंमत बरोबर आहे';
 
   @override
@@ -1040,10 +1015,6 @@ class AppLocalizationsMr extends AppLocalizations {
   String get reviewLeaveCancel => 'पुढे चला';
 
   @override
-  String get reviewSaveFailed =>
-      'ते साठवले गेले नाही. कृपया पुन्हा प्रयत्न करा.';
-
-  @override
   String get statusSoldOut => 'सर्व विकले';
 
   @override
@@ -1051,21 +1022,6 @@ class AppLocalizationsMr extends AppLocalizations {
 
   @override
   String get listingsTitle => 'तुमच्या वस्तू';
-
-  @override
-  String get listingsFilterAll => 'सर्व';
-
-  @override
-  String get listingsFilterDrafts => 'तयार होत आहेत';
-
-  @override
-  String get listingsFilterAttention => 'तुमची गरज आहे';
-
-  @override
-  String get listingsFilterLive => 'विक्रीवर';
-
-  @override
-  String get listingsFilterSoldOut => 'सर्व विकले';
 
   @override
   String get listingsEmptyTitle => 'तुम्ही अजून काही बनवले नाही';
@@ -1161,6 +1117,9 @@ class AppLocalizationsMr extends AppLocalizations {
   String get quickStockSaved => 'साठवले';
 
   @override
+  String get actionUndo => 'पहिल्यासारखे करा';
+
+  @override
   String get unpublishTitle => 'विक्रीतून काढायचे?';
 
   @override
@@ -1200,9 +1159,6 @@ class AppLocalizationsMr extends AppLocalizations {
   String get listingActionFailed => 'ते झाले नाही. कृपया पुन्हा प्रयत्न करा.';
 
   @override
-  String get salesTitle => 'काय विकले';
-
-  @override
   String get salesNew => 'नवीन';
 
   @override
@@ -1239,9 +1195,6 @@ class AppLocalizationsMr extends AppLocalizations {
 
   @override
   String get salesPackedAlready => 'याची तारीख निघून गेली आहे';
-
-  @override
-  String get salesSeeEarnings => 'तुम्ही किती कमावले ते बघा';
 
   @override
   String get saleTitle => 'ही ऑर्डर';
@@ -1334,9 +1287,6 @@ class AppLocalizationsMr extends AppLocalizations {
       'बाजाराचा हिस्सा वजा केल्यावर तुम्हाला जे मिळते ते हे आहे.';
 
   @override
-  String get profileOverviewTitle => 'तुम्ही';
-
-  @override
   String get profileVillageLabel => 'गाव किंवा क्लस्टर';
 
   @override
@@ -1374,9 +1324,6 @@ class AppLocalizationsMr extends AppLocalizations {
 
   @override
   String get editProfileTitle => 'तुमची माहिती';
-
-  @override
-  String get editProfilePhoto => 'तुमचा फोटो';
 
   @override
   String get editProfileAddPhoto => 'तुमचा फोटो टाका';
@@ -1495,6 +1442,13 @@ class AppLocalizationsMr extends AppLocalizations {
       'तुम्ही फोनवर जे बनवले ते आमच्यापर्यंत पोहोचले की सांगू.';
 
   @override
+  String get notifyPackBy => 'पॅक करायची वेळ झाल्यावर';
+
+  @override
+  String get notifyPackByWhy =>
+      'विक्री पॅक करायच्या तारखेच्या एक दिवस आधी आणि त्याच दिवशी आम्ही तुम्हाला आठवण करून देऊ.';
+
+  @override
   String get notificationsBlocked =>
       'हा फोन आम्हाला तुम्हाला काही पाठवू देत नाही. तुम्ही ते फोनच्या सेटिंगमध्ये सुरू करू शकता.';
 
@@ -1522,9 +1476,6 @@ class AppLocalizationsMr extends AppLocalizations {
   @override
   String get voiceAutoReadWhy =>
       'हे बंद असेल तर तुम्ही स्पीकर दाबाल तेव्हाच आम्ही बोलतो.';
-
-  @override
-  String get voiceVolume => 'किती मोठा आवाज';
 
   @override
   String get voiceUnavailable =>
@@ -1746,11 +1697,10 @@ class AppLocalizationsMr extends AppLocalizations {
   String get helpVideoComing => 'यासाठी एक छोटा व्हिडिओ लवकरच येत आहे.';
 
   @override
-  String get helpPractice => 'आणखी एकदा सराव करा';
+  String get helpPractice => 'चांगला फोटो कसा काढावा';
 
   @override
-  String get helpPracticeBody =>
-      'सर्व काही पुन्हा करून बघा. काहीही कुठेही पाठवले जाणार नाही.';
+  String get helpPracticeBody => 'एकाच मडक्याचा एक चांगला आणि एक वाईट फोटो.';
 
   @override
   String get helpFaqEntry => 'लोक जे विचारतात';
@@ -1763,9 +1713,6 @@ class AppLocalizationsMr extends AppLocalizations {
 
   @override
   String get helpTermsEntry => 'अटी आणि गोपनीयता';
-
-  @override
-  String get helpVersionEntry => 'या ॲपबद्दल';
 
   @override
   String get faqTitle => 'लोक जे विचारतात';
@@ -1858,9 +1805,6 @@ class AppLocalizationsMr extends AppLocalizations {
       'एखाद्या कामाची किंमत ते काम करणाऱ्याच्याच हातात असावी.';
 
   @override
-  String get aboutTeamTitle => 'कोणी बनवले';
-
-  @override
   String get supportTitle => 'माणसाशी बोला';
 
   @override
@@ -1922,7 +1866,20 @@ class AppLocalizationsMr extends AppLocalizations {
   String get termsOpenFull => 'संपूर्ण मजकूर वाचा';
 
   @override
-  String get versionTitle => 'या ॲपबद्दल';
+  String get termsAgreeTitle => 'सुरू करण्यापूर्वी';
+
+  @override
+  String get termsAgreeBody =>
+      'तुम्ही या गोष्टींना संमती देत आहात. ऐकण्यासाठी स्पीकर दाबा.';
+
+  @override
+  String get termsAgreeCheck => 'मला अटी मान्य आहेत';
+
+  @override
+  String get termsAgreeContinue => 'पुढे जा';
+
+  @override
+  String get termsAgreeNeeded => 'आधी “मला अटी मान्य आहेत” वर खूण करा.';
 
   @override
   String versionNumber(String version) {
@@ -1930,13 +1887,7 @@ class AppLocalizationsMr extends AppLocalizations {
   }
 
   @override
-  String get versionUpToDate => 'ही सर्वात नवी आवृत्ती आहे';
-
-  @override
   String get versionCheck => 'नवी आवृत्ती बघा';
-
-  @override
-  String get versionChecking => 'बघत आहोत…';
 
   @override
   String get versionLicences => 'परवाने';
@@ -2014,4 +1965,46 @@ class AppLocalizationsMr extends AppLocalizations {
 
   @override
   String get emptyNudge => 'होमवरचे मोठे बटण दाबून तुमची पहिली वस्तू टाका.';
+
+  @override
+  String get productsInProgress => 'तयार होत आहे';
+
+  @override
+  String get productsListed => 'विक्रीला';
+
+  @override
+  String get productsSold => 'विकले गेले';
+
+  @override
+  String get voiceTypeInstead => 'लिहून सांगा';
+
+  @override
+  String get voiceSpeakInstead => 'बोलून सांगा';
+
+  @override
+  String get voiceTypeTitle => 'आता लिहा की ही वस्तू काय आहे';
+
+  @override
+  String get voiceTypeHint => 'येथे लिहा…';
+
+  @override
+  String get voiceTypeSave => 'हेच वर्णन ठेवा';
+
+  @override
+  String get devSimulateResult => 'Dev: show a finished product';
+
+  @override
+  String get errorNotAllowed =>
+      'या खात्याला हे करता येत नाही. मदतीसाठी आम्हाला फोन करा.';
+
+  @override
+  String get errorNotFound => 'हे आता इथे नाही.';
+
+  @override
+  String get errorConflict =>
+      'हे दुसरीकडे बदलले गेले आहे. कृपया पुन्हा उघडून परत प्रयत्न करा.';
+
+  @override
+  String get errorInvalid =>
+      'काही माहिती स्वीकारली गेली नाही. कृपया तपासून पुन्हा प्रयत्न करा.';
 }

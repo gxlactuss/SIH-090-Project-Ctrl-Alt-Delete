@@ -35,7 +35,7 @@ abstract final class AppConstants {
   static const int editedPhotoMaxSide = 1600;
   static const int editedPhotoJpegQuality = 88;
 
-  static const int onboardingSteps = 10;
+  static const int onboardingSteps = 8;
 
   static const int termsVersion = 1;
 
