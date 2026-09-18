@@ -1,28 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../core/di.dart';
 import '../../core/routing/app_routes.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_theme.dart';
 import '../../data/repositories/ondc_repository.dart';
 import '../../l10n/app_localizations.dart';
 import '../../services/speech_service.dart';
-import '../../state/onboarding_controller.dart';
+import '../../state/app_state.dart';
 import '../../widgets/big_action_button.dart';
 import '../../widgets/speak_button.dart';
 import '../../widgets/whole_word_text.dart';
 import 'widgets/demo_hint.dart';
 import 'widgets/onboarding_scaffold.dart';
 import 'widgets/qr_scan_page.dart';
+import '../../widgets/confirm_dialog.dart';
 
 class OndcScreen extends StatefulWidget {
   const OndcScreen({super.key});
+
+  static Future<void> askBeforeFirstPublish(BuildContext context) async {
+    final state = context.maybeRead<AppState>();
+    if (state == null) return;
+    if ((state.profile?.hasOndcAccount ?? false) || state.hasBeenAskedOndc) {
+      return;
+    }
+    await state.markOndcAsked();
+    if (!context.mounted) return;
+    await Navigator.of(context).pushNamed(AppRoutes.ondc);
+  }
 
   @override
   State<OndcScreen> createState() => _OndcScreenState();
 }
 
 class _OndcScreenState extends State<OndcScreen> {
+  static const _ondc = OndcRepository();
+
   final _email = TextEditingController();
   final _sellerId = TextEditingController();
 
@@ -32,9 +47,9 @@ class _OndcScreenState extends State<OndcScreen> {
   @override
   void initState() {
     super.initState();
-    final onboarding = context.read<OnboardingController>();
-    _email.text = onboarding.ondcEmail ?? '';
-    _sellerId.text = onboarding.ondcSellerId ?? '';
+    final profile = context.read<AppState>().profile;
+    _email.text = profile?.ondcEmail ?? '';
+    _sellerId.text = profile?.ondcSellerId ?? '';
   }
 
   @override
@@ -59,14 +74,15 @@ class _OndcScreenState extends State<OndcScreen> {
 
   Future<void> _link() async {
     final l10n = AppLocalizations.of(context);
-    final onboarding = context.read<OnboardingController>();
+    final state = context.read<AppState>();
+    final navigator = Navigator.of(context);
 
     setState(() {
       _linking = true;
       _error = null;
     });
 
-    final outcome = await onboarding.ondc.link(
+    final outcome = await _ondc.link(
       email: _email.text,
       sellerId: _sellerId.text,
     );
@@ -75,8 +91,15 @@ class _OndcScreenState extends State<OndcScreen> {
 
     switch (outcome) {
       case OndcLinkOutcome.linked:
-        onboarding.linkOndc(email: _email.text, sellerId: _sellerId.text);
-        Navigator.of(context).pushNamed(AppRoutes.practice);
+        await state.updateProfile(
+          ondcSellerId: _sellerId.text.trim(),
+          ondcEmail: _email.text.trim(),
+        );
+        navigator.pop(true);
+      case OndcLinkOutcome.emailMalformed:
+        setState(() => _error = l10n.ondcEmailMalformed);
+      case OndcLinkOutcome.malformed:
+        setState(() => _error = l10n.ondcMalformed);
       case OndcLinkOutcome.notFound:
         setState(() => _error = l10n.ondcFailed);
     }
@@ -85,56 +108,29 @@ class _OndcScreenState extends State<OndcScreen> {
   Future<void> _skip() async {
     final l10n = AppLocalizations.of(context);
     final speech = context.read<SpeechService>();
-    final onboarding = context.read<OnboardingController>();
 
-    speech.speakIfAuto([l10n.ondcNoAccountExplain], key: 'ondc:skip');
-
-    final proceed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        scrollable: true,
-        backgroundColor: AppColors.surface,
-        title: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(child: WholeWordText(l10n.ondcNoAccount)),
-            SpeakButton(
-              text: l10n.ondcNoAccountExplain,
-              utteranceKey: 'ondc:skip',
-            ),
-          ],
-        ),
-        content: WholeWordText(
-          l10n.ondcNoAccountExplain,
-          style: Theme.of(context).textTheme.bodyLarge,
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: WholeWordText(l10n.actionBack),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: WholeWordText(l10n.actionNext),
-          ),
-        ],
-      ),
+    final proceed = await showSpokenConfirm(
+      context,
+      title: l10n.ondcNoAccount,
+      body: l10n.ondcNoAccountExplain,
+      confirm: l10n.actionNext,
+      cancel: l10n.actionBack,
+      tone: ConfirmTone.primary,
+      speechKey: 'ondc:skip',
     );
 
-    if (proceed != true || !mounted) return;
+    if (!proceed || !mounted) return;
     await speech.stop();
     if (!mounted) return;
-    onboarding.skipOndc();
-    Navigator.of(context).pushNamed(AppRoutes.practice);
+    Navigator.of(context).pop(false);
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final ondc = context.read<OnboardingController>().ondc;
+    const ondc = _ondc;
 
     return OnboardingScaffold(
-      step: 9,
       title: l10n.ondcTitle,
       subtitle: l10n.ondcExplain,
       compact: true,

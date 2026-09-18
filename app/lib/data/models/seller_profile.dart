@@ -60,28 +60,28 @@ class SellerProfile {
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'name': name,
-        'language_code': languageCode,
-        'phone': phone,
-        'craft': craft?.id,
-        'ondc_seller_id': ondcSellerId,
-        'ondc_email': ondcEmail,
-        'village': village,
-        'photo_path': photoPath,
-        'craft_story': craftStory,
-      };
+    'id': id,
+    'name': name,
+    'language_code': languageCode,
+    'phone': phone,
+    'craft': craft?.id,
+    'ondc_seller_id': ondcSellerId,
+    'ondc_email': ondcEmail,
+    'village': village,
+    'photo_path': photoPath,
+    'craft_story': craftStory,
+  };
 
   factory SellerProfile.fromJson(Map<String, dynamic> json) => SellerProfile(
-        id: json['id'] as String,
-        name: json['name'] as String? ?? '',
-        languageCode: json['language_code'] as String? ?? 'hi',
-        phone: json['phone'] as String?,
-        craft: CraftType.byId(json['craft'] as String?),
-        ondcSellerId: json['ondc_seller_id'] as String?,
-        ondcEmail: json['ondc_email'] as String?,
-        village: json['village'] as String?,
-        photoPath: json['photo_path'] as String?,
-        craftStory: json['craft_story'] as String?,
-      );
+    id: json['id'] as String,
+    name: json['name'] as String? ?? '',
+    languageCode: json['language_code'] as String? ?? 'hi',
+    phone: json['phone'] as String?,
+    craft: CraftType.byId(json['craft'] as String?),
+    ondcSellerId: json['ondc_seller_id'] as String?,
+    ondcEmail: json['ondc_email'] as String?,
+    village: json['village'] as String?,
+    photoPath: json['photo_path'] as String?,
+    craftStory: json['craft_story'] as String?,
+  );
 }

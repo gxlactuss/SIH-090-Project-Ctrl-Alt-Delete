@@ -39,6 +39,14 @@ class AppState extends ChangeNotifier {
   bool _termsAccepted = false;
   bool get hasAcceptedTerms => _termsAccepted;
 
+  bool _practiceSeen = false;
+
+  bool get hasSeenPractice => _practiceSeen;
+
+  bool _ondcAsked = false;
+
+  bool get hasBeenAskedOndc => _ondcAsked;
+
   Future<void> bootstrap() async {
     if (DevAccounts.enabled && DevFlags.freshStart) {
       await sellers.clear(includeLanguage: true);
@@ -53,13 +61,14 @@ class AppState extends ChangeNotifier {
     _termsAccepted =
         ((await sellers.acceptedTermsVersion()) ?? 0) >=
         AppConstants.termsVersion;
+    _practiceSeen = await sellers.hasSeenPractice();
+    _ondcAsked = await sellers.hasBeenAskedOndc();
 
     unawaited(
       speech.init(
         language: _language,
         speed: await sellers.speechSpeed(),
         autoReadScreens: await sellers.autoReadScreens(),
-        volume: await sellers.volume(),
       ),
     );
 
@@ -80,11 +89,6 @@ class AppState extends ChangeNotifier {
     await sellers.saveSpeechSpeed(speed);
   }
 
-  Future<void> setVolume(double volume) async {
-    await speech.setVolume(volume);
-    await sellers.saveVolume(volume);
-  }
-
   Future<void> setAutoReadScreens(bool value) async {
     speech.setAutoReadScreens(value);
     await sellers.saveAutoReadScreens(value);
@@ -100,6 +104,18 @@ class AppState extends ChangeNotifier {
     _termsAccepted = true;
     notifyListeners();
     await sellers.markTermsAccepted(AppConstants.termsVersion, DateTime.now());
+  }
+
+  Future<void> markPracticeSeen() async {
+    if (_practiceSeen) return;
+    _practiceSeen = true;
+    await sellers.markPracticeSeen();
+  }
+
+  Future<void> markOndcAsked() async {
+    if (_ondcAsked) return;
+    _ondcAsked = true;
+    await sellers.markOndcAsked();
   }
 
   Future<void> updateProfile({
@@ -139,6 +155,8 @@ class AppState extends ChangeNotifier {
     _setupComplete = false;
     _welcomeSeen = false;
     _termsAccepted = false;
+    _practiceSeen = false;
+    _ondcAsked = false;
     notifyListeners();
   }
 
