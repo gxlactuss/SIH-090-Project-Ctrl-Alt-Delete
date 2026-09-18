@@ -8,6 +8,8 @@ docs/
 *.fls
 *.fdb_latexmk
 handoff.md
+ArchitectureV1.pdf
+PRDv1.pdf
 
 .DS_Store
 
@@ -37,6 +39,8 @@ output/
 *.wav
 generated_assets/
 *listing*.json
+temp_check/
+
 
 
 

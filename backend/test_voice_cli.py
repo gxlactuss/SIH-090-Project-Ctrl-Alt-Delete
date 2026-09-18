@@ -208,7 +208,11 @@ def run_pipeline(
     follow_up_question = None
     suggestions = []
 
-    if "dimensions" in missing or not extraction.dimensions:
+    clean_dimensions = extraction.dimensions
+    if isinstance(clean_dimensions, str) and clean_dimensions.strip().lower() in ("null", "none", "n/a", "not specified", "not mentioned", "unknown"):
+        clean_dimensions = None
+
+    if "dimensions" in missing or not clean_dimensions:
         follow_up_question = "Could you tell us the approximate size or height of this craft?"
         suggestions.append({
             "id": "sug_size",
@@ -243,7 +247,7 @@ def run_pipeline(
         "followUpQuestion": follow_up_question,
         "factSheet": {
             "material": extraction.material,
-            "size": extraction.dimensions or "Medium (8x6 inches)",
+            "size": clean_dimensions or "Medium (8x6 inches)",
             "colour": ", ".join(extraction.colors) if extraction.colors else "Terracotta / Earthy Red",
             "technique": extraction.craft_type,
             "quantity": 1,

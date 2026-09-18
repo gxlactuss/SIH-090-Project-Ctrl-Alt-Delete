@@ -179,6 +179,8 @@ Tests run independently without requiring a running PostgreSQL instance or live 
 
 ## 🎨 AI/ML Subsystems Integration
 
+> 📖 **Complete Technical Handover**: For an in-depth walkthrough of the ONNX models, OpenCV gatekeeper, 3 output asset generation, audio ingestion modes, and Mermaid architecture diagrams, see [**`HANDOVER_VISION_VOICE.md`**](HANDOVER_VISION_VOICE.md).
+
 ### 1. Vision Station (`app/services/vision/`)
 - **Engine**: `ImageStation` (powered by `isnet-general-use` ONNX segmentation).
 - **Stage**: `app/services/pipeline/stages/image.py` (`ImageStage`).

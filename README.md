@@ -177,16 +177,18 @@ You can test the complete multimodal cataloging pipeline directly using the CLI 
 ```bash
 cd backend
 
-# Test with an audio file and export structured catalog JSON:
-python3 test_voice_cli.py --file /path/to/voice_note.wav --output listing.json
+# Test with an audio file and craft image to export structured catalog JSON:
+python3 test_voice_cli.py --file /path/to/voice_note.wav --image /path/to/craft.jpg --output listing.json
 
 # Or speak live into your microphone (counts down 10 seconds):
-python3 test_voice_cli.py --record --seconds 10
+python3 test_voice_cli.py --record --seconds 10 --image /path/to/craft.jpg
 ```
 
 ---
 
 ## 🎨 Subsystem Status
+
+> 📖 **Engineering Handover**: For a detailed technical walkthrough of the Vision & Voice pipelines (IS-Net ONNX, Sarvam AI, multimodal Gemini Flash, and Mermaid architecture flowcharts), refer to [**`backend/HANDOVER_VISION_VOICE.md`**](backend/HANDOVER_VISION_VOICE.md).
 
 | Subsystem | Lead | Status | Highlights |
 |---|---|:---:|---|
