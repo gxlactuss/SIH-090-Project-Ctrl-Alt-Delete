@@ -63,8 +63,9 @@ class CropGeometry {
 
   PhotoEdit editFor(Rect rect) {
     final aspect = rect.width / rect.height;
-    final (_, fullHeight) =
-        edit.copyWith(aspect: aspect, zoom: 1).cropSize(imageWidth, imageHeight);
+    final (_, fullHeight) = edit
+        .copyWith(aspect: aspect, zoom: 1)
+        .cropSize(imageWidth, imageHeight);
     final d = (rect.center - viewCenter) / scale;
     final x = _cos * d.dx + _sin * d.dy;
     final y = -_sin * d.dx + _cos * d.dy;

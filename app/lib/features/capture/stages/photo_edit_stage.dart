@@ -101,11 +101,11 @@ class _PhotoEditStageState extends State<PhotoEditStage> {
   }
 
   CropGeometry _geometry(Size view) => CropGeometry(
-        view: view,
-        imageWidth: _preview!.width,
-        imageHeight: _preview!.height,
-        edit: _edit,
-      );
+    view: view,
+    imageWidth: _preview!.width,
+    imageHeight: _preview!.height,
+    edit: _edit,
+  );
 
   void _onScaleStart(ScaleStartDetails details, Size view) {
     final geometry = _geometry(view);
@@ -171,25 +171,30 @@ class _PhotoEditStageState extends State<PhotoEditStage> {
       case _Drag.none:
         return;
       case _Drag.move:
-        _update(geometry.editFor(_dragStartBox
-            .shift(details.localFocalPoint - _dragStartFinger)));
+        _update(
+          geometry.editFor(
+            _dragStartBox.shift(details.localFocalPoint - _dragStartFinger),
+          ),
+        );
       case _Drag.handle:
-        _update(geometry.resize(
-          _dragStartBox,
-          _handle,
-          details.localFocalPoint,
-        ));
+        _update(
+          geometry.resize(_dragStartBox, _handle, details.localFocalPoint),
+        );
       case _Drag.pinch:
         final start = _dragStartBox;
         final factor = math.max(
           details.scale,
           CropGeometry.minBoxSide / math.min(start.width, start.height),
         );
-        _update(geometry.editFor(Rect.fromCenter(
-          center: start.center,
-          width: start.width * factor,
-          height: start.height * factor,
-        )));
+        _update(
+          geometry.editFor(
+            Rect.fromCenter(
+              center: start.center,
+              width: start.width * factor,
+              height: start.height * factor,
+            ),
+          ),
+        );
     }
   }
 
@@ -220,8 +225,11 @@ class _PhotoEditStageState extends State<PhotoEditStage> {
                   final view = constraints.biggest;
                   if (_failed) {
                     return const Center(
-                      child: Icon(Icons.broken_image,
-                          size: 56, color: AppColors.marigold),
+                      child: Icon(
+                        Icons.broken_image,
+                        size: 56,
+                        color: AppColors.marigold,
+                      ),
                     );
                   }
                   if (!ready) {
@@ -230,10 +238,8 @@ class _PhotoEditStageState extends State<PhotoEditStage> {
                   return GestureDetector(
                     key: const Key('photo-edit-canvas'),
                     behavior: HitTestBehavior.opaque,
-                    onScaleStart:
-                        busy ? null : (d) => _onScaleStart(d, view),
-                    onScaleUpdate:
-                        busy ? null : (d) => _onScaleUpdate(d, view),
+                    onScaleStart: busy ? null : (d) => _onScaleStart(d, view),
+                    onScaleUpdate: busy ? null : (d) => _onScaleUpdate(d, view),
                     onScaleEnd: (_) => _drag = _Drag.none,
                     child: CustomPaint(
                       size: view,
@@ -275,8 +281,11 @@ class _PhotoEditStageState extends State<PhotoEditStage> {
                     ),
                   Row(
                     children: [
-                      const Icon(Icons.straighten,
-                          size: 26, color: AppColors.ink),
+                      const Icon(
+                        Icons.straighten,
+                        size: 26,
+                        color: AppColors.ink,
+                      ),
                       const SizedBox(width: 8),
                       Flexible(
                         child: WholeWordText(
@@ -292,8 +301,8 @@ class _PhotoEditStageState extends State<PhotoEditStage> {
                           value: _edit.angle,
                           min: -AppConstants.maxStraightenDegrees,
                           max: AppConstants.maxStraightenDegrees,
-                          divisions:
-                              (AppConstants.maxStraightenDegrees * 4).round(),
+                          divisions: (AppConstants.maxStraightenDegrees * 4)
+                              .round(),
                           onChanged: ready && !busy
                               ? (value) => _update(_edit.copyWith(angle: value))
                               : null,
@@ -443,14 +452,26 @@ class _CropPainter extends CustomPainter {
     final barY = math.min(12.0, box.height / 6);
     final middle = box.center;
     canvas
-      ..drawLine(Offset(middle.dx - barX, box.top),
-          Offset(middle.dx + barX, box.top), handle)
-      ..drawLine(Offset(middle.dx - barX, box.bottom),
-          Offset(middle.dx + barX, box.bottom), handle)
-      ..drawLine(Offset(box.left, middle.dy - barY),
-          Offset(box.left, middle.dy + barY), handle)
-      ..drawLine(Offset(box.right, middle.dy - barY),
-          Offset(box.right, middle.dy + barY), handle);
+      ..drawLine(
+        Offset(middle.dx - barX, box.top),
+        Offset(middle.dx + barX, box.top),
+        handle,
+      )
+      ..drawLine(
+        Offset(middle.dx - barX, box.bottom),
+        Offset(middle.dx + barX, box.bottom),
+        handle,
+      )
+      ..drawLine(
+        Offset(box.left, middle.dy - barY),
+        Offset(box.left, middle.dy + barY),
+        handle,
+      )
+      ..drawLine(
+        Offset(box.right, middle.dy - barY),
+        Offset(box.right, middle.dy + barY),
+        handle,
+      );
   }
 
   @override

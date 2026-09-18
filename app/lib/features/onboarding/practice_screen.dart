@@ -3,10 +3,11 @@ import 'package:provider/provider.dart';
 
 import '../../core/routing/app_routes.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_motion.dart';
 import '../../core/theme/app_theme.dart';
 import '../../l10n/app_localizations.dart';
 import '../../services/speech_service.dart';
-import '../../state/onboarding_controller.dart';
+import '../../state/app_state.dart';
 import '../../widgets/big_action_button.dart';
 import '../../widgets/speak_button.dart';
 import '../../widgets/whole_word_text.dart';
@@ -64,10 +65,14 @@ class _PracticeScreenState extends State<PracticeScreen> {
   ];
 
   void _goTo(int index) {
+    if (AppMotion.reduced(context)) {
+      _pages.jumpToPage(index);
+      return;
+    }
     _pages.animateToPage(
       index,
-      duration: const Duration(milliseconds: 260),
-      curve: Curves.easeOut,
+      duration: AppMotion.medium,
+      curve: AppMotion.enter,
     );
   }
 
@@ -77,9 +82,9 @@ class _PracticeScreenState extends State<PracticeScreen> {
       return;
     }
     setState(() => _finishing = true);
-    await context.read<OnboardingController>().finish();
+    await context.read<AppState>().markPracticeSeen();
     if (!mounted) return;
-    Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.home, (_) => false);
+    Navigator.of(context).pushReplacementNamed(AppRoutes.capture);
   }
 
   @override
@@ -89,7 +94,6 @@ class _PracticeScreenState extends State<PracticeScreen> {
     final isLast = _index == examples.length - 1;
 
     return OnboardingScaffold(
-      step: widget.isReplay ? null : 10,
       title: l10n.practiceTitle,
       spokenLines: [l10n.practiceTitle, l10n.practiceIntro],
       compact: true,
@@ -124,8 +128,8 @@ class _PracticeScreenState extends State<PracticeScreen> {
       actions: [
         if (isLast)
           BigActionButton(
-            label: widget.isReplay ? l10n.actionDone : l10n.practiceFinish,
-            icon: widget.isReplay ? Icons.check : Icons.home,
+            label: widget.isReplay ? l10n.actionDone : l10n.captureTitle,
+            icon: widget.isReplay ? Icons.check : Icons.add_a_photo,
             busy: _finishing,
             onPressed: _finish,
           )

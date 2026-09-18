@@ -38,17 +38,16 @@ class CaptureController extends ChangeNotifier {
     Uuid uuid = const Uuid(),
     Future<ImageQuality> Function(Uint8List bytes)? qualityChecker,
     Future<ImageIssue?> Function(File photo, int width, int height)?
-        framingChecker,
+    framingChecker,
     Future<Directory> Function()? storageDirectory,
     Future<Uint8List?> Function(Uint8List bytes, PhotoEdit edit)? photoRenderer,
     this._analytics,
     this.templateListingId,
-  })  : _checkQuality = qualityChecker ?? _defaultQualityCheck,
-        _checkFraming = framingChecker,
-        _renderEdit = photoRenderer ?? _defaultRender,
-        _storageDirectory =
-            storageDirectory ?? getApplicationDocumentsDirectory,
-        id = uuid.v4();
+  }) : _checkQuality = qualityChecker ?? _defaultQualityCheck,
+       _checkFraming = framingChecker,
+       _renderEdit = photoRenderer ?? _defaultRender,
+       _storageDirectory = storageDirectory ?? getApplicationDocumentsDirectory,
+       id = uuid.v4();
 
   final CaptureDao _dao;
   final QueueController _queue;
@@ -56,11 +55,11 @@ class CaptureController extends ChangeNotifier {
   final Future<ImageQuality> Function(Uint8List bytes) _checkQuality;
 
   final Future<ImageIssue?> Function(File photo, int width, int height)?
-      _checkFraming;
+  _checkFraming;
   final Future<Directory> Function() _storageDirectory;
 
   final Future<Uint8List?> Function(Uint8List bytes, PhotoEdit edit)
-      _renderEdit;
+  _renderEdit;
 
   final AnalyticsService? _analytics;
 
@@ -73,13 +72,14 @@ class CaptureController extends ChangeNotifier {
   int get stepCount => AppConstants.photosPerListing + (isDuplicate ? 0 : 1);
 
   int? get step => switch (_stage) {
-        CaptureStage.photoSet => AppConstants.photosPerListing,
-        CaptureStage.voiceRecord => AppConstants.photosPerListing + 1,
-        CaptureStage.saved => null,
-        _ => hasAllPhotos
-            ? AppConstants.photosPerListing
-            : _slot.clamp(0, AppConstants.photosPerListing - 1) + 1,
-      };
+    CaptureStage.photoSet => AppConstants.photosPerListing,
+    CaptureStage.voiceRecord => AppConstants.photosPerListing + 1,
+    CaptureStage.saved => null,
+    _ =>
+      hasAllPhotos
+          ? AppConstants.photosPerListing
+          : _slot.clamp(0, AppConstants.photosPerListing - 1) + 1,
+  };
 
   CaptureStage _stage = CaptureStage.camera;
   CaptureStage get stage => _stage;
@@ -292,14 +292,14 @@ class CaptureController extends ChangeNotifier {
   }
 
   File? get editSource => switch (_editIndex) {
-        final i? when i < _originals.length => _originals[i],
-        _ => null,
-      };
+    final i? when i < _originals.length => _originals[i],
+    _ => null,
+  };
 
   PhotoEdit get currentEdit => switch (_editIndex) {
-        final i? when i < _edits.length => _edits[i] ?? PhotoEdit.identity,
-        _ => PhotoEdit.identity,
-      };
+    final i? when i < _edits.length => _edits[i] ?? PhotoEdit.identity,
+    _ => PhotoEdit.identity,
+  };
 
   void cancelEdit() {
     if (_stage != CaptureStage.photoEdit || _applyingEdit) return;
@@ -323,10 +323,12 @@ class CaptureController extends ChangeNotifier {
         final bytes = await _renderEdit(await source.readAsBytes(), edit);
         if (bytes == null) throw const FormatException('undecodable photo');
         final dir = await _captureDirectory();
-        rendered = File(p.join(
-          dir.path,
-          'photo_${index + 1}_edit_${DateTime.now().microsecondsSinceEpoch}.jpg',
-        ));
+        rendered = File(
+          p.join(
+            dir.path,
+            'photo_${index + 1}_edit_${DateTime.now().microsecondsSinceEpoch}.jpg',
+          ),
+        );
         await rendered.writeAsBytes(bytes, flush: true);
       } catch (error) {
         await _deleteQuietly(rendered);
@@ -479,8 +481,7 @@ class CaptureController extends ChangeNotifier {
     if (dir == null) return;
     try {
       if (await dir.exists()) await dir.delete(recursive: true);
-    } catch (_) {
-    }
+    } catch (_) {}
   }
 
   @override
@@ -500,8 +501,7 @@ class CaptureController extends ChangeNotifier {
     if (file == null) return;
     try {
       if (await file.exists()) await file.delete();
-    } catch (_) {
-    }
+    } catch (_) {}
   }
 }
 

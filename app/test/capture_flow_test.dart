@@ -27,8 +27,7 @@ class _FakeDao extends CaptureDao {
   Future<List<CaptureItem>> all() async => saved;
 
   @override
-  Future<void> delete(String id) async =>
-      saved.removeWhere((i) => i.id == id);
+  Future<void> delete(String id) async => saved.removeWhere((i) => i.id == id);
 }
 
 class _FakeRecorder extends RecorderService {
@@ -86,7 +85,11 @@ void main() {
     if (root.existsSync()) root.deleteSync(recursive: true);
   });
 
-  const good = ImageQuality(sharpness: 900, brightness: 130, isAcceptable: true);
+  const good = ImageQuality(
+    sharpness: 900,
+    brightness: 130,
+    isAcceptable: true,
+  );
   const dark = ImageQuality(
     sharpness: 20,
     brightness: 12,
@@ -95,12 +98,12 @@ void main() {
   );
 
   CaptureController controllerWith(ImageQuality verdict) => CaptureController(
-        dao: dao,
-        queue: queue,
-        recorder: recorder,
-        qualityChecker: (_) async => verdict,
-        storageDirectory: () async => root,
-      );
+    dao: dao,
+    queue: queue,
+    recorder: recorder,
+    qualityChecker: (_) async => verdict,
+    storageDirectory: () async => root,
+  );
 
   File shotFrom(String name) {
     final cache = Directory('${root.path}/cache')..createSync(recursive: true);
@@ -189,15 +192,17 @@ void main() {
     expect(shot.existsSync(), isFalse);
   });
 
-  test('a warned photo can still be kept, because the seller can see it',
-      () async {
-    final capture = controllerWith(dark);
-    await capture.reviewShot(shotFrom('dim'));
-    await capture.keepShot();
+  test(
+    'a warned photo can still be kept, because the seller can see it',
+    () async {
+      final capture = controllerWith(dark);
+      await capture.reviewShot(shotFrom('dim'));
+      await capture.keepShot();
 
-    expect(capture.photos.length, 1);
-    expect(capture.stage, CaptureStage.camera);
-  });
+      expect(capture.photos.length, 1);
+      expect(capture.stage, CaptureStage.camera);
+    },
+  );
 
   test('one photo of the three can be retaken from the set review', () async {
     final capture = controllerWith(good);
@@ -299,38 +304,40 @@ void main() {
     expect(dao.saved, isEmpty);
   });
 
-  test('a photo kept past a warning stays flagged, wherever it is moved',
-      () async {
-    var verdict = dark;
-    final capture = CaptureController(
-      dao: dao,
-      queue: queue,
-      recorder: recorder,
-      qualityChecker: (_) async => verdict,
-      storageDirectory: () async => root,
-    );
+  test(
+    'a photo kept past a warning stays flagged, wherever it is moved',
+    () async {
+      var verdict = dark;
+      final capture = CaptureController(
+        dao: dao,
+        queue: queue,
+        recorder: recorder,
+        qualityChecker: (_) async => verdict,
+        storageDirectory: () async => root,
+      );
 
-    await capture.reviewShot(shotFrom('dim'));
-    await capture.keepShot();
-    verdict = good;
-    for (var i = 1; i < 3; i++) {
-      await capture.reviewShot(shotFrom('shot$i'));
+      await capture.reviewShot(shotFrom('dim'));
       await capture.keepShot();
-    }
+      verdict = good;
+      for (var i = 1; i < 3; i++) {
+        await capture.reviewShot(shotFrom('shot$i'));
+        await capture.keepShot();
+      }
 
-    expect(capture.stage, CaptureStage.photoSet);
-    expect(capture.issueAt(0), ImageIssue.tooDark);
-    expect(capture.issueAt(1), isNull);
+      expect(capture.stage, CaptureStage.photoSet);
+      expect(capture.issueAt(0), ImageIssue.tooDark);
+      expect(capture.issueAt(1), isNull);
 
-    capture.movePhoto(2, 0);
-    expect(capture.issueAt(0), isNull);
-    expect(capture.issueAt(1), ImageIssue.tooDark);
+      capture.movePhoto(2, 0);
+      expect(capture.issueAt(0), isNull);
+      expect(capture.issueAt(1), ImageIssue.tooDark);
 
-    capture.retakePhotoAt(1);
-    await capture.reviewShot(shotFrom('retaken'));
-    await capture.keepShot();
-    expect(capture.issueAt(1), isNull);
-  });
+      capture.retakePhotoAt(1);
+      await capture.reviewShot(shotFrom('retaken'));
+      await capture.keepShot();
+      expect(capture.issueAt(1), isNull);
+    },
+  );
 
   group('framing', () {
     const sized = ImageQuality(
@@ -344,18 +351,16 @@ void main() {
     CaptureController framedWith(
       ImageQuality verdict,
       Future<ImageIssue?> Function(File, int, int) framing,
-    ) =>
-        CaptureController(
-          dao: dao,
-          queue: queue,
-          recorder: recorder,
-          qualityChecker: (_) async => verdict,
-          framingChecker: framing,
-          storageDirectory: () async => root,
-        );
+    ) => CaptureController(
+      dao: dao,
+      queue: queue,
+      recorder: recorder,
+      qualityChecker: (_) async => verdict,
+      framingChecker: framing,
+      storageDirectory: () async => root,
+    );
 
-    test('a photo with the product off the edge goes to the warning',
-        () async {
+    test('a photo with the product off the edge goes to the warning', () async {
       (int, int)? askedWith;
       final capture = framedWith(sized, (_, width, height) async {
         askedWith = (width, height);

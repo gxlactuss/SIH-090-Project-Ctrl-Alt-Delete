@@ -18,11 +18,7 @@ import '../widgets/capture_scaffold.dart';
 import '../../../widgets/whole_word_text.dart';
 
 class SavedStage extends StatelessWidget {
-  const SavedStage({
-    super.key,
-    required this.onDone,
-    required this.onAnother,
-  });
+  const SavedStage({super.key, required this.onDone, required this.onAnother});
 
   final VoidCallback onDone;
   final VoidCallback onAnother;
@@ -49,8 +45,9 @@ class SavedStage extends StatelessWidget {
               key: ValueKey(failed),
               icon: failed ? Icons.error_outline : Icons.check,
               colour: failed ? AppColors.danger : AppColors.success,
-              tint: (failed ? AppColors.danger : AppColors.success)
-                  .withValues(alpha: 0.15),
+              tint: (failed ? AppColors.danger : AppColors.success).withValues(
+                alpha: 0.15,
+              ),
               celebrate: !failed,
             ),
           ),

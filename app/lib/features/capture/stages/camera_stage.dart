@@ -31,10 +31,10 @@ class _CameraStageState extends State<CameraStage> {
   bool _picking = false;
 
   String _prompt(AppLocalizations l10n, int slot) => switch (slot) {
-        0 => l10n.capturePhotoWhole,
-        1 => l10n.capturePhotoDetail,
-        _ => l10n.capturePhotoScale,
-      };
+    0 => l10n.capturePhotoWhole,
+    1 => l10n.capturePhotoDetail,
+    _ => l10n.capturePhotoScale,
+  };
 
   Future<void> _shoot() async {
     if (_shooting || _picking) return;
@@ -91,8 +91,9 @@ class _CameraStageState extends State<CameraStage> {
                 camera.isTorchOn ? Icons.flashlight_on : Icons.flashlight_off,
                 size: 30,
               ),
-              tooltip:
-                  camera.isTorchOn ? l10n.captureTorchOff : l10n.captureTorchOn,
+              tooltip: camera.isTorchOn
+                  ? l10n.captureTorchOff
+                  : l10n.captureTorchOn,
               onPressed: camera.toggleTorch,
             )
           : null,
@@ -116,8 +117,9 @@ class _CameraStageState extends State<CameraStage> {
           icon: Icons.photo_library,
           tone: ButtonTone.secondary,
           busy: _picking,
-          onPressed:
-              _shooting || camera.isInitialising ? null : _pickFromGallery,
+          onPressed: _shooting || camera.isInitialising
+              ? null
+              : _pickFromGallery,
           spokenLabel: '${l10n.captureFromGallery}. $prompt',
         ),
       ],
@@ -177,8 +179,9 @@ class _CameraFailed extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final denied = camera.isPermissionDenied;
-    final explanation =
-        denied ? l10n.captureCameraPermission : l10n.captureCameraFailed;
+    final explanation = denied
+        ? l10n.captureCameraPermission
+        : l10n.captureCameraFailed;
 
     return Container(
       color: AppColors.ink.withValues(alpha: 0.9),
@@ -211,10 +214,10 @@ class _CameraFailed extends StatelessWidget {
           const SizedBox(height: 18),
           IconButton(
             icon: const Icon(Icons.volume_up, size: 32, color: Colors.white),
-            onPressed: () => context
-                .read<SpeechService>()
-                .speakAll([l10n.captureCameraFailed, explanation],
-                    key: 'camera:failed'),
+            onPressed: () => context.read<SpeechService>().speakAll([
+              l10n.captureCameraFailed,
+              explanation,
+            ], key: 'camera:failed'),
           ),
           const SizedBox(height: 6),
           OutlinedButton(

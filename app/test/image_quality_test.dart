@@ -12,8 +12,10 @@ void main() {
     final image = img.Image(width: 320, height: 240);
     for (var y = 0; y < image.height; y++) {
       for (var x = 0; x < image.width; x++) {
-        final value =
-            (brightness + random.nextInt(spread * 2) - spread).clamp(0, 255);
+        final value = (brightness + random.nextInt(spread * 2) - spread).clamp(
+          0,
+          255,
+        );
         image.setPixelRgb(x, y, value, value, value);
       }
     }
@@ -29,8 +31,13 @@ void main() {
   Uint8List blurredBowl() {
     final image = img.Image(width: 320, height: 240);
     img.fill(image, color: img.ColorRgb8(200, 200, 200));
-    img.fillCircle(image,
-        x: 160, y: 120, radius: 70, color: img.ColorRgb8(60, 60, 60));
+    img.fillCircle(
+      image,
+      x: 160,
+      y: 120,
+      radius: 70,
+      color: img.ColorRgb8(60, 60, 60),
+    );
     return img.encodeJpg(img.gaussianBlur(image, radius: 16), quality: 92);
   }
 
@@ -38,8 +45,13 @@ void main() {
     final random = Random(5);
     final image = img.Image(width: 320, height: 240);
     img.fill(image, color: img.ColorRgb8(200, 200, 200));
-    img.fillCircle(image,
-        x: 160, y: 120, radius: 70, color: img.ColorRgb8(60, 60, 60));
+    img.fillCircle(
+      image,
+      x: 160,
+      y: 120,
+      radius: 70,
+      color: img.ColorRgb8(60, 60, 60),
+    );
     img.gaussianBlur(image, radius: 16);
     for (var y = 216; y < 240; y++) {
       for (var x = 0; x < 320; x++) {
@@ -108,20 +120,25 @@ void main() {
 
   test('a shaken photo with a sharp strip of floor is still blurry', () {
     final result = checkImageQualityBytes(blurredBowlOnSharpFloor());
-    expect(result.sharpness, greaterThan(AppConstants.minSharpness),
-        reason: 'the whole-photo number alone would let this through');
+    expect(
+      result.sharpness,
+      greaterThan(AppConstants.minSharpness),
+      reason: 'the whole-photo number alone would let this through',
+    );
     expect(result.isAcceptable, isFalse);
     expect(result.issue, ImageIssue.blurry);
   });
 
-  test('something tiny in an empty frame is rejected as having nothing in it',
-      () {
-    final result = checkImageQualityBytes(
-      onTable(left: 45, top: 33, width: 30, height: 24),
-    );
-    expect(result.isAcceptable, isFalse);
-    expect(result.issue, ImageIssue.noSubject);
-  });
+  test(
+    'something tiny in an empty frame is rejected as having nothing in it',
+    () {
+      final result = checkImageQualityBytes(
+        onTable(left: 45, top: 33, width: 30, height: 24),
+      );
+      expect(result.isAcceptable, isFalse);
+      expect(result.issue, ImageIssue.noSubject);
+    },
+  );
 
   test('a product on a plain background is not taken for an empty frame', () {
     final result = checkImageQualityBytes(

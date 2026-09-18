@@ -145,10 +145,11 @@ void main() {
 
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(
-      const MethodChannel('plugins.flutter.io/path_provider'),
-      (call) async =>
-          call.method == 'getApplicationDocumentsDirectory' ? root.path : null,
-    );
+          const MethodChannel('plugins.flutter.io/path_provider'),
+          (call) async => call.method == 'getApplicationDocumentsDirectory'
+              ? root.path
+              : null,
+        );
     dao = _FakeDao();
     camera = _FakeCamera(root);
     framing = _FakeFraming();
@@ -158,9 +159,9 @@ void main() {
   tearDown(() {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(
-      const MethodChannel('plugins.flutter.io/path_provider'),
-      null,
-    );
+          const MethodChannel('plugins.flutter.io/path_provider'),
+          null,
+        );
     if (root.existsSync()) root.deleteSync(recursive: true);
   });
 
@@ -231,8 +232,9 @@ void main() {
     await advance(tester);
 
     expect(find.text(l10n.voiceHoldToSpeak), findsOneWidget);
-    final gesture =
-        await tester.startGesture(tester.getCenter(find.text(l10n.voiceHoldToSpeak)));
+    final gesture = await tester.startGesture(
+      tester.getCenter(find.text(l10n.voiceHoldToSpeak)),
+    );
     await advance(tester);
     await gesture.up();
     await advance(tester);
@@ -251,8 +253,9 @@ void main() {
     expect(queue.pendingCount, 1);
   });
 
-  testWidgets('a photo from the gallery is checked and kept like a shot',
-      (tester) async {
+  testWidgets('a photo from the gallery is checked and kept like a shot', (
+    tester,
+  ) async {
     useCheapPhone(tester);
     await tester.pumpWidget(harness());
     await advance(tester);
@@ -271,8 +274,9 @@ void main() {
     expect(find.text(l10n.capturePhotoDetail), findsOneWidget);
   });
 
-  testWidgets('a photo kept past a warning is flagged on the set review',
-      (tester) async {
+  testWidgets('a photo kept past a warning is flagged on the set review', (
+    tester,
+  ) async {
     useCheapPhone(tester);
     camera.blankShots.add(0);
     await tester.pumpWidget(harness());
@@ -294,8 +298,9 @@ void main() {
     expect(find.text(l10n.photoIssueNoSubject), findsOneWidget);
   });
 
-  testWidgets('a photo with the product off the edge says so, and is flagged',
-      (tester) async {
+  testWidgets('a photo with the product off the edge says so, and is flagged', (
+    tester,
+  ) async {
     useCheapPhone(tester);
     await tester.pumpWidget(harness());
     await advance(tester);
@@ -317,8 +322,9 @@ void main() {
     expect(find.text(l10n.photoIssueOutOfFrame), findsOneWidget);
   });
 
-  testWidgets('leaving before saving asks first, and says what it costs',
-      (tester) async {
+  testWidgets('leaving before saving asks first, and says what it costs', (
+    tester,
+  ) async {
     useCheapPhone(tester);
     await tester.pumpWidget(harness());
     await advance(tester);
@@ -334,8 +340,9 @@ void main() {
     expect(find.text(l10n.captureTakePhoto), findsOneWidget);
   });
 
-  testWidgets('dragging a corner of the crop box saves a smaller square',
-      (tester) async {
+  testWidgets('dragging a corner of the crop box saves a smaller square', (
+    tester,
+  ) async {
     useCheapPhone(tester);
     await tester.pumpWidget(harness());
     await advance(tester);

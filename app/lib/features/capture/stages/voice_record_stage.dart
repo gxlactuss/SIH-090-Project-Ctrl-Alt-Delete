@@ -152,7 +152,11 @@ class _VoiceRecordStageState extends State<VoiceRecordStage> {
           maxLines: 10,
           textCapitalization: TextCapitalization.sentences,
           onChanged: (_) => setState(() {}),
-          style: const TextStyle(fontSize: 20, height: 1.4, color: AppColors.ink),
+          style: const TextStyle(
+            fontSize: 20,
+            height: 1.4,
+            color: AppColors.ink,
+          ),
           decoration: InputDecoration(hintText: l10n.voiceTypeHint),
         ),
         actions: [
@@ -220,7 +224,10 @@ class _VoiceRecordStageState extends State<VoiceRecordStage> {
                   WholeWordText(
                     l10n.voiceRecording,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 16, color: AppColors.muted),
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: AppColors.muted,
+                    ),
                   ),
                 ],
                 if (take != null) ...[

@@ -28,10 +28,7 @@ class Waveform extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 3),
               child: AnimatedContainer(
-                duration: AppMotion.of(
-                  context,
-                  AppMotion.tick,
-                ),
+                duration: AppMotion.of(context, AppMotion.tick),
                 width: 6,
                 height: active ? _height(i) : 8,
                 decoration: BoxDecoration(

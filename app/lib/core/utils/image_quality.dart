@@ -81,8 +81,9 @@ ImageQuality checkImageQualityBytes(Uint8List bytes) {
   }
   final brightness = sum / luma.length;
 
-  final contrast =
-      sqrt(max(0.0, squares / luma.length - brightness * brightness));
+  final contrast = sqrt(
+    max(0.0, squares / luma.length - brightness * brightness),
+  );
 
   const grid = AppConstants.qualityGrid;
   final cellSum = Float64List(grid * grid);
@@ -97,7 +98,8 @@ ImageQuality checkImageQualityBytes(Uint8List bytes) {
     final row = y * grid ~/ height * grid;
     for (var x = 1; x < width - 1; x++) {
       final i = y * width + x;
-      final value = luma[i - 1] +
+      final value =
+          luma[i - 1] +
           luma[i + 1] +
           luma[i - width] +
           luma[i + width] -
@@ -121,7 +123,8 @@ ImageQuality checkImageQualityBytes(Uint8List bytes) {
   var shadedCells = 0;
   var softCells = 0;
   for (var c = 0; c < cellCount.length; c++) {
-    final sharp = _variance(cellSum[c], cellSquares[c], cellCount[c]) >=
+    final sharp =
+        _variance(cellSum[c], cellSquares[c], cellCount[c]) >=
         AppConstants.minSharpness;
     if (sharp) detailCells++;
 

@@ -65,13 +65,13 @@ class _CaptureScreenState extends State<CaptureScreen> {
   }
 
   CaptureController _newCapture() => CaptureController(
-        dao: widget.dao ?? CaptureDao(),
-        queue: context.read<QueueController>(),
-        recorder: _recorder,
-        framingChecker: _framing.check,
-        analytics: context.maybeRead<AnalyticsService>(),
-        templateListingId: widget.templateListingId,
-      );
+    dao: widget.dao ?? CaptureDao(),
+    queue: context.read<QueueController>(),
+    recorder: _recorder,
+    framingChecker: _framing.check,
+    analytics: context.maybeRead<AnalyticsService>(),
+    templateListingId: widget.templateListingId,
+  );
 
   void _onStageChanged() {
     final onCamera = _capture.stage == CaptureStage.camera;
@@ -158,16 +158,19 @@ class _CaptureScreenState extends State<CaptureScreen> {
               step: capture.step,
               steps: capture.stepCount,
               child: switch (capture.stage) {
-              CaptureStage.camera => CameraStage(onClose: _confirmLeave),
-              CaptureStage.checking => CheckingStage(onClose: _confirmLeave),
-              CaptureStage.qualityWarning =>
-                QualityWarningStage(onClose: _confirmLeave),
-              CaptureStage.photoSet => PhotoSetStage(onClose: _confirmLeave),
-              CaptureStage.photoEdit =>
-                PhotoEditStage(onClose: capture.cancelEdit),
-              CaptureStage.voiceRecord =>
-                VoiceRecordStage(onClose: _confirmLeave),
-              CaptureStage.saved => SavedStage(
+                CaptureStage.camera => CameraStage(onClose: _confirmLeave),
+                CaptureStage.checking => CheckingStage(onClose: _confirmLeave),
+                CaptureStage.qualityWarning => QualityWarningStage(
+                  onClose: _confirmLeave,
+                ),
+                CaptureStage.photoSet => PhotoSetStage(onClose: _confirmLeave),
+                CaptureStage.photoEdit => PhotoEditStage(
+                  onClose: capture.cancelEdit,
+                ),
+                CaptureStage.voiceRecord => VoiceRecordStage(
+                  onClose: _confirmLeave,
+                ),
+                CaptureStage.saved => SavedStage(
                   onDone: _leave,
                   onAnother: _startAnother,
                 ),

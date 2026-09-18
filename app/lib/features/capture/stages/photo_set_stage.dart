@@ -170,8 +170,11 @@ class _PhotoRow extends StatelessWidget {
                     errorBuilder: (context, _, _) => Container(
                       color: AppColors.cream,
                       alignment: Alignment.center,
-                      child: const Icon(Icons.broken_image,
-                          size: 32, color: AppColors.muted),
+                      child: const Icon(
+                        Icons.broken_image,
+                        size: 32,
+                        color: AppColors.muted,
+                      ),
                     ),
                   ),
                 ),
@@ -181,8 +184,11 @@ class _PhotoRow extends StatelessWidget {
                 child: isMain
                     ? Row(
                         children: [
-                          const Icon(Icons.star,
-                              size: 22, color: AppColors.terracotta),
+                          const Icon(
+                            Icons.star,
+                            size: 22,
+                            color: AppColors.terracotta,
+                          ),
                           const SizedBox(width: 6),
                           Flexible(
                             child: WholeWordText(
@@ -202,8 +208,11 @@ class _PhotoRow extends StatelessWidget {
                 index: index,
                 child: const SizedBox.square(
                   dimension: AppTheme.minTapTarget,
-                  child: Icon(Icons.drag_indicator,
-                      size: 34, color: AppColors.muted),
+                  child: Icon(
+                    Icons.drag_indicator,
+                    size: 34,
+                    color: AppColors.muted,
+                  ),
                 ),
               ),
             ],
@@ -219,8 +228,11 @@ class _PhotoRow extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Icon(Icons.warning_rounded,
-                      size: 24, color: AppColors.danger),
+                  const Icon(
+                    Icons.warning_rounded,
+                    size: 24,
+                    color: AppColors.danger,
+                  ),
                   const SizedBox(width: 6),
                   Flexible(
                     child: WholeWordText(
@@ -250,10 +262,8 @@ class _PhotoRow extends StatelessWidget {
           const SizedBox(height: 8),
           TextButton.icon(
             onPressed: onEdit,
-            onLongPress: () => speech.speak(
-              l10n.photoEditOpen,
-              key: 'photoset:edit$index',
-            ),
+            onLongPress: () =>
+                speech.speak(l10n.photoEditOpen, key: 'photoset:edit$index'),
             style: optionStyle,
             icon: const Icon(Icons.crop_rotate, size: 24),
             label: WholeWordText(l10n.photoEditOpen),
