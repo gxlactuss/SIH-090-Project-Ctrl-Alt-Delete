@@ -10,6 +10,7 @@ import '../../../widgets/success_mark.dart';
 import '../../listings/widgets/share_listing.dart';
 import '../widgets/review_scaffold.dart';
 import '../../../widgets/whole_word_text.dart';
+import '../../../widgets/api_problem_text.dart';
 
 class PublishStage extends StatelessWidget {
   const PublishStage({
@@ -81,7 +82,8 @@ class _Failed extends StatelessWidget {
   Widget build(BuildContext context) {
     return ReviewScaffold(
       title: l10n.publishFailed,
-      spokenLines: [l10n.publishFailed],
+      subtitle: errorMessage(review.error, l10n),
+      spokenLines: [l10n.publishFailed, errorMessage(review.error, l10n)],
       onBack: () => review.goTo(
         review.isEdit ? ReviewStage.preview : ReviewStage.consent,
       ),

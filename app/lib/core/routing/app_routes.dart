@@ -18,11 +18,8 @@ abstract final class AppRoutes {
 
   static const queue = '/queue';
   static const queueItem = '/queue/item';
-  static const processing = '/processing';
 
   static const review = '/review';
-
-  static const polished = '/review/polished';
 
   static const listing = '/listing';
 
@@ -48,7 +45,6 @@ abstract final class AppRoutes {
   static const about = '/help/about';
   static const support = '/help/support';
   static const terms = '/help/terms';
-  static const version = '/help/version';
 
   static const permissionRecovery = '/system/permissions';
   static const forceUpdate = '/system/update';

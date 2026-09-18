@@ -61,10 +61,10 @@ class CatalogController extends ChangeNotifier {
     final repository = _repository;
     if (repository == null) return;
 
-    _failedToRefresh = false;
+    _refreshError = null;
     final listings = await repository.refreshAll();
     if (listings.isEmpty) {
-      _failedToRefresh = repository.lastRefreshFailed;
+      _refreshError = repository.lastRefreshError;
       notifyListeners();
       return;
     }
@@ -75,9 +75,11 @@ class CatalogController extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool _failedToRefresh = false;
+  Object? _refreshError;
 
-  bool get failedToRefresh => _failedToRefresh;
+  bool get failedToRefresh => _refreshError != null;
+
+  Object? get refreshError => _refreshError;
 
   void replace(Listing listing) {
     final index = _listings.indexWhere((l) => l.id == listing.id);
@@ -92,7 +94,7 @@ class CatalogController extends ChangeNotifier {
   void clear() {
     if (_listings.isEmpty) return;
     _listings.clear();
-    _failedToRefresh = false;
+    _refreshError = null;
     notifyListeners();
   }
 

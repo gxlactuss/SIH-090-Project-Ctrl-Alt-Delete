@@ -6,10 +6,9 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_theme.dart';
 import '../../l10n/app_localizations.dart';
 import '../../services/permission_service.dart';
-import '../../services/speech_service.dart';
 import '../../widgets/big_action_button.dart';
 import 'widgets/onboarding_scaffold.dart';
-import '../../widgets/whole_word_text.dart';
+import '../../widgets/info_panel.dart';
 
 class PermissionsScreen extends StatefulWidget {
   const PermissionsScreen({super.key});
@@ -19,11 +18,7 @@ class PermissionsScreen extends StatefulWidget {
 }
 
 class _PermissionsScreenState extends State<PermissionsScreen> {
-  static const _order = [
-    AppPermission.camera,
-    AppPermission.microphone,
-    AppPermission.notifications,
-  ];
+  static const _order = [AppPermission.camera, AppPermission.microphone];
 
   int _index = 0;
   bool _asking = false;
@@ -174,46 +169,12 @@ class _DeniedNotice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final speech = context.read<SpeechService>();
-
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColors.dangerTint,
-        border: Border.all(color: AppColors.danger, width: 2),
-        borderRadius: BorderRadius.circular(AppTheme.radius),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Icon(Icons.error_outline, color: AppColors.danger, size: 30),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                WholeWordText(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.danger,
-                  ),
-                ),
-                const SizedBox(height: 6),
-                WholeWordText(
-                  body,
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-              ],
-            ),
-          ),
-          IconButton(
-            onPressed: () => speech.speakAll([title, body], key: 'denied'),
-            icon: const Icon(Icons.volume_up, size: 28),
-          ),
-        ],
-      ),
+    return InfoPanel(
+      icon: Icons.error_outline,
+      title: title,
+      text: body,
+      tone: InfoTone.danger,
+      bordered: true,
     );
   }
 }

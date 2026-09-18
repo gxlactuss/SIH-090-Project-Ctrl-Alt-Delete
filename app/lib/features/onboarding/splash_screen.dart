@@ -3,9 +3,11 @@ import 'package:provider/provider.dart';
 
 import '../../core/routing/app_routes.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_motion.dart';
 import '../../l10n/app_localizations.dart';
 import '../../services/update_service.dart';
 import '../../state/app_state.dart';
+import '../../widgets/app_logo.dart';
 import '../../widgets/whole_word_text.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -25,11 +27,10 @@ class _SplashScreenState extends State<SplashScreen> {
   Future<void> _decide() async {
     final appState = context.read<AppState>();
     final updates = context.read<UpdateService>();
-    await appState.bootstrap();
-
-    await updates.check();
-
-    await Future<void>.delayed(const Duration(milliseconds: 700));
+    await Future.wait([
+      appState.bootstrap().then((_) => updates.check()),
+      Future<void>.delayed(const Duration(milliseconds: 700)),
+    ]);
     if (!mounted) return;
 
     final String next;
@@ -54,18 +55,16 @@ class _SplashScreenState extends State<SplashScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Container(
-              width: 132,
-              height: 132,
-              decoration: const BoxDecoration(
-                color: AppColors.terracotta,
-                shape: BoxShape.circle,
-              ),
-              alignment: Alignment.center,
-              child: const Icon(
-                Icons.pan_tool_alt,
-                size: 68,
-                color: AppColors.cream,
+            TweenAnimationBuilder<double>(
+              tween: Tween<double>(begin: 0, end: 1),
+              duration: AppMotion.of(context, AppMotion.intro),
+              curve: AppMotion.standard,
+              builder: (context, t, _) => Opacity(
+                opacity: (t * 2).clamp(0.0, 1.0),
+                child: Transform.scale(
+                  scale: 0.85 + 0.15 * t,
+                  child: AppLogo(size: 132, voice: t),
+                ),
               ),
             ),
             const SizedBox(height: 28),

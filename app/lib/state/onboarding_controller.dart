@@ -5,19 +5,14 @@ import '../data/models/app_language.dart';
 import '../data/models/craft_type.dart';
 import '../data/models/seller_profile.dart';
 import '../data/repositories/auth_repository.dart';
-import '../data/repositories/ondc_repository.dart';
 import 'app_state.dart';
 
 class OnboardingController extends ChangeNotifier {
-  OnboardingController({
-    required this.appState,
-    this.auth = const AuthRepository(),
-    this.ondc = const OndcRepository(),
-  });
+  OnboardingController({required this.appState, AuthRepository? auth})
+    : auth = auth ?? AuthRepository();
 
   final AppState appState;
   final AuthRepository auth;
-  final OndcRepository ondc;
 
   String _phone = '';
   String get phone => _phone;
@@ -40,30 +35,6 @@ class OnboardingController extends ChangeNotifier {
     notifyListeners();
   }
 
-  String? _ondcEmail;
-  String? _ondcSellerId;
-  String? get ondcEmail => _ondcEmail;
-  String? get ondcSellerId => _ondcSellerId;
-
-  bool _ondcAnswered = false;
-  bool get ondcAnswered => _ondcAnswered;
-
-  bool get hasOndcAccount => _ondcSellerId != null && _ondcSellerId!.isNotEmpty;
-
-  void linkOndc({required String email, required String sellerId}) {
-    _ondcEmail = email.trim();
-    _ondcSellerId = sellerId.trim();
-    _ondcAnswered = true;
-    notifyListeners();
-  }
-
-  void skipOndc() {
-    _ondcEmail = null;
-    _ondcSellerId = null;
-    _ondcAnswered = true;
-    notifyListeners();
-  }
-
   AppLanguage get language => appState.language;
 
   Future<SellerProfile> finish() async {
@@ -73,8 +44,6 @@ class OnboardingController extends ChangeNotifier {
       languageCode: appState.language.code,
       phone: _phone,
       craft: _craft,
-      ondcSellerId: _ondcSellerId,
-      ondcEmail: _ondcEmail,
     );
     await appState.completeSetup(profile);
     return profile;

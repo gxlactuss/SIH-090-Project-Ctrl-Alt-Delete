@@ -5,9 +5,8 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../services/speech_service.dart';
-import '../../../widgets/speak_button.dart';
-import '../../../widgets/whole_word_text.dart';
 import 'step_line.dart';
+import '../../../widgets/screen_header.dart';
 
 class OnboardingScaffold extends StatefulWidget {
   const OnboardingScaffold({
@@ -87,37 +86,23 @@ class _OnboardingScaffoldState extends State<OnboardingScaffold> {
     final header = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: WholeWordText(
-                widget.title,
-                style: widget.compact
-                    ? theme.textTheme.headlineSmall
-                    : theme.textTheme.headlineMedium,
-              ),
-            ),
-            SpeakButton.lines(
-              lines: _spoken,
-              utteranceKey: 'screen:${widget.title}',
-              size: 34,
-            ),
-          ],
+        ScreenHeader(
+          title: widget.title,
+          subtitle: widget.subtitle,
+          spokenLines: _spoken,
+          titleStyle: widget.compact
+              ? theme.textTheme.headlineSmall
+              : theme.textTheme.headlineMedium,
+          subtitleStyle: widget.compact
+              ? const TextStyle(
+                  fontSize: 16,
+                  height: 1.35,
+                  color: AppColors.muted,
+                )
+              : theme.textTheme.bodyLarge?.copyWith(color: AppColors.muted),
+          subtitleGap: widget.compact ? 4 : 10,
+          speakerSize: 34,
         ),
-        if (widget.subtitle != null) ...[
-          SizedBox(height: widget.compact ? 4 : 10),
-          WholeWordText(
-            widget.subtitle!,
-            style: widget.compact
-                ? const TextStyle(
-                    fontSize: 16,
-                    height: 1.35,
-                    color: AppColors.muted,
-                  )
-                : theme.textTheme.bodyLarge?.copyWith(color: AppColors.muted),
-          ),
-        ],
       ],
     );
 

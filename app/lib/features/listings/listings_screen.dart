@@ -13,6 +13,8 @@ import '../../widgets/listing_tile.dart';
 import '../../widgets/status_view.dart';
 import 'widgets/quick_stock_sheet.dart';
 import '../../widgets/whole_word_text.dart';
+import '../../data/remote/api_problem.dart';
+import '../../widgets/api_problem_text.dart';
 
 class ListingsList extends StatelessWidget {
   const ListingsList({super.key, required this.filter});
@@ -24,8 +26,8 @@ class ListingsList extends StatelessWidget {
     final listings = context.select(
       (CatalogController c) => c.withFilter(filter),
     );
-    final (failed, isEmpty) = context.select(
-      (CatalogController c) => (c.failedToRefresh, c.isEmpty),
+    final (error, isEmpty) = context.select(
+      (CatalogController c) => (c.refreshError, c.isEmpty),
     );
     final catalog = context.read<CatalogController>();
 
@@ -39,9 +41,9 @@ class ListingsList extends StatelessWidget {
               ConstrainedBox(
                 constraints: BoxConstraints(minHeight: constraints.maxHeight),
                 child: Center(
-                  child: failed
+                  child: error != null
                       ? StatusView(
-                          kind: StatusKind.serverError,
+                          kind: ApiProblem.of(error).statusKind,
                           onAction: catalog.refresh,
                         )
                       : _Empty(hasAnything: !isEmpty),

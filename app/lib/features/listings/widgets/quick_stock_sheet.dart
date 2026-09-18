@@ -19,6 +19,7 @@ import '../../../widgets/fade_in.dart';
 import '../../../widgets/whole_word_text.dart';
 import '../../../widgets/screen_header.dart';
 import '../../../widgets/info_panel.dart';
+import '../../../widgets/api_problem_text.dart';
 
 class QuickStockSheet extends StatefulWidget {
   const QuickStockSheet({super.key, required this.listing});
@@ -101,18 +102,18 @@ class _QuickStockSheetState extends State<QuickStockSheet> {
                     listings: listings,
                     catalog: catalog,
                     messenger: messenger,
-                    failed: l10n.listingActionFailed,
+                    l10n: l10n,
                     listingId: listingId,
                     stock: previous,
                   ),
                 ),
         ),
       );
-    } catch (_) {
+    } catch (error) {
       if (!mounted) return;
       setState(() {
         _saving = false;
-        _error = l10n.listingActionFailed;
+        _error = errorMessage(error, l10n);
       });
     }
   }
@@ -121,7 +122,7 @@ class _QuickStockSheetState extends State<QuickStockSheet> {
     required ListingRepository listings,
     required CatalogController catalog,
     required ScaffoldMessengerState messenger,
-    required String failed,
+    required AppLocalizations l10n,
     required String listingId,
     required int stock,
   }) async {
@@ -129,8 +130,10 @@ class _QuickStockSheetState extends State<QuickStockSheet> {
       catalog.replace(
         await listings.setStock(listingId: listingId, quantity: stock),
       );
-    } catch (_) {
-      messenger.showSnackBar(SnackBar(content: WholeWordText(failed)));
+    } catch (error) {
+      messenger.showSnackBar(
+        SnackBar(content: WholeWordText(errorMessage(error, l10n))),
+      );
     }
   }
 

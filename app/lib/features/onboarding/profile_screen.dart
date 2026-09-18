@@ -39,7 +39,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     super.dispose();
   }
 
-  void _continue() {
+  bool _finishing = false;
+
+  Future<void> _continue() async {
+    if (_finishing) return;
     final onboarding = context.read<OnboardingController>();
     onboarding.setName(_name.text);
 
@@ -49,7 +52,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
       setState(() => _showErrors = true);
       return;
     }
-    Navigator.of(context).pushNamed(AppRoutes.ondc);
+
+    setState(() => _finishing = true);
+    await onboarding.finish();
+    if (!mounted) return;
+    Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.home, (_) => false);
   }
 
   @override
@@ -106,8 +113,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
       actions: [
         BigActionButton(
-          label: l10n.actionNext,
-          icon: Icons.arrow_forward,
+          label: l10n.practiceFinish,
+          icon: Icons.home,
+          busy: _finishing,
           onPressed: _continue,
         ),
       ],

@@ -21,6 +21,7 @@ import 'widgets/share_listing.dart';
 import '../../widgets/confirm_dialog.dart';
 import '../../widgets/app_image.dart';
 import '../../widgets/info_panel.dart';
+import '../../widgets/api_problem_text.dart';
 
 class ListingDetailScreen extends StatefulWidget {
   const ListingDetailScreen({super.key, required this.listing});
@@ -64,11 +65,11 @@ class _ListingDetailScreenState extends State<ListingDetailScreen> {
           announce,
         ], key: 'listing:announce');
       }
-    } catch (_) {
+    } catch (error) {
       if (!mounted) return;
       setState(() {
         _busy = false;
-        _error = l10n.listingActionFailed;
+        _error = errorMessage(error, l10n);
       });
     }
   }

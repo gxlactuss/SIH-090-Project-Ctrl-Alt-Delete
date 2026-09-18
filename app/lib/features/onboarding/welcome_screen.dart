@@ -3,14 +3,15 @@ import 'package:provider/provider.dart';
 
 import '../../core/routing/app_routes.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_motion.dart';
 import '../../core/theme/app_theme.dart';
 import '../../l10n/app_localizations.dart';
 import '../../services/speech_service.dart';
 import '../../state/app_state.dart';
 import '../../widgets/big_action_button.dart';
-import '../../widgets/speak_button.dart';
 import 'widgets/step_line.dart';
 import '../../widgets/whole_word_text.dart';
+import '../../widgets/screen_header.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
@@ -70,10 +71,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       _leave();
       return;
     }
-    _pages.nextPage(
-      duration: const Duration(milliseconds: 260),
-      curve: Curves.easeOut,
-    );
+    if (AppMotion.reduced(context)) {
+      _pages.jumpToPage(_index + 1);
+      return;
+    }
+    _pages.nextPage(duration: AppMotion.medium, curve: AppMotion.enter);
   }
 
   @override
@@ -200,24 +202,16 @@ class _CardViewState extends State<_CardView> {
             child: Icon(card.icon, size: 96, color: AppColors.terracotta),
           ),
           const SizedBox(height: 28),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: WholeWordText(
-                  card.title,
-                  style: theme.textTheme.headlineMedium,
-                ),
-              ),
-              SpeakButton.lines(
-                lines: [card.title, card.body],
-                utteranceKey: 'welcome:${card.title}',
-                size: 34,
-              ),
-            ],
+          ScreenHeader(
+            title: card.title,
+            subtitle: card.body,
+            spokenLines: [card.title, card.body],
+            utteranceKey: 'welcome:${card.title}',
+            titleStyle: theme.textTheme.headlineMedium,
+            subtitleStyle: theme.textTheme.bodyLarge,
+            subtitleGap: 10,
+            speakerSize: 34,
           ),
-          const SizedBox(height: 10),
-          WholeWordText(card.body, style: theme.textTheme.bodyLarge),
           const SizedBox(height: 20),
         ],
       ),
