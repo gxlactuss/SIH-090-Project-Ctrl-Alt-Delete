@@ -1,0 +1,5 @@
+{
+  "detail": [
+    {"loc": ["body", "quantity"], "msg": "Input should be greater than or equal to 0", "type": "greater_than_equal"}
+  ]
+}

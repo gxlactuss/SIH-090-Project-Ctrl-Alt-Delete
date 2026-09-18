@@ -1,0 +1,13 @@
+[
+  {
+    "id": "sale-1",
+    "listing_id": "0b9d8c7e-1a2b-4c3d-8e9f-0a1b2c3d4e5f",
+    "listing_title": "Kantha stitched cushion cover",
+    "quantity": 1,
+    "amount_in_paise": 60000,
+    "placed_at": "2026-09-17T09:30:00Z",
+    "pack_by": "2026-09-19T18:00:00Z",
+    "image_url": "/media/0b9d8c7e-1a2b-4c3d-8e9f-0a1b2c3d4e5f/0.jpg",
+    "buyer_area": "Pune"
+  }
+]
