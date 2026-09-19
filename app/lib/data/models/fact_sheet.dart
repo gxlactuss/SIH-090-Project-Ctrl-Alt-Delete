@@ -8,6 +8,7 @@ class FactSheet {
     this.size,
     this.colour,
     this.technique,
+    this.origin,
     this.quantity,
     this.priceInPaise,
     this.hoursToMake,
@@ -19,6 +20,9 @@ class FactSheet {
   final String? size;
   final String? colour;
   final String? technique;
+
+  final String? origin;
+
   final int? quantity;
   final int? priceInPaise;
   final double? hoursToMake;
@@ -32,6 +36,7 @@ class FactSheet {
     String? size,
     String? colour,
     String? technique,
+    String? origin,
     int? quantity,
     int? priceInPaise,
     double? hoursToMake,
@@ -43,6 +48,7 @@ class FactSheet {
       size: size ?? this.size,
       colour: colour ?? this.colour,
       technique: technique ?? this.technique,
+      origin: origin ?? this.origin,
       quantity: quantity ?? this.quantity,
       priceInPaise: priceInPaise ?? this.priceInPaise,
       hoursToMake: hoursToMake ?? this.hoursToMake,
@@ -56,6 +62,7 @@ class FactSheet {
     ListingField.size => size,
     ListingField.colour => colour,
     ListingField.technique => technique,
+    ListingField.origin => origin,
     ListingField.quantity => quantity,
     ListingField.price => priceInPaise,
   };
@@ -65,6 +72,7 @@ class FactSheet {
     ListingField.size => copyWith(size: value as String?),
     ListingField.colour => copyWith(colour: value as String?),
     ListingField.technique => copyWith(technique: value as String?),
+    ListingField.origin => copyWith(origin: value as String?),
     ListingField.quantity => copyWith(quantity: value as int?),
     ListingField.price => copyWith(priceInPaise: value as int?),
   };
@@ -75,6 +83,7 @@ enum ListingField {
   size(Correction.chips),
   colour(Correction.chips),
   technique(Correction.words),
+  origin(Correction.words),
   quantity(Correction.number),
   price(Correction.number);
 
@@ -91,6 +100,7 @@ extension ListingFieldDisplay on ListingField {
     ListingField.size => l10n.fieldSize,
     ListingField.colour => l10n.fieldColour,
     ListingField.technique => l10n.fieldTechnique,
+    ListingField.origin => l10n.fieldOrigin,
     ListingField.quantity => l10n.fieldQuantity,
     ListingField.price => l10n.fieldPrice,
   };
@@ -100,6 +110,7 @@ extension ListingFieldDisplay on ListingField {
     ListingField.size => Icons.straighten,
     ListingField.colour => Icons.palette_outlined,
     ListingField.technique => Icons.handyman_outlined,
+    ListingField.origin => Icons.place_outlined,
     ListingField.quantity => Icons.inventory_2_outlined,
     ListingField.price => Icons.currency_rupee,
   };
@@ -123,4 +134,47 @@ extension ListingFieldDisplay on ListingField {
     ],
     _ => const [],
   };
+}
+
+abstract final class SpokenFieldValue {
+  static Object? parse(ListingField field, String text) {
+    final trimmed = text.trim();
+    if (trimmed.isEmpty) return null;
+
+    if (field.fallback != Correction.number) return trimmed;
+
+    final digits = StringBuffer();
+    for (final rune in trimmed.runes) {
+      final value = _digitValue(rune);
+      if (value != null) {
+        digits.write(value);
+      } else if (digits.isNotEmpty) {
+        break;
+      }
+    }
+
+    final number = int.tryParse(digits.toString());
+    if (number == null) return null;
+    return field == ListingField.price ? number * 100 : number;
+  }
+
+  static int? _digitValue(int rune) {
+    if (rune >= 0x30 && rune <= 0x39) return rune - 0x30;
+
+    const indicZeros = [
+      0x0966,
+      0x09E6,
+      0x0A66,
+      0x0AE6,
+      0x0B66,
+      0x0BE6,
+      0x0C66,
+      0x0CE6,
+      0x0D66,
+    ];
+    for (final zero in indicZeros) {
+      if (rune >= zero && rune <= zero + 9) return rune - zero;
+    }
+    return null;
+  }
 }

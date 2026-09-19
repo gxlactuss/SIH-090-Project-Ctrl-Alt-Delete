@@ -21,6 +21,8 @@ enum AnalyticsEvent {
 
   suggestionAnswered,
 
+  listingCancelled,
+
   listingPublished,
 
   listingRepublished,

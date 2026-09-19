@@ -45,6 +45,11 @@ class Listing {
 
   bool get needsAttention => followUpQuestion != null;
 
+  bool get asksForPhotos => RegExp(
+    r'photo|picture|image|frame',
+    caseSensitive: false,
+  ).hasMatch(followUpQuestion ?? '');
+
   int get stock => factSheet.quantity ?? 0;
 
   bool get isSoldOut => status == ListingStatus.soldOut || stock <= 0;
@@ -86,6 +91,7 @@ class Listing {
           'id': suggestion.id,
           'spokenPrompt': suggestion.spokenPrompt,
           'textIfAccepted': suggestion.textIfAccepted,
+          'field': suggestion.field,
           'accepted': suggestion.accepted,
         },
     ],
@@ -134,6 +140,7 @@ class Listing {
               id: raw['id'] as String,
               spokenPrompt: raw['spokenPrompt'] as String,
               textIfAccepted: raw['textIfAccepted'] as String,
+              field: raw['field'] as String?,
               accepted: raw['accepted'] as bool?,
             ),
       ],

@@ -30,6 +30,7 @@ class CaptureItem {
     DateTime? uploadedAt,
     int? attempts,
     String? lastError,
+    String? description,
 
     bool clearError = false,
   }) {
@@ -42,7 +43,7 @@ class CaptureItem {
       attempts: attempts ?? this.attempts,
       lastError: clearError ? null : lastError ?? this.lastError,
       templateListingId: templateListingId,
-      description: description,
+      description: description ?? this.description,
     );
   }
 

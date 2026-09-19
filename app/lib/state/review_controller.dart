@@ -5,6 +5,8 @@ import '../data/models/fact_sheet.dart';
 import '../data/models/listing.dart';
 import '../data/models/listing_status.dart';
 import '../data/models/suggestion.dart';
+import '../data/models/app_language.dart';
+import '../data/remote/voice/voice_api.dart';
 import '../data/repositories/listing_repository.dart';
 import '../services/analytics_service.dart';
 
@@ -33,6 +35,8 @@ class ReviewController extends ChangeNotifier {
     required this._listings,
     required Listing listing,
     this._analytics,
+    this._voice,
+    this._language,
     ReviewStage? initialStage,
   }) : _listing = listing,
        _isEdit = listing.status.wasPublished {
@@ -49,6 +53,10 @@ class ReviewController extends ChangeNotifier {
   final ListingRepository _listings;
 
   final AnalyticsService? _analytics;
+
+  final VoiceApi? _voice;
+
+  final AppLanguage? _language;
 
   Listing _listing;
   Listing get listing => _listing;
@@ -201,32 +209,80 @@ class ReviewController extends ChangeNotifier {
     goTo(previous);
   }
 
-  Future<bool> submitAnswer(String voiceReplyPath) => _call(
-    () => _listings.answer(
-      listingId: _listing.id,
-      voiceReplyPath: voiceReplyPath,
-    ),
+  Future<bool> submitAnswer(String voiceReplyPath) async {
+    final said = await _transcribe(voiceReplyPath);
+    return _call(
+      () => _listings.answer(
+        listingId: _listing.id,
+        voiceReplyPath: voiceReplyPath,
+        transcript: said,
+      ),
+      then: () {
+        _analytics?.log(
+          AnalyticsEvent.questionAsked,
+          properties: {'listingId': _listing.id},
+        );
+        if (!_listing.needsAttention) _stage = ReviewStage.readBack;
+      },
+    );
+  }
+
+  Future<bool> submitPhotos(List<String> photoPaths) => _call(
+    () =>
+        _listings.retakePhotos(listingId: _listing.id, photoPaths: photoPaths),
     then: () {
       _analytics?.log(
-        AnalyticsEvent.questionAsked,
+        AnalyticsEvent.retakePrompted,
         properties: {'listingId': _listing.id},
       );
       if (!_listing.needsAttention) _stage = ReviewStage.readBack;
     },
   );
 
-  Future<bool> correctByVoice(ListingField field, String voiceReplyPath) =>
-      _call(
-        () => _listings.answer(
-          listingId: _listing.id,
-          voiceReplyPath: voiceReplyPath,
-          field: field.name,
-        ),
-        then: () => _analytics?.log(
-          AnalyticsEvent.fieldCorrected,
-          properties: {'listingId': _listing.id, 'field': field.name},
-        ),
-      );
+  Future<String?> _transcribe(String path) async {
+    final voice = _voice;
+    final language = _language;
+    if (voice == null || language == null || !voice.isAvailable) return null;
+    try {
+      final transcript = await voice.transcribe(path, language);
+      final text = transcript.text.trim();
+      return text.isEmpty ? null : text;
+    } catch (error) {
+      _error = error;
+      return null;
+    }
+  }
+
+  String? _heard;
+  String? get heard => _heard;
+
+  void clearHeard() => _heard = null;
+
+  Future<bool> correctByVoice(ListingField field, String voiceReplyPath) async {
+    _busy = true;
+    _heard = null;
+    notifyListeners();
+    final said = await _transcribe(voiceReplyPath);
+    _busy = false;
+    notifyListeners();
+
+    _heard = said;
+
+    if (said != null && valueFromSpeech(field, said) == null) return false;
+
+    return _call(
+      () => _listings.answer(
+        listingId: _listing.id,
+        voiceReplyPath: voiceReplyPath,
+        field: field.name,
+        transcript: said,
+      ),
+      then: () => _analytics?.log(
+        AnalyticsEvent.fieldCorrected,
+        properties: {'listingId': _listing.id, 'field': field.name},
+      ),
+    );
+  }
 
   Future<bool> setField(ListingField field, Object? value) => _call(
     () => _listings.patch(listingId: _listing.id, changes: {field.name: value}),
@@ -288,6 +344,29 @@ class ReviewController extends ChangeNotifier {
 
   bool _wentLive = false;
   bool get wentLive => _wentLive;
+
+  static Object? valueFromSpeech(ListingField field, String text) =>
+      SpokenFieldValue.parse(field, text);
+
+  Future<bool> cancelListing() async {
+    _busy = true;
+    _error = null;
+    notifyListeners();
+    try {
+      await _listings.discard(_listing.id);
+      _analytics?.log(
+        AnalyticsEvent.listingCancelled,
+        properties: {'listingId': _listing.id},
+      );
+      return true;
+    } catch (error) {
+      _error = error;
+      return false;
+    } finally {
+      _busy = false;
+      notifyListeners();
+    }
+  }
 
   Future<bool> _call(
     Future<Listing> Function() call, {

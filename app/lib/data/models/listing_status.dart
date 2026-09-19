@@ -52,6 +52,9 @@ extension ListingStatusDisplay on ListingStatus {
       this == ListingStatus.soldOut ||
       this == ListingStatus.unpublished;
 
+  bool get isWorking =>
+      this == ListingStatus.queued || this == ListingStatus.processing;
+
   bool get isDraft =>
       this == ListingStatus.queued ||
       this == ListingStatus.processing ||

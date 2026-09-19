@@ -61,14 +61,15 @@ class CatalogController extends ChangeNotifier {
     final repository = _repository;
     if (repository == null) return;
 
-    _refreshError = null;
     final listings = await repository.refreshAll();
-    if (listings.isEmpty) {
+
+    if (repository.lastRefreshFailed) {
       _refreshError = repository.lastRefreshError;
       notifyListeners();
       return;
     }
 
+    _refreshError = null;
     _listings
       ..clear()
       ..addAll(listings);
@@ -89,6 +90,12 @@ class CatalogController extends ChangeNotifier {
       _listings[index] = listing;
     }
     notifyListeners();
+  }
+
+  void forget(String listingId) {
+    final before = _listings.length;
+    _listings.removeWhere((l) => l.id == listingId);
+    if (_listings.length != before) notifyListeners();
   }
 
   void clear() {

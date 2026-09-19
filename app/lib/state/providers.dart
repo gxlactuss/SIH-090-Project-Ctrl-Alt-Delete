@@ -46,8 +46,15 @@ List<SingleChildWidget> appProviders({
 
   Future<void> Function()? backgroundUploads,
 }) {
+  final appState = AppState(sellers: sellers, speech: speech);
+
   final session = api == null ? buildBackendSession() : null;
-  final client = api ?? buildApiClient(session: session);
+  final client =
+      api ??
+      buildApiClient(
+        session: session,
+        craftStory: () => appState.profile?.craftStory,
+      );
   final listings = ListingRepository(api: client);
   final salesRepository = SalesRepository(api: client);
 
@@ -92,6 +99,7 @@ List<SingleChildWidget> appProviders({
     ChangeNotifierProvider<ConnectivityService>(
       create: (_) => ConnectivityService()..start(),
     ),
+    if (voice != null) Provider<VoiceApi>.value(value: voice),
     ChangeNotifierProvider<DictationService>(
       create: (context) => DictationService(
         voice: voice,
@@ -126,13 +134,13 @@ List<SingleChildWidget> appProviders({
             connectivity: connectivity,
             analytics: analyticsService,
             notifications: notifier,
+            voice: voice,
+            language: () => appState.language,
             onWorkLeft: backgroundUploads,
           )..start()),
       dispose: (_, service) => service.dispose(),
     ),
-    ChangeNotifierProvider<AppState>(
-      create: (_) => AppState(sellers: sellers, speech: speech),
-    ),
+    ChangeNotifierProvider<AppState>.value(value: appState),
     ChangeNotifierProxyProvider<AppState, OnboardingController>(
       create: (context) =>
           OnboardingController(appState: context.read<AppState>()),
