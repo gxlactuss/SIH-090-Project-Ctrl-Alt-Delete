@@ -42,6 +42,11 @@ class Media(Base):
     )
     original_filename: Mapped[Optional[str]] = mapped_column(String(512), nullable=True)
     storage_path: Mapped[Optional[str]] = mapped_column(String(1024), nullable=True)
+    # Where the Vision Station wrote the graded, cut-out, composited version of
+    # this photo, relative to the media root. The raw upload stays untouched in
+    # storage_path so a re-run always starts from the original frame, but this
+    # is the image the listing shows and publishes once a run has produced one.
+    processed_path: Mapped[Optional[str]] = mapped_column(String(1024), nullable=True)
     mime_type: Mapped[Optional[str]] = mapped_column(String(128), nullable=True)
     file_size_bytes: Mapped[Optional[int]] = mapped_column(BigInteger, nullable=True)
     created_at: Mapped[datetime] = mapped_column(

@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from typing import TYPE_CHECKING, List, Optional
 
 import sqlalchemy as sa
-from sqlalchemy import DateTime, String, UniqueConstraint, Uuid, func
+from sqlalchemy import DateTime, String, Text, UniqueConstraint, Uuid, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
@@ -26,6 +26,9 @@ class Seller(Base):
     name: Mapped[str] = mapped_column(String(255), nullable=False, default="")
     language: Mapped[str] = mapped_column(String(32), nullable=False, default="hi")
     cluster: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    # The artisan's own story, written once in their profile and reused across
+    # their listings as background for the description.
+    craft_story: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     ondc_seller_id: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     firebase_uid: Mapped[Optional[str]] = mapped_column(String(128), nullable=True, index=True)
     phone_number: Mapped[Optional[str]] = mapped_column(String(32), nullable=True, index=True)

@@ -11,6 +11,7 @@ class SellerResponse(BaseModel):
     cluster: Optional[str] = None
     ondc_seller_id: Optional[str] = None
     phone_number: Optional[str] = None
+    craft_story: Optional[str] = None
 
 
 class SellerUpdateRequest(BaseModel):
@@ -19,3 +20,4 @@ class SellerUpdateRequest(BaseModel):
     name: Optional[str] = None
     language: Optional[str] = None
     cluster: Optional[str] = None
+    craft_story: Optional[str] = None

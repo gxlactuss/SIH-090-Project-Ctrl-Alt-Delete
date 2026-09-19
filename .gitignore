@@ -44,3 +44,7 @@ temp_check/
 
 
 
+
+# Local secrets backups and dev database
+app/config/secrets.json.bak
+backend/local_dev.db

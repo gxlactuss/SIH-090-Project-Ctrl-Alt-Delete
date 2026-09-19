@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from typing import TYPE_CHECKING, List, Optional
 
 import sqlalchemy as sa
-from sqlalchemy import DateTime, ForeignKey, String, UniqueConstraint, Uuid, func
+from sqlalchemy import DateTime, ForeignKey, Integer, String, Text, UniqueConstraint, Uuid, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
@@ -12,6 +12,7 @@ from app.schemas.enums import ListingState
 if TYPE_CHECKING:
     from app.models.approval import ListingApproval
     from app.models.consent import ListingConsent
+    from app.models.listing_result import ListingResult
     from app.models.media import Media
     from app.models.seller import Seller
     from app.models.suggestion import Suggestion
@@ -35,6 +36,17 @@ class Listing(Base):
         index=True,
     )
     client_item_id: Mapped[str] = mapped_column(String(255), nullable=False)
+    # What the artisan typed instead of speaking. The description step offers a
+    # keyboard as well as a microphone, and a typed note is the only account of
+    # the piece when there is no recording, so the pipeline reads it in place of
+    # a transcript.
+    typed_description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    # How many photos this capture is going to send. The app uploads files one
+    # at a time and the server cannot otherwise tell a pause between photos from
+    # the end of the set, so without this the run started on the first photo
+    # whenever a typed description was already present and the rest of the
+    # artisan's photos arrived too late to be processed.
+    expected_photo_count: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     state: Mapped[ListingState] = mapped_column(
         sa.Enum(
             ListingState,
@@ -82,6 +94,13 @@ class Listing(Base):
     )
     consent: Mapped[Optional["ListingConsent"]] = relationship(
         "ListingConsent",
+        back_populates="listing",
+        uselist=False,
+        cascade="all, delete-orphan",
+        passive_deletes=True,
+    )
+    result: Mapped[Optional["ListingResult"]] = relationship(
+        "ListingResult",
         back_populates="listing",
         uselist=False,
         cascade="all, delete-orphan",

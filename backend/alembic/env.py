@@ -1,3 +1,4 @@
+import os
 import sys
 from os.path import abspath, dirname
 from logging.config import fileConfig
@@ -23,8 +24,15 @@ config = context.config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-# Set database URL dynamically from app settings
-config.set_main_option("sqlalchemy.url", settings.DATABASE_URL)
+# Set database URL dynamically from app settings.
+#
+# ALEMBIC_DATABASE_URL overrides it, so a caller can render or apply migrations
+# for a particular dialect without editing .env. Offline `--sql` rendering needs
+# this: batch mode cannot run without a live connection, so SQL for a PostgreSQL
+# deployment has to be generated against a PostgreSQL URL explicitly.
+config.set_main_option(
+    "sqlalchemy.url", os.environ.get("ALEMBIC_DATABASE_URL") or settings.DATABASE_URL
+)
 
 # Model metadata for autogenerate support
 target_metadata = Base.metadata
@@ -47,6 +55,7 @@ def run_migrations_offline() -> None:
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
+        render_as_batch=url.startswith("sqlite"),
     )
 
     with context.begin_transaction():
@@ -67,7 +76,12 @@ def run_migrations_online() -> None:
 
     with connectable.connect() as connection:
         context.configure(
-            connection=connection, target_metadata=target_metadata
+            connection=connection,
+            target_metadata=target_metadata,
+            # SQLite cannot ALTER a constraint in place. Batch mode rebuilds the
+            # table instead, so the same migrations run on a laptop's SQLite file
+            # and on PostgreSQL. Without it `alembic upgrade head` dies on 0002.
+            render_as_batch=connection.dialect.name == "sqlite",
         )
 
         with context.begin_transaction():
