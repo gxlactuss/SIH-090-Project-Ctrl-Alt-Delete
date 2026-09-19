@@ -20,7 +20,7 @@ abstract final class AppConstants {
   static const double frameEdgeMargin = 0.02;
   static const double maxSubjectOffset = 0.3;
 
-  static const int maxVoiceNoteSeconds = 60;
+  static const int maxVoiceNoteSeconds = 30;
 
   static const int minVoiceNoteSeconds = 3;
 

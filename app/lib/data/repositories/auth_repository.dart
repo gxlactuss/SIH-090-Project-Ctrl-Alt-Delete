@@ -43,6 +43,8 @@ class AuthRepository {
 
   bool get canCall => _firebase == null;
 
+  bool get isSignedIn => _firebase == null || _firebase.currentUser != null;
+
   String? get demoNumber => DevAccounts.enabled ? DevAccounts.phone : null;
 
   String? get demoOtp =>

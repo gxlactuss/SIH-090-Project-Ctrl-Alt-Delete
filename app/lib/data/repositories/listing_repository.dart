@@ -72,12 +72,28 @@ class ListingRepository {
     required String listingId,
     required String voiceReplyPath,
     String? field,
+    String? transcript,
   }) async {
     return _remember(
       await _api.answerQuestion(
         listingId: listingId,
         voiceReplyPath: voiceReplyPath,
         field: field,
+        transcript: transcript,
+      ),
+    );
+  }
+
+  Future<Listing> retakePhotos({
+    required String listingId,
+    required List<String> photoPaths,
+    void Function(double progress)? onProgress,
+  }) async {
+    return _remember(
+      await _api.retakePhotos(
+        listingId: listingId,
+        photoPaths: photoPaths,
+        onProgress: onProgress,
       ),
     );
   }
@@ -162,6 +178,17 @@ class ListingRepository {
     try {
       await _dao.upsert(listing);
     } catch (_) {}
+  }
+
+  Future<void> discard(String listingId) async {
+    _cache.remove(listingId);
+    try {
+      await _dao.delete(listingId);
+    } catch (_) {}
+    try {
+      await _api.deleteListing(listingId);
+    } catch (_) {
+    }
   }
 
   Future<void> clearCache() async {

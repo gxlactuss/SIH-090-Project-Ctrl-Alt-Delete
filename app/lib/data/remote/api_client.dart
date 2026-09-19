@@ -24,6 +24,14 @@ abstract interface class ApiClient {
     required String listingId,
     required String voiceReplyPath,
     String? field,
+
+    String? transcript,
+  });
+
+  Future<Listing> retakePhotos({
+    required String listingId,
+    required List<String> photoPaths,
+    void Function(double progress)? onProgress,
   });
 
   Future<Listing> patchListing({
@@ -60,6 +68,8 @@ abstract interface class ApiClient {
   Future<Listing> relist(String listingId);
 
   Future<List<Sale>> sales();
+
+  Future<void> deleteListing(String listingId);
 
   Future<void> deleteAccount();
 

@@ -41,7 +41,12 @@ class HttpApi implements ApiClient {
   Future<SellerProfile> createProfile(SellerProfile draft) async {
     final body = await _json(
       ApiRoutes.updateSeller,
-      body: {'name': draft.name, 'language': draft.languageCode},
+      body: {
+        'name': draft.name,
+        'language': draft.languageCode,
+
+        if (draft.craftStory != null) 'craftStory': draft.craftStory,
+      },
     );
     return _parse(body, (json) {
       final seller = _snake(json);
@@ -71,7 +76,14 @@ class HttpApi implements ApiClient {
 
     final created = await _json(
       ApiRoutes.createListing,
-      body: {'client_item_id': captureId},
+      body: {
+        'client_item_id': captureId,
+
+        if (description != null && description.trim().isNotEmpty)
+          'description': description.trim(),
+
+        if (photoPaths.isNotEmpty) 'photo_count': photoPaths.length,
+      },
     );
     final serverId = _parse(created, _remember);
 
@@ -115,6 +127,7 @@ class HttpApi implements ApiClient {
     required String listingId,
     required String voiceReplyPath,
     String? field,
+    String? transcript,
   }) async => _listing(
     await _multipart(
       ApiRoutes.answerQuestion,
@@ -122,9 +135,47 @@ class HttpApi implements ApiClient {
       files: {
         'voiceReply': [voiceReplyPath],
       },
-      fields: {'field': ?field},
+      fields: {'field': ?field, 'transcript': ?transcript},
     ),
   );
+
+  @override
+  Future<Listing> retakePhotos({
+    required String listingId,
+    required List<String> photoPaths,
+    void Function(double progress)? onProgress,
+  }) async {
+    for (final path in photoPaths) {
+      if (!File(path).existsSync()) {
+        throw const UploadException(UploadFailure.missingFiles);
+      }
+    }
+
+    final serverId = await _serverId(listingId);
+    final sizes = [for (final path in photoPaths) File(path).lengthSync()];
+    final total = sizes.fold<int>(0, (sum, size) => sum + size);
+    var done = 0;
+    for (final (index, path) in photoPaths.indexed) {
+      final size = sizes[index];
+      final before = done;
+      await _multipart(
+        ApiRoutes.uploadMedia,
+        id: serverId,
+        files: {
+          'file': [path],
+        },
+        fields: {'mediaType': 'image'},
+        onProgress: onProgress == null || total == 0
+            ? null
+            : (part) => onProgress((before + part * size) / total),
+        limit: uploadTimeout,
+      );
+      done += size;
+    }
+    onProgress?.call(1);
+
+    return listing(listingId);
+  }
 
   @override
   Future<Listing> patchListing({
@@ -217,6 +268,11 @@ class HttpApi implements ApiClient {
         final sale = _snake(json);
         return Sale.fromJson({...sale, 'image_url': _media(sale['image_url'])});
       });
+
+  @override
+  Future<void> deleteListing(String listingId) async {
+    await _json(ApiRoutes.deleteListing, id: await _serverId(listingId));
+  }
 
   @override
   Future<void> deleteAccount() async {

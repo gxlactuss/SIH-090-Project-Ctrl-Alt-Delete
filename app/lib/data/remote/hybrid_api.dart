@@ -10,6 +10,7 @@ enum ApiCall {
   listing,
   listings,
   answerQuestion,
+  retakePhotos,
   patchListing,
   reviseListing,
   resolveSuggestions,
@@ -19,6 +20,7 @@ enum ApiCall {
   unpublish,
   relist,
   sales,
+  deleteListing,
   deleteAccount,
   minimumSupportedBuild,
 }
@@ -125,12 +127,28 @@ class HybridApi implements ApiClient {
     required String listingId,
     required String voiceReplyPath,
     String? field,
+    String? transcript,
   }) => _one(
     ApiCall.answerQuestion,
     (api) => api.answerQuestion(
       listingId: listingId,
       voiceReplyPath: voiceReplyPath,
       field: field,
+      transcript: transcript,
+    ),
+  );
+
+  @override
+  Future<Listing> retakePhotos({
+    required String listingId,
+    required List<String> photoPaths,
+    void Function(double progress)? onProgress,
+  }) => _one(
+    ApiCall.retakePhotos,
+    (api) => api.retakePhotos(
+      listingId: listingId,
+      photoPaths: photoPaths,
+      onProgress: onProgress,
     ),
   );
 
@@ -207,6 +225,14 @@ class HybridApi implements ApiClient {
   @override
   Future<List<Sale>> sales() =>
       (usesServer(ApiCall.sales) ? server : mock).sales();
+
+  @override
+  Future<void> deleteListing(String listingId) async {
+    if (usesServer(ApiCall.deleteListing)) {
+      await server.deleteListing(listingId);
+    }
+    await mock.deleteListing(listingId);
+  }
 
   @override
   Future<void> deleteAccount() async {

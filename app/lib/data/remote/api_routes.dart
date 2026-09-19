@@ -16,6 +16,7 @@ abstract final class ApiRoutes {
   );
 
   static const deleteAccount = ApiRoute('DELETE', 'seller');
+  static const deleteListing = ApiRoute('DELETE', 'listings/{id}');
   static const patchListing = ApiRoute('PATCH', 'listings/{id}');
   static const answerQuestion = ApiRoute('POST', 'listings/{id}/answer');
   static const reviseListing = ApiRoute('POST', 'listings/{id}/revise');

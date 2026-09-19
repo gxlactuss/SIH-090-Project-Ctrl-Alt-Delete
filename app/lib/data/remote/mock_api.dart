@@ -12,11 +12,17 @@ import 'api_client.dart';
 import 'upload_failure.dart';
 
 class MockApi implements ApiClient {
-  MockApi({this.failUploads = false, this.uploadDuration = _defaultUpload});
+  MockApi({
+    this.failUploads = false,
+    this.uploadDuration = _defaultUpload,
+    this.craftStory,
+  });
 
   final bool failUploads;
 
   final Duration uploadDuration;
+
+  final String? Function()? craftStory;
 
   static const Duration _defaultUpload = Duration(seconds: 4);
 
@@ -79,23 +85,80 @@ class MockApi implements ApiClient {
       return;
     }
 
+    final said = description?.trim();
     _listings.insert(
       0,
-      Listing(
-        id: captureId,
-        status: ListingStatus.needsAttention,
-        followUpQuestion: _followUp,
-        factSheet: const FactSheet(
-          material: 'Clay',
-          quantity: 1,
-          hoursToMake: 6,
-          materialCostInPaise: 12000,
-        ),
-        imageUrls: photoPaths,
-        suggestedPriceInPaise: 60000,
-        priceFloorInPaise: 48000,
-      ),
+      said == null || said.isEmpty
+          ? Listing(
+              id: captureId,
+              status: ListingStatus.needsAttention,
+              followUpQuestion: _followUp,
+              factSheet: const FactSheet(
+                material: 'Clay',
+                quantity: 1,
+                hoursToMake: 6,
+                materialCostInPaise: 12000,
+              ),
+              imageUrls: photoPaths,
+              suggestedPriceInPaise: 60000,
+              priceFloorInPaise: 48000,
+            )
+          : Listing(
+              id: captureId,
+              status: ListingStatus.needsAttention,
+              followUpQuestion: _followUp,
+              description: _withStoryTouch(said, craftStory?.call()),
+              factSheet: FactSheet(quantity: 1, material: _materialFrom(said)),
+              imageUrls: photoPaths,
+              suggestedPriceInPaise: 60000,
+              priceFloorInPaise: 48000,
+            ),
     );
+  }
+
+  static String _withStoryTouch(String said, String? story) {
+    final trimmed = story?.trim() ?? '';
+    if (trimmed.isEmpty) return said;
+
+    final end = trimmed.indexOf(RegExp(r'[.!?।]'));
+    var clause = (end == -1 ? trimmed : trimmed.substring(0, end)).trim();
+    if (clause.isEmpty) return said;
+    if (clause.length > 140) {
+      clause = '${clause.substring(0, 140).trimRight()}…';
+    }
+
+    if (said.toLowerCase().contains(clause.toLowerCase())) return said;
+
+    final ending = RegExp(r'[.!?।]\$').hasMatch(said) ? '' : '.';
+    return '$said$ending $clause.';
+  }
+
+  static String? _materialFrom(String said) {
+    const materials = {
+      'clay': 'Clay',
+      'मिट्टी': 'मिट्टी',
+      'माटी': 'माटी',
+      'wood': 'Wood',
+      'लकड़ी': 'लकड़ी',
+      'brass': 'Brass',
+      'पीतल': 'पीतल',
+      'silver': 'Silver',
+      'चाँदी': 'चाँदी',
+      'cotton': 'Cotton',
+      'कपास': 'कपास',
+      'सूत': 'सूत',
+      'silk': 'Silk',
+      'रेशम': 'रेशम',
+      'bamboo': 'Bamboo',
+      'बाँस': 'बाँस',
+      'leather': 'Leather',
+      'चमड़ा': 'चमड़ा',
+    };
+    final haystack = said.toLowerCase();
+    for (final entry in materials.entries) {
+      if (haystack.contains(entry.key)) return entry.value;
+    }
+    return null;
   }
 
   @override
@@ -168,6 +231,12 @@ class MockApi implements ApiClient {
   }
 
   @override
+  Future<void> deleteListing(String listingId) async {
+    await Future<void>.delayed(AppConstants.fakeNetworkDelay);
+    _listings.removeWhere((l) => l.id == listingId);
+  }
+
+  @override
   Future<void> deleteAccount() async {
     await Future<void>.delayed(AppConstants.fakeNetworkDelay);
     _listings.clear();
@@ -206,15 +275,57 @@ class MockApi implements ApiClient {
   static const String _followUp = 'How big is it? Say it in inches or feet.';
 
   @override
+  Future<Listing> retakePhotos({
+    required String listingId,
+    required List<String> photoPaths,
+    void Function(double progress)? onProgress,
+  }) async {
+    for (final path in photoPaths) {
+      if (!File(path).existsSync()) {
+        throw const UploadException(UploadFailure.missingFiles);
+      }
+    }
+
+    const steps = 10;
+    final step = uploadDuration ~/ steps;
+    for (var i = 1; i <= steps; i++) {
+      await Future<void>.delayed(step);
+      onProgress?.call(i / steps);
+    }
+
+    final current = await listing(listingId);
+    return _store(
+      current.copyWith(
+        status: ListingStatus.ready,
+        imageUrls: photoPaths,
+        clearFollowUpQuestion: true,
+      ),
+    );
+  }
+
+  @override
   Future<Listing> answerQuestion({
     required String listingId,
     required String voiceReplyPath,
     String? field,
+    String? transcript,
   }) async {
     await Future<void>.delayed(AppConstants.fakeNetworkDelay);
     final current = await listing(listingId);
+    final said = transcript?.trim();
 
     if (field == null) {
+      if (said != null && said.isNotEmpty) {
+        final existing = current.description?.trim() ?? '';
+        return _store(
+          current.copyWith(
+            status: ListingStatus.ready,
+            clearFollowUpQuestion: true,
+            description: existing.isEmpty ? said : '$existing $said',
+            suggestions: _suggestions,
+          ),
+        );
+      }
       return _store(
         current.copyWith(
           status: ListingStatus.ready,
@@ -229,6 +340,18 @@ class MockApi implements ApiClient {
       );
     }
 
+    if (said != null && said.isNotEmpty) {
+      final parsed = ListingField.values.firstWhere((f) => f.name == field);
+      final value = SpokenFieldValue.parse(parsed, said);
+      if (value != null) {
+        return _store(
+          current.copyWith(
+            factSheet: current.factSheet.withField(parsed, value),
+          ),
+        );
+      }
+    }
+
     final parsed = ListingField.values.firstWhere((f) => f.name == field);
     return _store(
       current.copyWith(
@@ -239,6 +362,7 @@ class MockApi implements ApiClient {
           ListingField.size => '12 inches',
           ListingField.material => 'Clay',
           ListingField.technique => 'Wheel thrown',
+          ListingField.origin => 'Jaipur',
         }),
       ),
     );

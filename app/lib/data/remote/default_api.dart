@@ -10,9 +10,12 @@ import 'hybrid_api.dart';
 import 'logging_client.dart';
 import 'mock_api.dart';
 
-ApiClient buildApiClient({BackendSession? session}) {
+ApiClient buildApiClient({
+  BackendSession? session,
+  String? Function()? craftStory,
+}) {
   if (!AppConfig.hasBackend) {
-    return MockApi(failUploads: DevFlags.failUploads);
+    return MockApi(failUploads: DevFlags.failUploads, craftStory: craftStory);
   }
   final signIn = session ?? buildBackendSession()!;
   final server = HttpApi(
@@ -25,7 +28,7 @@ ApiClient buildApiClient({BackendSession? session}) {
   if (onServer == null) return server;
   return HybridApi(
     server: server,
-    mock: MockApi(failUploads: DevFlags.failUploads),
+    mock: MockApi(failUploads: DevFlags.failUploads, craftStory: craftStory),
     onServer: onServer,
   );
 }

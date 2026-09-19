@@ -4,8 +4,10 @@ import 'package:flutter/foundation.dart';
 
 import '../data/local/capture_dao.dart';
 import '../data/models/capture_item.dart';
+import '../data/models/app_language.dart';
 import '../data/remote/api_client.dart';
 import '../data/remote/upload_failure.dart';
+import '../data/remote/voice/voice_api.dart';
 import '../state/queue_controller.dart';
 import 'analytics_service.dart';
 import 'connectivity_service.dart';
@@ -19,6 +21,8 @@ class UploadService {
     CaptureDao? dao,
     this._analytics,
     this._notifications,
+    this._voice,
+    this._language,
     this.onWorkLeft,
   }) : _dao = dao ?? CaptureDao();
 
@@ -31,6 +35,10 @@ class UploadService {
 
   final AnalyticsService? _analytics;
   final NotificationService? _notifications;
+
+  final VoiceApi? _voice;
+
+  final AppLanguage Function()? _language;
 
   bool _draining = false;
   bool _started = false;
@@ -110,8 +118,39 @@ class UploadService {
     }
   }
 
+  bool _canTranscribe(CaptureItem item) =>
+      _voice != null &&
+      _language != null &&
+      _voice.isAvailable &&
+      item.voiceNotePath.isNotEmpty;
+
+  Future<String?> _transcribe(CaptureItem item) async {
+    final voice = _voice!;
+    final language = _language!;
+
+    try {
+      final transcript = await voice.transcribe(item.voiceNotePath, language());
+      final text = transcript.text.trim();
+      if (text.isEmpty) return null;
+
+      final kept = item.copyWith(description: text);
+      try {
+        await _dao.insert(kept);
+      } catch (_) {}
+      return text;
+    } catch (error) {
+      debugPrint('could not transcribe ${item.id}: $error');
+      return null;
+    }
+  }
+
   Future<bool> _upload(CaptureItem item) async {
     _queue.markUploading(item.id);
+
+    var description = item.description;
+    if (description == null && _canTranscribe(item)) {
+      description = await _transcribe(item);
+    }
 
     try {
       await _api.uploadCapture(
@@ -120,7 +159,7 @@ class UploadService {
         voiceNotePath: item.voiceNotePath,
         onProgress: _queue.updateProgress,
         templateListingId: item.templateListingId,
-        description: item.description,
+        description: description,
       );
     } on UploadException catch (error) {
       await _fail(item, error.failure);
