@@ -106,6 +106,7 @@ class KirtikarApp extends StatelessWidget {
         AppRoutes.craftStory: (_) => const CraftStoryScreen(),
         AppRoutes.changeLanguage: (_) => const LanguageScreen(isChange: true),
         AppRoutes.changePhone: (_) => const ChangePhoneScreen(),
+        AppRoutes.signInAgain: (_) => const ChangePhoneScreen(resume: true),
         AppRoutes.ondcAccount: (_) => const OndcAccountScreen(),
         AppRoutes.notifications: (_) => const NotificationsScreen(),
         AppRoutes.voiceSettings: (_) => const VoiceSettingsScreen(),
@@ -143,6 +144,12 @@ class KirtikarApp extends StatelessWidget {
           return MaterialPageRoute<void>(
             settings: settings,
             builder: (_) => ListingDetailScreen(listing: argument),
+          );
+        }
+        if (settings.name == AppRoutes.retakePhotos) {
+          return MaterialPageRoute<List<String>>(
+            settings: settings,
+            builder: (_) => const CaptureScreen(photosOnly: true),
           );
         }
         final id = argument;

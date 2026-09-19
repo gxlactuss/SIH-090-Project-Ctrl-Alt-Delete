@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../core/config/app_config.dart';
 import '../../core/routing/app_routes.dart';
+import '../../data/repositories/auth_repository.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_motion.dart';
 import '../../l10n/app_localizations.dart';
@@ -37,7 +39,7 @@ class _SplashScreenState extends State<SplashScreen> {
     if (updates.mustUpdate) {
       next = AppRoutes.forceUpdate;
     } else if (appState.hasCompletedSetup) {
-      next = AppRoutes.home;
+      next = _needsSignIn ? AppRoutes.signInAgain : AppRoutes.home;
     } else if (appState.hasChosenLanguage) {
       next = AppRoutes.welcome;
     } else {
@@ -45,6 +47,9 @@ class _SplashScreenState extends State<SplashScreen> {
     }
     Navigator.of(context).pushReplacementNamed(next);
   }
+
+  bool get _needsSignIn =>
+      AppConfig.hasBackend && !AuthRepository().isSignedIn;
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +68,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 opacity: (t * 2).clamp(0.0, 1.0),
                 child: Transform.scale(
                   scale: 0.85 + 0.15 * t,
-                  child: AppLogo(size: 132, voice: t),
+                  child: const AppLogo(size: 132),
                 ),
               ),
             ),

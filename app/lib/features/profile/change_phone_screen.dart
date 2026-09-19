@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/constants/app_constants.dart';
+import '../../core/routing/app_routes.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_theme.dart';
 import '../../data/repositories/auth_repository.dart';
@@ -13,7 +14,9 @@ import 'widgets/settings_scaffold.dart';
 import '../../widgets/whole_word_text.dart';
 
 class ChangePhoneScreen extends StatefulWidget {
-  const ChangePhoneScreen({super.key});
+  const ChangePhoneScreen({super.key, this.resume = false});
+
+  final bool resume;
 
   @override
   State<ChangePhoneScreen> createState() => _ChangePhoneScreenState();
@@ -29,6 +32,24 @@ class _ChangePhoneScreenState extends State<ChangePhoneScreen> {
   String _code = '';
   bool _busy = false;
   String? _error;
+
+  bool _filled = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!widget.resume || _filled) return;
+    _filled = true;
+    final known = context.read<AppState>().profile?.phone;
+    if (known != null) _digits = _digitsOf(known);
+  }
+
+  static String _digitsOf(String phone) {
+    final digits = phone.replaceAll(RegExp(r'\D'), '');
+    return digits.length > AppConstants.phoneDigits
+        ? digits.substring(digits.length - AppConstants.phoneDigits)
+        : digits;
+  }
 
   bool get _isNumberComplete => _digits.length == AppConstants.phoneDigits;
   bool get _isCodeComplete => _code.length == AppConstants.otpDigits;
@@ -111,6 +132,11 @@ class _ChangePhoneScreenState extends State<ChangePhoneScreen> {
     await state.updateProfile(phone: _digits);
     if (!mounted) return;
 
+    if (widget.resume) {
+      navigator.pushNamedAndRemoveUntil(AppRoutes.home, (_) => false);
+      return;
+    }
+
     navigator.pop();
     messenger.showSnackBar(
       SnackBar(content: WholeWordText(l10n.changePhoneDone)),
@@ -132,11 +158,13 @@ class _ChangePhoneScreenState extends State<ChangePhoneScreen> {
     final onNumber = _step == _Step.number;
 
     return SettingsScaffold(
-      title: l10n.changePhoneTitle,
-      subtitle: onNumber ? l10n.changePhoneBody : l10n.otpSentTo(_digits),
+      title: widget.resume ? l10n.phoneTitle : l10n.changePhoneTitle,
+      subtitle: onNumber
+          ? (widget.resume ? l10n.phoneWhy : l10n.changePhoneBody)
+          : l10n.otpSentTo(_digits),
       busy: _busy,
       rows: [
-        if (onNumber && current != null) ...[
+        if (onNumber && !widget.resume && current != null) ...[
           WholeWordText(
             l10n.changePhoneCurrent(current),
             style: const TextStyle(fontSize: 17, color: AppColors.muted),

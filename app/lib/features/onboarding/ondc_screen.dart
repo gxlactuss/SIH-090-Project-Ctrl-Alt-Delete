@@ -12,7 +12,6 @@ import '../../state/app_state.dart';
 import '../../widgets/big_action_button.dart';
 import '../../widgets/speak_button.dart';
 import '../../widgets/whole_word_text.dart';
-import 'widgets/demo_hint.dart';
 import 'widgets/onboarding_scaffold.dart';
 import 'widgets/qr_scan_page.dart';
 import '../../widgets/confirm_dialog.dart';
@@ -128,7 +127,6 @@ class _OndcScreenState extends State<OndcScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    const ondc = _ondc;
 
     return OnboardingScaffold(
       title: l10n.ondcTitle,
@@ -178,18 +176,6 @@ class _OndcScreenState extends State<OndcScreen> {
               ],
             ),
           ],
-          const SizedBox(height: 18),
-          DemoHint(
-            values: {
-              'Email': ondc.demoEmail ?? '',
-              'Seller ID': ondc.demoSellerId ?? '',
-            },
-            onTap: () => setState(() {
-              _email.text = ondc.demoEmail ?? '';
-              _sellerId.text = ondc.demoSellerId ?? '';
-              _error = null;
-            }),
-          ),
         ],
       ),
       actions: [

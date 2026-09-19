@@ -17,7 +17,6 @@ import '../../widgets/speak_button.dart';
 import '../../widgets/whole_word_text.dart';
 import '../../widgets/status_view.dart';
 import '../../widgets/big_action_button.dart';
-import '../../widgets/dev_simulate_button.dart';
 import '../../widgets/fade_in.dart';
 import '../products/products_screen.dart';
 import '../shell/app_shell.dart';
@@ -89,7 +88,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 _AddProductButton(height: buttonHeight),
                 const SizedBox(height: 16),
                 _StatusChips(unreadSales: unreadSales),
-                const DevSimulateButton(),
                 const SizedBox(height: 22),
                 AnimatedSize(
                   duration: AppMotion.of(context, AppMotion.medium),

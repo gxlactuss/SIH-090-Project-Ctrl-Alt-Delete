@@ -10,7 +10,6 @@ import '../../l10n/app_localizations.dart';
 import '../../state/onboarding_controller.dart';
 import '../../widgets/big_action_button.dart';
 import '../../widgets/number_pad.dart';
-import 'widgets/demo_hint.dart';
 import 'widgets/onboarding_scaffold.dart';
 import '../../widgets/whole_word_text.dart';
 
@@ -76,7 +75,6 @@ class _PhoneScreenState extends State<PhoneScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final auth = context.read<OnboardingController>().auth;
 
     return OnboardingScaffold(
       step: 6,
@@ -101,14 +99,6 @@ class _PhoneScreenState extends State<PhoneScreen> {
             onBackspace: _backspace,
             onBackspaceLong: () => setState(() {
               _digits = '';
-              _error = null;
-            }),
-          ),
-          const SizedBox(height: 10),
-          DemoHint(
-            values: {'Phone': auth.demoNumber ?? ''},
-            onTap: () => setState(() {
-              _digits = auth.demoNumber ?? '';
               _error = null;
             }),
           ),

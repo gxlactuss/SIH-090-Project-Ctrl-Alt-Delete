@@ -9,10 +9,12 @@ import '../../l10n/app_localizations.dart';
 import '../../services/connectivity_service.dart';
 import '../../services/upload_service.dart';
 import '../../data/models/listing_status.dart';
+import '../../data/repositories/listing_repository.dart';
+import '../../services/analytics_service.dart';
 import '../../state/catalog_controller.dart';
+import '../../state/discard_listing.dart';
 import '../../state/queue_controller.dart';
 import '../../widgets/big_action_button.dart';
-import '../../widgets/dev_simulate_button.dart';
 import '../../widgets/speak_button.dart';
 import 'widgets/queue_state_line.dart';
 import '../../widgets/whole_word_text.dart';
@@ -39,7 +41,18 @@ class QueueItemScreen extends StatelessWidget {
 
     if (!confirmed || !context.mounted) return;
     final navigator = Navigator.of(context);
-    await queue.remove(captureId);
+    final catalog = context.maybeRead<CatalogController>();
+    final listings = context.maybeRead<ListingRepository>();
+    final analytics = context.maybeRead<AnalyticsService>();
+
+    await dropQueuedCapture(queue, captureId);
+    await listings?.discard(captureId);
+    catalog?.forget(captureId);
+    analytics?.log(
+      AnalyticsEvent.listingCancelled,
+      properties: {'listingId': captureId},
+    );
+
     navigator.pop();
   }
 
@@ -181,7 +194,6 @@ class QueueItemScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   if (state == QueueItemState.processing) ...[
-                    DevSimulateButton(listingId: item.id, bottomGap: true),
                     BigActionButton(
                       label: l10n.processingGoHome,
                       icon: Icons.home,

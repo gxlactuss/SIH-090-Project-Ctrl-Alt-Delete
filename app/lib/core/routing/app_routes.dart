@@ -12,9 +12,13 @@ abstract final class AppRoutes {
   static const ondc = '/ondc';
   static const practice = '/practice';
 
+  static const signInAgain = '/sign-in-again';
+
   static const home = '/home';
 
   static const capture = '/capture';
+
+  static const retakePhotos = '/capture/retake';
 
   static const queue = '/queue';
   static const queueItem = '/queue/item';

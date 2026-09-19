@@ -5,6 +5,8 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_motion.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../data/remote/media_auth.dart';
+import '../../../services/photo_saver.dart';
 import '../../../services/speech_service.dart';
 import '../../../state/review_controller.dart';
 import '../../../widgets/big_action_button.dart';
@@ -122,6 +124,7 @@ class _PhotosStageState extends State<PhotosStage>
         ],
       ),
       actions: [
+        _SaveToPhone(paths: images),
         BigActionButton(
           label: l10n.photosConfirm,
           icon: Icons.check,
@@ -134,6 +137,77 @@ class _PhotosStageState extends State<PhotosStage>
                 },
         ),
       ],
+    );
+  }
+}
+
+class _SaveToPhone extends StatefulWidget {
+  const _SaveToPhone({required this.paths});
+
+  final List<String> paths;
+
+  @override
+  State<_SaveToPhone> createState() => _SaveToPhoneState();
+}
+
+class _SaveToPhoneState extends State<_SaveToPhone> {
+  bool _busy = false;
+  bool _done = false;
+
+  Future<void> _save() async {
+    if (_busy) return;
+    setState(() => _busy = true);
+
+    final l10n = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    final auth = context.read<MediaAuth?>();
+
+    var saved = 0;
+    var result = PhotoSaveResult.failed;
+    for (final path in widget.paths) {
+      result = await const PhotoSaver().save(
+        path,
+        headers: auth?.headersFor(path),
+        album: 'Kirtikar',
+      );
+      if (result == PhotoSaveResult.saved) saved++;
+      if (result == PhotoSaveResult.denied) break;
+    }
+    if (!mounted) return;
+
+    if (saved > 0) result = PhotoSaveResult.saved;
+    setState(() {
+      _busy = false;
+      _done = result == PhotoSaveResult.saved;
+    });
+
+    messenger.showSnackBar(
+      SnackBar(
+        content: WholeWordText(switch (result) {
+          PhotoSaveResult.saved => l10n.photoSaved,
+          PhotoSaveResult.denied => l10n.photoSaveDenied,
+          PhotoSaveResult.failed => l10n.photoSaveFailed,
+        }),
+      ),
+    );
+    if (result == PhotoSaveResult.saved) {
+      await context.read<SpeechService>().speak(
+        l10n.photoSaved,
+        key: 'photos:saved',
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
+    return BigActionButton(
+      label: l10n.photoSaveAction,
+      icon: _done ? Icons.download_done : Icons.download_outlined,
+      tone: ButtonTone.secondary,
+      busy: _busy,
+      onPressed: _busy || widget.paths.isEmpty ? null : _save,
     );
   }
 }

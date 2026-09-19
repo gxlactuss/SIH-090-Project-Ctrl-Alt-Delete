@@ -3,11 +3,13 @@ import 'package:provider/provider.dart';
 
 import '../../core/routing/app_routes.dart';
 import '../../data/models/listing.dart';
+import '../../data/remote/voice/voice_api.dart';
 import '../../data/repositories/listing_repository.dart';
 import '../../l10n/app_localizations.dart';
 import '../../core/di.dart';
 import '../../services/analytics_service.dart';
 import '../../services/recorder_service.dart';
+import '../../state/app_state.dart';
 import '../../state/catalog_controller.dart';
 import '../../state/review_controller.dart';
 import 'stages/consent_stage.dart';
@@ -39,6 +41,8 @@ class _ReviewScreenState extends State<ReviewScreen> {
     listings: context.read<ListingRepository>(),
     listing: widget.listing,
     analytics: context.maybeRead<AnalyticsService>(),
+    voice: context.maybeRead<VoiceApi>(),
+    language: context.maybeRead<AppState>()?.language,
     initialStage: widget.initialStage,
   );
 
@@ -127,6 +131,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
               child: switch (review.stage) {
                 ReviewStage.needsAttention => NeedsAttentionStage(
                   onClose: _confirmLeave,
+                  onReprocessing: _goHome,
                 ),
                 ReviewStage.readBack => ReadBackStage(
                   onClose: _confirmLeave,

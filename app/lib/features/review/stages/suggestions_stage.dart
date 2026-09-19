@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/theme/app_colors.dart';
+import '../../../data/models/fact_sheet.dart';
+import '../../../data/models/suggestion.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../state/review_controller.dart';
 import '../../../widgets/big_action_button.dart';
 import '../../../widgets/speak_button.dart';
+import '../widgets/correction_sheet.dart';
 import '../widgets/review_scaffold.dart';
 import '../../../widgets/whole_word_text.dart';
 
@@ -24,6 +27,31 @@ class SuggestionsStage extends StatelessWidget {
     final review = context.read<ReviewController>();
     await review.submitSuggestions();
     review.next();
+  }
+
+  static ListingField? _fieldOf(Suggestion suggestion) {
+    final name = suggestion.field;
+    if (name == null) return null;
+    for (final field in ListingField.values) {
+      if (field.name == name) return field;
+    }
+    return null;
+  }
+
+  Future<void> _fill(
+    BuildContext context,
+    Suggestion suggestion,
+    ListingField field,
+  ) async {
+    final review = context.read<ReviewController>();
+    final before = review.listing.factSheet.value(field);
+
+    await CorrectionSheet.show(context, field);
+
+    final after = review.listing.factSheet.value(field);
+    if (after == null || after == before) return;
+
+    review.answerSuggestion(suggestion.id, true);
   }
 
   @override
@@ -52,6 +80,7 @@ class SuggestionsStage extends StatelessWidget {
     }
 
     final answered = review.answeredSuggestions;
+    final field = _fieldOf(suggestion);
 
     return ReviewScaffold(
       title: l10n.suggestTitle,
@@ -106,6 +135,9 @@ class SuggestionsStage extends StatelessWidget {
           icon: Icons.check,
           onPressed: review.isBusy
               ? null
+
+              : field != null
+              ? () => _fill(context, suggestion, field)
               : () => review.answerSuggestion(suggestion.id, true),
         ),
         BigActionButton(

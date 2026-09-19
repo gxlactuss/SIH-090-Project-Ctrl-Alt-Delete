@@ -25,6 +25,16 @@ class VoiceRecordStage extends StatefulWidget {
   State<VoiceRecordStage> createState() => _VoiceRecordStageState();
 }
 
+List<String> _guidePoints(AppLocalizations l10n) => [
+  l10n.voiceGuideWhat,
+  l10n.voiceGuideMaterial,
+  l10n.voiceGuideSize,
+  l10n.voiceGuideColour,
+  l10n.voiceGuideTime,
+  l10n.voiceGuideCraft,
+  l10n.voiceGuidePrice,
+];
+
 class _VoiceRecordStageState extends State<VoiceRecordStage> {
   String? _problem;
 
@@ -145,19 +155,26 @@ class _VoiceRecordStageState extends State<VoiceRecordStage> {
         title: l10n.voiceTypeTitle,
         subtitle: l10n.voiceBody,
         onClose: widget.onClose,
-        body: TextField(
-          controller: _typed,
-          autofocus: true,
-          minLines: 5,
-          maxLines: 10,
-          textCapitalization: TextCapitalization.sentences,
-          onChanged: (_) => setState(() {}),
-          style: const TextStyle(
-            fontSize: 20,
-            height: 1.4,
-            color: AppColors.ink,
-          ),
-          decoration: InputDecoration(hintText: l10n.voiceTypeHint),
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            TextField(
+              controller: _typed,
+              autofocus: true,
+              minLines: 5,
+              maxLines: 10,
+              textCapitalization: TextCapitalization.sentences,
+              onChanged: (_) => setState(() {}),
+              style: const TextStyle(
+                fontSize: 20,
+                height: 1.4,
+                color: AppColors.ink,
+              ),
+              decoration: InputDecoration(hintText: l10n.voiceTypeHint),
+            ),
+            const SizedBox(height: 18),
+            const _GuidePanel(),
+          ],
         ),
         actions: [
           BigActionButton(
@@ -182,6 +199,12 @@ class _VoiceRecordStageState extends State<VoiceRecordStage> {
     return CaptureScaffold(
       title: l10n.voiceTitle,
       subtitle: l10n.voiceBody,
+      spokenLines: [
+        l10n.voiceTitle,
+        l10n.voiceBody,
+        l10n.voiceGuideTitle,
+        ..._guidePoints(l10n),
+      ],
       onClose: widget.onClose,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -253,6 +276,8 @@ class _VoiceRecordStageState extends State<VoiceRecordStage> {
               ],
             ),
           ),
+          const SizedBox(height: 18),
+          const _GuidePanel(),
         ],
       ),
       actions: [
@@ -282,6 +307,79 @@ class _VoiceRecordStageState extends State<VoiceRecordStage> {
         ),
         backToPhotos,
       ],
+    );
+  }
+}
+
+class _GuidePanel extends StatelessWidget {
+  const _GuidePanel();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        border: Border.all(color: AppColors.border, width: 2),
+        borderRadius: BorderRadius.circular(AppTheme.radius),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(
+                Icons.lightbulb_outline,
+                size: 24,
+                color: AppColors.marigold,
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: WholeWordText(
+                  l10n.voiceGuideTitle,
+                  style: const TextStyle(
+                    fontSize: 19,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.ink,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          for (final point in _guidePoints(l10n)) ...[
+            Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    margin: const EdgeInsets.only(top: 8, right: 10),
+                    width: 8,
+                    height: 8,
+                    decoration: const BoxDecoration(
+                      color: AppColors.terracotta,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  Expanded(
+                    child: WholeWordText(
+                      point,
+                      style: const TextStyle(
+                        fontSize: 17,
+                        height: 1.35,
+                        color: AppColors.ink,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ],
+      ),
     );
   }
 }

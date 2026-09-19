@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../core/dev/dev_accounts.dart';
-import '../../core/dev/dev_skip_onboarding.dart';
 import '../../core/routing/app_routes.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_theme.dart';
@@ -62,18 +60,6 @@ class LanguageScreen extends StatelessWidget {
               Expanded(
                 child: CustomScrollView(
                   slivers: [
-                    if (DevAccounts.enabled && !isChange)
-                      SliverToBoxAdapter(
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 4, bottom: 8),
-                          child: OutlinedButton.icon(
-                            key: const Key('dev-skip-onboarding'),
-                            onPressed: () => skipOnboardingForDev(context),
-                            icon: const Icon(Icons.fast_forward, size: 26),
-                            label: const WholeWordText('Skip onboarding (dev)'),
-                          ),
-                        ),
-                      ),
                     SliverPadding(
                       padding: const EdgeInsets.only(top: 4, bottom: 12),
                       sliver: SliverGrid.builder(

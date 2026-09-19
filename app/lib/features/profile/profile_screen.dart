@@ -11,7 +11,6 @@ import '../../widgets/speak_button.dart';
 import '../../widgets/whole_word_text.dart';
 import 'widgets/settings_scaffold.dart';
 import '../../widgets/app_image.dart';
-import '../../widgets/dev_server_row.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -101,7 +100,6 @@ class ProfileScreen extends StatelessWidget {
             tone: AppColors.danger,
             onTap: () => Navigator.of(context).pushNamed(AppRoutes.account),
           ),
-          const DevServerRow(),
         ],
       ),
     );

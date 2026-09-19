@@ -56,9 +56,24 @@ class _CorrectionSheetState extends State<CorrectionSheet> {
 
   String? _picked;
 
-  bool get _hasManualValue => widget.field.fallback == Correction.chips
-      ? _picked != null
-      : _typed.isNotEmpty;
+  bool _typing = false;
+
+  final TextEditingController _text = TextEditingController();
+
+  bool get _hasManualValue {
+    if (_typing || widget.field.fallback == Correction.words) {
+      return _text.text.trim().isNotEmpty;
+    }
+    return widget.field.fallback == Correction.chips
+        ? _picked != null
+        : _typed.isNotEmpty;
+  }
+
+  @override
+  void dispose() {
+    _text.dispose();
+    super.dispose();
+  }
 
   Future<void> _record() async {
     final recorder = context.read<RecorderService>();
@@ -97,12 +112,17 @@ class _CorrectionSheetState extends State<CorrectionSheet> {
 
   Future<void> _saveManual() async {
     final review = context.read<ReviewController>();
+    final written = _text.text.trim();
+    final useWritten = _typing || widget.field.fallback == Correction.words;
+
     final Object? value = switch (widget.field.fallback) {
+      Correction.number when useWritten =>
+        ReviewController.valueFromSpeech(widget.field, written),
       Correction.number when widget.field == ListingField.price =>
         (int.tryParse(_typed) ?? 0) * 100,
       Correction.number => int.tryParse(_typed),
-      Correction.chips => _picked,
-      Correction.words => _typed,
+      Correction.chips => useWritten ? written : _picked,
+      Correction.words => written,
     };
     if (value == null) return;
 
@@ -138,7 +158,9 @@ class _CorrectionSheetState extends State<CorrectionSheet> {
                       if (_failedOnce) ...[
                         const SizedBox(height: 10),
                         WholeWordText(
-                          l10n.correctFailedOnce,
+                          review.heard == null
+                              ? l10n.correctFailedOnce
+                              : l10n.correctHeard(review.heard!),
                           style: const TextStyle(
                             fontSize: 17,
                             color: AppColors.danger,
@@ -149,6 +171,9 @@ class _CorrectionSheetState extends State<CorrectionSheet> {
                       if (_manual)
                         _Fallback(
                           field: widget.field,
+                          typing: _typing || widget.field.fallback == Correction.words,
+                          controller: _text,
+                          onTextChanged: () => setState(() {}),
                           typed: _typed,
                           picked: _picked,
                           onDigit: (d) => setState(() => _typed += d),
@@ -183,15 +208,38 @@ class _CorrectionSheetState extends State<CorrectionSheet> {
                   onStop: _stopAndSend,
                 ),
               const SizedBox(height: 10),
-              if (widget.field.fallback != Correction.words)
-                BigActionButton(
-                  label: _manual ? l10n.correctUseVoice : l10n.correctUseKeypad,
-                  icon: _manual ? Icons.mic : Icons.dialpad,
-                  tone: ButtonTone.secondary,
+              BigActionButton(
+                label: _manual ? l10n.correctUseVoice : l10n.correctUseKeypad,
+                icon: _manual ? Icons.mic : Icons.keyboard,
+                tone: ButtonTone.secondary,
+                onPressed: review.isBusy
+                    ? null
+                    : () => setState(() {
+                        _manual = !_manual;
+
+                        if (_manual &&
+                            widget.field.fallback == Correction.words) {
+                          _typing = true;
+                        }
+                      }),
+              ),
+
+              if (_manual && widget.field.fallback != Correction.words) ...[
+                const SizedBox(height: 10),
+                TextButton.icon(
                   onPressed: review.isBusy
                       ? null
-                      : () => setState(() => _manual = !_manual),
+                      : () => setState(() => _typing = !_typing),
+                  icon: Icon(_typing ? Icons.dialpad : Icons.keyboard),
+                  label: WholeWordText(
+                    _typing
+                        ? (widget.field.fallback == Correction.chips
+                              ? l10n.correctPick
+                              : l10n.correctUseKeypad)
+                        : l10n.correctTypeHint,
+                  ),
                 ),
+              ],
               const SizedBox(height: 10),
               TextButton(
                 onPressed: review.isBusy
@@ -249,6 +297,9 @@ class _VoiceInput extends StatelessWidget {
 class _Fallback extends StatelessWidget {
   const _Fallback({
     required this.field,
+    required this.typing,
+    required this.controller,
+    required this.onTextChanged,
     required this.typed,
     required this.picked,
     required this.onDigit,
@@ -257,6 +308,9 @@ class _Fallback extends StatelessWidget {
   });
 
   final ListingField field;
+  final bool typing;
+  final TextEditingController controller;
+  final VoidCallback onTextChanged;
   final String typed;
   final String? picked;
   final ValueChanged<String> onDigit;
@@ -266,6 +320,59 @@ class _Fallback extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+
+    if (typing) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          TextField(
+            controller: controller,
+            autofocus: true,
+            onChanged: (_) => onTextChanged(),
+            textCapitalization: TextCapitalization.sentences,
+            keyboardType: field.fallback == Correction.number
+                ? TextInputType.number
+                : TextInputType.text,
+            maxLines: field.fallback == Correction.words ? 3 : 1,
+            minLines: 1,
+            style: const TextStyle(fontSize: 24, color: AppColors.ink),
+            decoration: InputDecoration(
+              hintText: l10n.correctTypeHint,
+              hintStyle: const TextStyle(fontSize: 20, color: AppColors.muted),
+              filled: true,
+              fillColor: AppColors.surface,
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 18,
+              ),
+              prefixText: field == ListingField.price ? '₹ ' : null,
+              prefixStyle: const TextStyle(fontSize: 24, color: AppColors.ink),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(AppTheme.radius),
+                borderSide: const BorderSide(
+                  color: AppColors.border,
+                  width: 2,
+                ),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(AppTheme.radius),
+                borderSide: const BorderSide(
+                  color: AppColors.border,
+                  width: 2,
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(AppTheme.radius),
+                borderSide: const BorderSide(
+                  color: AppColors.terracotta,
+                  width: 3,
+                ),
+              ),
+            ),
+          ),
+        ],
+      );
+    }
 
     if (field.fallback == Correction.chips) {
       final options = field.chips(l10n);

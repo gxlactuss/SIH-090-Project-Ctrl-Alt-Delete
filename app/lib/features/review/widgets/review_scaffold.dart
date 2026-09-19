@@ -2,7 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../services/speech_service.dart';
+import '../../../state/catalog_controller.dart';
+import '../../../state/discard_listing.dart';
+import '../../../state/queue_controller.dart';
+import '../../../state/review_controller.dart';
+import '../../../widgets/confirm_dialog.dart';
 import '../../../widgets/stage_switcher.dart';
 import '../../../widgets/screen_header.dart';
 
@@ -33,6 +39,31 @@ class ReviewScaffold extends StatefulWidget {
 
   @override
   State<ReviewScaffold> createState() => _ReviewScaffoldState();
+}
+
+Future<void> _confirmCancel(BuildContext context, ReviewController review) async {
+  final l10n = AppLocalizations.of(context);
+
+  final confirmed = await showSpokenConfirm(
+    context,
+    title: l10n.listingCancelTitle,
+    body: l10n.listingCancelBody,
+    confirm: l10n.listingCancelConfirm,
+    cancel: l10n.listingCancelKeep,
+    speechKey: 'review:cancelListing',
+  );
+  if (!confirmed || !context.mounted) return;
+
+  final navigator = Navigator.of(context);
+  final queue = context.read<QueueController?>();
+  final catalog = context.read<CatalogController?>();
+  final listingId = review.listing.id;
+
+  await dropQueuedCapture(queue, listingId);
+  await review.cancelListing();
+  catalog?.forget(listingId);
+
+  navigator.popUntil((route) => route.isFirst);
 }
 
 class _ReviewScaffoldState extends State<ReviewScaffold> {
@@ -68,6 +99,7 @@ class _ReviewScaffoldState extends State<ReviewScaffold> {
   @override
   Widget build(BuildContext context) {
     final progress = StageSwitcher.progressOf(context);
+    final review = context.watch<ReviewController?>();
 
     return Scaffold(
       appBar: AppBar(
@@ -79,6 +111,17 @@ class _ReviewScaffoldState extends State<ReviewScaffold> {
                 onPressed: widget.onBack,
               ),
         actions: [
+
+          if (review != null &&
+              review.stage != ReviewStage.publishing &&
+              !review.isPublished)
+            IconButton(
+              icon: const Icon(Icons.delete_outline, size: 30),
+              tooltip: AppLocalizations.of(context).listingCancelAction,
+              onPressed: widget.busy || review.isBusy
+                  ? null
+                  : () => _confirmCancel(context, review),
+            ),
           if (widget.onClose != null)
             IconButton(
               icon: const Icon(Icons.close, size: 30),

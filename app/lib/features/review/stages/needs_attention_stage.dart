@@ -3,21 +3,30 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../data/models/listing_status.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../services/recorder_service.dart';
 import '../../../services/speech_service.dart';
 import '../../../state/review_controller.dart';
+import '../../../widgets/big_action_button.dart';
 import '../../../widgets/hold_to_speak_button.dart';
 import '../../../widgets/speak_button.dart';
 import '../widgets/review_scaffold.dart';
 import '../../../widgets/whole_word_text.dart';
 
 class NeedsAttentionStage extends StatefulWidget {
-  const NeedsAttentionStage({super.key, required this.onClose});
+  const NeedsAttentionStage({
+    super.key,
+    required this.onClose,
+    required this.onReprocessing,
+  });
 
   final VoidCallback onClose;
+
+  final VoidCallback onReprocessing;
 
   @override
   State<NeedsAttentionStage> createState() => _NeedsAttentionStageState();
@@ -25,6 +34,8 @@ class NeedsAttentionStage extends StatefulWidget {
 
 class _NeedsAttentionStageState extends State<NeedsAttentionStage> {
   String? _problem;
+
+  bool _sendingPhotos = false;
 
   Future<void> _start() async {
     final recorder = context.read<RecorderService>();
@@ -57,12 +68,53 @@ class _NeedsAttentionStageState extends State<NeedsAttentionStage> {
     if (!sent) setState(() => _problem = l10n.attentionFailed);
   }
 
+  Future<void> _retakePhotos() async {
+    final l10n = AppLocalizations.of(context);
+    final navigator = Navigator.of(context);
+    final review = context.read<ReviewController>();
+    await context.read<SpeechService>().stop();
+    if (!mounted) return;
+    setState(() => _problem = null);
+
+    final paths = await navigator.pushNamed<List<String>>(
+      AppRoutes.retakePhotos,
+    );
+    if (!mounted || paths == null || paths.isEmpty) return;
+
+    setState(() => _sendingPhotos = true);
+    final sent = await review.submitPhotos(paths);
+    if (!mounted) return;
+    setState(() => _sendingPhotos = false);
+    if (!sent) {
+      setState(() => _problem = l10n.attentionRetakeFailed);
+      return;
+    }
+
+    if (review.listing.status.isWorking) widget.onReprocessing();
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final review = context.watch<ReviewController>();
     final recorder = context.watch<RecorderService>();
     final question = review.listing.followUpQuestion ?? '';
+    final photosFirst = review.listing.asksForPhotos;
+
+    final answerByVoice = HoldToSpeakButton(
+      label: l10n.attentionHoldToAnswer,
+      recording: recorder.isRecording,
+      onStart: _start,
+      onStop: _stop,
+    );
+
+    final retake = BigActionButton(
+      label: l10n.attentionRetakePhotos,
+      icon: Icons.photo_camera,
+      tone: photosFirst ? ButtonTone.primary : ButtonTone.secondary,
+      busy: _sendingPhotos,
+      onPressed: review.isBusy ? null : _retakePhotos,
+    );
 
     return ReviewScaffold(
       title: l10n.attentionTitle,
@@ -108,21 +160,16 @@ class _NeedsAttentionStageState extends State<NeedsAttentionStage> {
           if (review.isBusy) ...[
             const SizedBox(height: 18),
             WholeWordText(
-              l10n.attentionAnswering,
+              _sendingPhotos
+                  ? l10n.attentionRetakeSending
+                  : l10n.attentionAnswering,
               textAlign: TextAlign.center,
               style: const TextStyle(fontSize: 18, color: AppColors.muted),
             ),
           ],
         ],
       ),
-      actions: [
-        HoldToSpeakButton(
-          label: l10n.attentionHoldToAnswer,
-          recording: recorder.isRecording,
-          onStart: _start,
-          onStop: _stop,
-        ),
-      ],
+      actions: photosFirst ? [retake, answerByVoice] : [answerByVoice, retake],
     );
   }
 }
