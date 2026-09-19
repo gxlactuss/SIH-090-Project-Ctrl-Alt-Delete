@@ -7,6 +7,7 @@ import 'package:kirtikar/data/models/listing.dart';
 import 'package:kirtikar/data/models/listing_status.dart';
 import 'package:kirtikar/data/models/suggestion.dart';
 import 'package:kirtikar/data/remote/api_client.dart';
+import 'package:kirtikar/core/routing/app_routes.dart';
 import 'package:kirtikar/data/repositories/listing_repository.dart';
 import 'package:kirtikar/features/review/review_screen.dart';
 import 'package:kirtikar/l10n/app_localizations.dart';
@@ -131,6 +132,13 @@ void main() {
         home: ReviewScreen(listing: listing),
         onGenerateRoute: (settings) {
           routes.add(settings);
+
+          if (settings.name == AppRoutes.retakePhotos) {
+            return MaterialPageRoute<List<String>>(
+              settings: settings,
+              builder: (_) => const Scaffold(body: Text('camera')),
+            );
+          }
           return MaterialPageRoute<void>(
             settings: settings,
             builder: (_) => const Scaffold(body: Text('elsewhere')),
@@ -151,7 +159,8 @@ void main() {
 
     expect(find.text('Clay'), findsOneWidget);
     expect(find.text('12 inches'), findsOneWidget);
-    expect(find.text(l10n.notSaid), findsNWidgets(3));
+
+    expect(find.text(l10n.notSaid), findsNWidgets(4));
   });
 
   testWidgets('5.1 asks the one question when a fact is missing', (
@@ -168,6 +177,24 @@ void main() {
     expect(find.text(l10n.attentionTitle), findsOneWidget);
     expect(find.text('How big is it?'), findsOneWidget);
     expect(find.text(l10n.attentionHoldToAnswer), findsOneWidget);
+    expect(find.text(l10n.attentionRetakePhotos), findsOneWidget);
+  });
+
+  testWidgets('a question about a photo offers the camera', (tester) async {
+    useCheapPhone(tester);
+    final listing = ready().copyWith(
+      status: ListingStatus.needsAttention,
+      followUpQuestion: 'Photo 2: too dark. Please retake it in better light.',
+    );
+    await tester.pumpWidget(harness(listing, _FakeApi(listing)));
+    await tester.pump();
+
+    expect(find.text(l10n.attentionRetakePhotos), findsOneWidget);
+
+    await tester.tap(find.text(l10n.attentionRetakePhotos));
+    await tester.pumpAndSettle();
+
+    expect(routes.single.name, AppRoutes.retakePhotos);
   });
 
   testWidgets('5.3 and 5.4: a field opens voice, with a keypad behind it', (
@@ -197,6 +224,79 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(api.current.factSheet.priceInPaise, 45000);
+  });
+
+  Listing missingOrigin() => Listing(
+    id: 'l1',
+    status: ListingStatus.ready,
+    title: 'Blue water jug',
+    description: 'A hand-thrown jug, glazed blue.',
+    imageUrls: const ['a.jpg', 'b.jpg'],
+    factSheet: const FactSheet(material: 'Clay', size: '12 inches', quantity: 1),
+    suggestions: const [
+      Suggestion(
+        id: 'origin',
+        field: 'origin',
+        spokenPrompt: 'The voice note did not mention where it was made.',
+        textIfAccepted: 'origin',
+      ),
+    ],
+  );
+
+  testWidgets('5.5 a missing field asks for the value, not just yes or no', (
+    tester,
+  ) async {
+    useCheapPhone(tester);
+    final api = _FakeApi(missingOrigin());
+    await tester.pumpWidget(harness(missingOrigin(), api));
+    await tester.pump();
+
+    await tester.tap(find.text(l10n.readBackApprove));
+    await tester.pumpAndSettle();
+
+    expect(find.text(l10n.suggestTitle), findsOneWidget);
+    expect(
+      find.text('The voice note did not mention where it was made.'),
+      findsOneWidget,
+    );
+
+    await tester.tap(find.text(l10n.suggestYes));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text(l10n.correctTitle(l10n.fieldOrigin.toLowerCase())),
+      findsOneWidget,
+    );
+
+    await tester.tap(find.text(l10n.correctUseKeypad));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField), 'Jaipur');
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(l10n.correctSave));
+    await tester.pumpAndSettle();
+
+    expect(api.current.factSheet.origin, 'Jaipur');
+    expect(find.text(l10n.suggestDone), findsOneWidget);
+  });
+
+  testWidgets('5.5 backing out of the input leaves the question standing', (
+    tester,
+  ) async {
+    useCheapPhone(tester);
+    final api = _FakeApi(missingOrigin());
+    await tester.pumpWidget(harness(missingOrigin(), api));
+    await tester.pump();
+
+    await tester.tap(find.text(l10n.readBackApprove));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(l10n.suggestYes));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text(l10n.correctCancel));
+    await tester.pumpAndSettle();
+
+    expect(find.text(l10n.suggestTitle), findsOneWidget);
+    expect(api.current.factSheet.origin, isNull);
   });
 
   testWidgets('walks 5.2 to 5.11 and publishes', (tester) async {

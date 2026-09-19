@@ -12,6 +12,10 @@ import 'package:kirtikar/l10n/app_localizations.dart';
 import 'package:kirtikar/services/connectivity_service.dart';
 import 'package:kirtikar/services/speech_service.dart';
 import 'package:kirtikar/services/upload_service.dart';
+import 'package:kirtikar/data/models/fact_sheet.dart';
+import 'package:kirtikar/data/models/listing.dart';
+import 'package:kirtikar/data/models/listing_status.dart';
+import 'package:kirtikar/state/catalog_controller.dart';
 import 'package:kirtikar/state/queue_controller.dart';
 import 'package:provider/provider.dart';
 
@@ -106,13 +110,15 @@ void main() {
         lastError: error,
       );
 
-  Widget harness(Widget home) {
+  Widget harness(Widget home, {CatalogController? catalog}) {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<SpeechService>(create: (_) => SpeechService()),
         ChangeNotifierProvider<ConnectivityService>.value(value: network),
         ChangeNotifierProvider<QueueController>.value(value: queue),
         Provider<UploadService>.value(value: uploads),
+        if (catalog != null)
+          ChangeNotifierProvider<CatalogController>.value(value: catalog),
       ],
       child: MaterialApp(
         theme: AppTheme.light,
@@ -229,6 +235,43 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(queue.byId('one'), isNull);
+  });
+
+  testWidgets('4.2 deleting takes it off Home and the products list too', (
+    tester,
+  ) async {
+    useCheapPhone(tester);
+    queue.add(capture('one', error: UploadFailure.server.id));
+    final catalog = CatalogController(
+      listings: [
+        Listing(
+          id: 'one',
+          status: ListingStatus.processing,
+          title: 'Blue water jug',
+          views: 0,
+          previewUrl: 'https://example/p/one',
+          imageUrls: const ['a.jpg'],
+          factSheet: FactSheet(quantity: 1, priceInPaise: 45000),
+        ),
+      ],
+    );
+
+    await tester.pumpWidget(
+      harness(const QueueItemScreen(captureId: 'one'), catalog: catalog),
+    );
+    await tester.pump();
+
+    await tester.tap(find.text(l10n.queueDelete));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(l10n.queueDeleteConfirm));
+    await tester.pumpAndSettle();
+
+    expect(queue.byId('one'), isNull);
+    expect(catalog.byId('one'), isNull);
+    expect(catalog.listings, isEmpty);
+    expect(catalog.recent, isEmpty);
+    expect(catalog.nextToFinish, isNull);
+    expect(catalog.countOf(ListingFilter.inProgress), 0);
   });
 
   testWidgets('4.2 for something already with us is leaveable, never a trap', (

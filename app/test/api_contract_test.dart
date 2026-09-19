@@ -113,6 +113,8 @@ void main() {
         }
         expect(jsonDecode(utf8.decode(bytes)), {
           'client_item_id': 'c0ffee00-1234-4abc-9def-001122334455',
+
+          'photo_count': 1,
         });
         return http.StreamedResponse(
           Stream.value(utf8.encode(fixture('listing_created'))),

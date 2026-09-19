@@ -115,6 +115,56 @@ void main() {
         ),
       );
 
+  group('a deleted listing stays deleted', () {
+    test('the last one deleted leaves Home and the products list empty', () async {
+      final api = _FakeApi([seed('l1')]);
+      final dao = _FakeDao();
+      final repository = ListingRepository(api: api, dao: dao);
+      final catalog = CatalogController(repository: repository);
+
+      await catalog.refresh();
+      expect(catalog.listings.map((l) => l.id), ['l1']);
+
+      api.remote = [];
+      await repository.discard('l1');
+      catalog.forget('l1');
+
+      await catalog.refresh();
+
+      expect(catalog.listings, isEmpty);
+      expect(catalog.recent, isEmpty);
+      expect(catalog.nextToFinish, isNull);
+      expect(catalog.countOf(ListingFilter.inProgress), 0);
+      expect(catalog.countOf(ListingFilter.listed), 0);
+      expect(catalog.failedToRefresh, isFalse);
+    });
+
+    test('an empty answer is not read as a failed refresh', () async {
+      final api = _FakeApi([]);
+      final repository = ListingRepository(api: api, dao: _FakeDao());
+      final catalog = CatalogController(repository: repository);
+
+      await catalog.refresh();
+
+      expect(catalog.failedToRefresh, isFalse);
+      expect(catalog.refreshError, isNull);
+    });
+
+    test('a refresh that fails keeps what is already on screen', () async {
+      final api = _FakeApi([seed('l1')]);
+      final repository = ListingRepository(api: api, dao: _FakeDao());
+      final catalog = CatalogController(repository: repository);
+
+      await catalog.refresh();
+      api.offline = true;
+      await catalog.refresh();
+
+      expect(catalog.listings.map((l) => l.id), ['l1']);
+      expect(catalog.failedToRefresh, isTrue);
+    });
+
+  });
+
   group('the row format', () {
     test('carries every field of a listing there and back', () {
       const original = Listing(

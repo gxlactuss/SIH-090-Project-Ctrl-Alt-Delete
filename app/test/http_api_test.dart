@@ -216,6 +216,82 @@ void main() {
       }
     });
 
+    test('a typed description is sent with the listing', () async {
+      final photo = File('${dir.path}/photo.jpg')
+        ..writeAsBytesSync(List.filled(40000, 1));
+      final voice = File('${dir.path}/voice.m4a')
+        ..writeAsBytesSync(List.filled(20000, 2));
+
+      final seen = <http.Request>[];
+      final client = api((request) async {
+        seen.add(request);
+        return http.Response(
+          jsonEncode({'id': 'server-1', 'client_item_id': 'c1'}),
+          200,
+        );
+      });
+
+      await client.uploadCapture(
+        captureId: 'c1',
+        photoPaths: [photo.path],
+        voiceNotePath: '',
+        description: '  A clay water pot, nine inches tall.  ',
+      );
+
+      final body = jsonDecode(seen.first.body) as Map<String, Object?>;
+      expect(body['client_item_id'], 'c1');
+      expect(body['description'], 'A clay water pot, nine inches tall.');
+    });
+
+    test('no description key is sent when the artisan spoke instead', () async {
+      final photo = File('${dir.path}/photo.jpg')
+        ..writeAsBytesSync(List.filled(40000, 1));
+      final voice = File('${dir.path}/voice.m4a')
+        ..writeAsBytesSync(List.filled(20000, 2));
+
+      final seen = <http.Request>[];
+      final client = api((request) async {
+        seen.add(request);
+        return http.Response(
+          jsonEncode({'id': 'server-1', 'client_item_id': 'c1'}),
+          200,
+        );
+      });
+
+      await client.uploadCapture(
+        captureId: 'c1',
+        photoPaths: [photo.path],
+        voiceNotePath: voice.path,
+      );
+
+      expect(jsonDecode(seen.first.body), isNot(contains('description')));
+    });
+
+    test('a blank typed description is not sent', () async {
+      final photo = File('${dir.path}/photo.jpg')
+        ..writeAsBytesSync(List.filled(40000, 1));
+      final voice = File('${dir.path}/voice.m4a')
+        ..writeAsBytesSync(List.filled(20000, 2));
+
+      final seen = <http.Request>[];
+      final client = api((request) async {
+        seen.add(request);
+        return http.Response(
+          jsonEncode({'id': 'server-1', 'client_item_id': 'c1'}),
+          200,
+        );
+      });
+
+      await client.uploadCapture(
+        captureId: 'c1',
+        photoPaths: [photo.path],
+        voiceNotePath: voice.path,
+        description: '   ',
+      );
+
+      expect(jsonDecode(seen.first.body), isNot(contains('description')));
+    });
+
     test('missing files fail before a byte is sent', () async {
       var called = false;
       final client = api((_) async {

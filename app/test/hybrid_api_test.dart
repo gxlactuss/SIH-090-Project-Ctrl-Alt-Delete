@@ -38,7 +38,7 @@ void main() {
     });
 
     test('every ApiClient call has a name to move it by', () {
-      expect(ApiCall.values, hasLength(16));
+      expect(ApiCall.values, hasLength(18));
     });
   });
 

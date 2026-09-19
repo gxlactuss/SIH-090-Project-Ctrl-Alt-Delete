@@ -34,6 +34,8 @@ class _FakeApi implements ApiClient {
   }
 
   @override
+  Future<void> deleteListing(String listingId) => throw UnimplementedError();
+  @override
   Future<void> deleteAccount() => throw UnimplementedError();
   @override
   Future<int?> minimumSupportedBuild() => throw UnimplementedError();
@@ -49,6 +51,14 @@ class _FakeApi implements ApiClient {
     required String listingId,
     required String voiceReplyPath,
     String? field,
+    String? transcript,
+  }) => throw UnimplementedError();
+
+  @override
+  Future<Listing> retakePhotos({
+    required String listingId,
+    required List<String> photoPaths,
+    void Function(double progress)? onProgress,
   }) => throw UnimplementedError();
 
   @override

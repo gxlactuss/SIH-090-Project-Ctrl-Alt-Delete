@@ -139,28 +139,6 @@ void main() {
     expect(await sellers.hasSeenPractice(), isFalse);
   });
 
-  testWidgets('the developer skip goes from the language picker to Home', (
-    tester,
-  ) async {
-    useCheapPhone(tester);
-    await tester.pumpWidget(harness());
-    await tester.pump();
-    await advance(tester, const Duration(seconds: 4));
-
-    final skip = find.byKey(const Key('dev-skip-onboarding'));
-    expect(skip, findsOneWidget);
-    await tester.ensureVisible(skip);
-    await tester.pump();
-    await tester.tap(skip);
-    await advance(tester);
-
-    final l10n = lookupAppLocalizations(const Locale('hi'));
-    expect(find.text(l10n.homeAddProduct), findsOneWidget);
-    expect(await sellers.hasCompletedSetup(), isTrue);
-    expect(await sellers.acceptedTermsVersion(), AppConstants.termsVersion);
-    expect(await sellers.languageCode(), isNotNull);
-  });
-
   testWidgets('a number that is not the demo number is refused', (
     tester,
   ) async {
