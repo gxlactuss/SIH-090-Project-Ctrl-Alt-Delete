@@ -7,6 +7,12 @@
 
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
+    <!-- Saving a finished photo to the gallery. Android 10 and newer write
+         through MediaStore and need no permission, so this is capped. -->
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
+
     <uses-feature android:name="android.hardware.camera" android:required="true" />
 
     <application
