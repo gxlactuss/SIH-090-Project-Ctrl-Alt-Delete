@@ -726,6 +726,16 @@ class AppLocalizationsBn extends AppLocalizations {
   String get attentionFailed => 'আপনার উত্তর যায়নি। দয়া করে আবার বলুন।';
 
   @override
+  String get attentionRetakePhotos => 'ছবিগুলো আবার তুলুন';
+
+  @override
+  String get attentionRetakeSending => 'আপনার নতুন ছবি পাঠানো হচ্ছে…';
+
+  @override
+  String get attentionRetakeFailed =>
+      'নতুন ছবি যায়নি। দয়া করে আবার চেষ্টা করুন।';
+
+  @override
   String get readBackTitle => 'আমরা এটা বুঝেছি';
 
   @override
@@ -754,6 +764,9 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get fieldTechnique => 'কীভাবে বানানো';
+
+  @override
+  String get fieldOrigin => 'কোথায় বানানো';
 
   @override
   String get fieldQuantity => 'কতগুলো';
@@ -789,6 +802,42 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get correctCancel => 'যেমন আছে থাক';
+
+  @override
+  String get correctTypeHint => 'উত্তর এখানে লিখুন';
+
+  @override
+  String correctHeard(Object text) {
+    return 'আমরা শুনলাম “$text”';
+  }
+
+  @override
+  String get listingCancelAction => 'এই তালিকাটি বাতিল করুন';
+
+  @override
+  String get listingCancelTitle => 'এই তালিকাটি বাতিল করবেন?';
+
+  @override
+  String get listingCancelBody =>
+      'ছবি, রেকর্ডিং আর আপনার বলা সব কিছু মুছে যাবে। এটি আর ফিরবে না।';
+
+  @override
+  String get listingCancelConfirm => 'হ্যাঁ, বাতিল করুন';
+
+  @override
+  String get listingCancelKeep => 'না, থাক';
+
+  @override
+  String get photoSaveAction => 'ছবি সংরক্ষণ করুন';
+
+  @override
+  String get photoSaved => 'আপনার ছবিতে সংরক্ষণ হয়েছে';
+
+  @override
+  String get photoSaveFailed => 'ছবি সংরক্ষণ করা গেল না';
+
+  @override
+  String get photoSaveDenied => 'ছবি সংরক্ষণ করতে অনুমতি দিন';
 
   @override
   String get colourRed => 'লাল';
@@ -1986,9 +2035,6 @@ class AppLocalizationsBn extends AppLocalizations {
   String get voiceTypeSave => 'এই বিবরণটাই রাখুন';
 
   @override
-  String get devSimulateResult => 'Dev: show a finished product';
-
-  @override
   String get errorNotAllowed =>
       'এই অ্যাকাউন্ট দিয়ে এটা করা যায় না। সাহায্যের জন্য আমাদের ফোন করুন।';
 
@@ -2002,4 +2048,28 @@ class AppLocalizationsBn extends AppLocalizations {
   @override
   String get errorInvalid =>
       'কিছু তথ্য গ্রহণ করা হয়নি। দেখে নিয়ে আবার চেষ্টা করুন।';
+
+  @override
+  String get voiceGuideTitle => 'আপনি এগুলো নিয়ে বলতে পারেন';
+
+  @override
+  String get voiceGuideWhat => 'জিনিসটা কী — কলসি, শাল, হার';
+
+  @override
+  String get voiceGuideMaterial => 'কী দিয়ে তৈরি — মাটি, রুপো, সুতো, কাঠ';
+
+  @override
+  String get voiceGuideSize => 'কত বড় — ইঞ্চি বা সেন্টিমিটারে';
+
+  @override
+  String get voiceGuideColour => 'এর রং আর কাজ';
+
+  @override
+  String get voiceGuideTime => 'বানাতে কত সময় লেগেছে';
+
+  @override
+  String get voiceGuideCraft => 'এটা কোন শিল্প, আর কে আপনাকে শিখিয়েছেন';
+
+  @override
+  String get voiceGuidePrice => 'আপনি কত দাম চান';
 }

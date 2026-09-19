@@ -480,6 +480,12 @@ abstract class AppLocalizations {
 
   String get attentionFailed;
 
+  String get attentionRetakePhotos;
+
+  String get attentionRetakeSending;
+
+  String get attentionRetakeFailed;
+
   String get readBackTitle;
 
   String get readBackListen;
@@ -499,6 +505,8 @@ abstract class AppLocalizations {
   String get fieldColour;
 
   String get fieldTechnique;
+
+  String get fieldOrigin;
 
   String get fieldQuantity;
 
@@ -521,6 +529,28 @@ abstract class AppLocalizations {
   String get correctSave;
 
   String get correctCancel;
+
+  String get correctTypeHint;
+
+  String correctHeard(Object text);
+
+  String get listingCancelAction;
+
+  String get listingCancelTitle;
+
+  String get listingCancelBody;
+
+  String get listingCancelConfirm;
+
+  String get listingCancelKeep;
+
+  String get photoSaveAction;
+
+  String get photoSaved;
+
+  String get photoSaveFailed;
+
+  String get photoSaveDenied;
 
   String get colourRed;
 
@@ -1222,8 +1252,6 @@ abstract class AppLocalizations {
 
   String get voiceTypeSave;
 
-  String get devSimulateResult;
-
   String get errorNotAllowed;
 
   String get errorNotFound;
@@ -1231,6 +1259,22 @@ abstract class AppLocalizations {
   String get errorConflict;
 
   String get errorInvalid;
+
+  String get voiceGuideTitle;
+
+  String get voiceGuideWhat;
+
+  String get voiceGuideMaterial;
+
+  String get voiceGuideSize;
+
+  String get voiceGuideColour;
+
+  String get voiceGuideTime;
+
+  String get voiceGuideCraft;
+
+  String get voiceGuidePrice;
 }
 
 class _AppLocalizationsDelegate

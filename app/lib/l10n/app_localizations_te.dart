@@ -731,6 +731,16 @@ class AppLocalizationsTe extends AppLocalizations {
   String get attentionFailed => 'మీ సమాధానం వెళ్ళలేదు. దయచేసి మళ్ళీ చెప్పండి.';
 
   @override
+  String get attentionRetakePhotos => 'ఫోటోలు మళ్ళీ తీయండి';
+
+  @override
+  String get attentionRetakeSending => 'మీ కొత్త ఫోటోలు పంపుతున్నాం…';
+
+  @override
+  String get attentionRetakeFailed =>
+      'కొత్త ఫోటోలు వెళ్ళలేదు. దయచేసి మళ్ళీ ప్రయత్నించండి.';
+
+  @override
   String get readBackTitle => 'మాకు అర్థమైనది ఇది';
 
   @override
@@ -759,6 +769,9 @@ class AppLocalizationsTe extends AppLocalizations {
 
   @override
   String get fieldTechnique => 'ఎలా చేసింది';
+
+  @override
+  String get fieldOrigin => 'ఎక్కడ చేసింది';
 
   @override
   String get fieldQuantity => 'ఎన్ని';
@@ -794,6 +807,42 @@ class AppLocalizationsTe extends AppLocalizations {
 
   @override
   String get correctCancel => 'ఉన్నట్టే ఉండనివ్వండి';
+
+  @override
+  String get correctTypeHint => 'సమాధానం ఇక్కడ రాయండి';
+
+  @override
+  String correctHeard(Object text) {
+    return 'మేము విన్నది “$text”';
+  }
+
+  @override
+  String get listingCancelAction => 'ఈ జాబితాను రద్దు చేయండి';
+
+  @override
+  String get listingCancelTitle => 'ఈ జాబితాను రద్దు చేయాలా?';
+
+  @override
+  String get listingCancelBody =>
+      'ఫోటోలు, రికార్డింగ్ మరియు మీరు చెప్పినదంతా తొలగిపోతుంది. ఇది తిరిగి రాదు.';
+
+  @override
+  String get listingCancelConfirm => 'అవును, రద్దు చేయండి';
+
+  @override
+  String get listingCancelKeep => 'వద్దు, ఉంచండి';
+
+  @override
+  String get photoSaveAction => 'ఫోటోలు భద్రపరచండి';
+
+  @override
+  String get photoSaved => 'మీ ఫోటోలలో భద్రపరచబడింది';
+
+  @override
+  String get photoSaveFailed => 'ఫోటోను భద్రపరచలేకపోయాం';
+
+  @override
+  String get photoSaveDenied => 'ఫోటో భద్రపరచడానికి అనుమతి ఇవ్వండి';
 
   @override
   String get colourRed => 'ఎరుపు';
@@ -1996,9 +2045,6 @@ class AppLocalizationsTe extends AppLocalizations {
   String get voiceTypeSave => 'ఈ వివరణనే ఉంచండి';
 
   @override
-  String get devSimulateResult => 'Dev: show a finished product';
-
-  @override
   String get errorNotAllowed =>
       'ఈ ఖాతాతో ఇది చేయలేరు. సహాయం కోసం మాకు ఫోన్ చేయండి.';
 
@@ -2012,4 +2058,28 @@ class AppLocalizationsTe extends AppLocalizations {
   @override
   String get errorInvalid =>
       'కొన్ని వివరాలు అంగీకరించబడలేదు. దయచేసి సరిచూసి మళ్ళీ ప్రయత్నించండి.';
+
+  @override
+  String get voiceGuideTitle => 'మీరు విటి గురించి చెప్పవచ్చు';
+
+  @override
+  String get voiceGuideWhat => 'వస్తువు ఏమిటి — కుండ, శాలువా, హారం';
+
+  @override
+  String get voiceGuideMaterial => 'దేనితో చేసింది — మట్టి, వెండి, పత్తి, కలప';
+
+  @override
+  String get voiceGuideSize => 'ఎంత పెద్దది — అంగుళాలు లేదా సెంటిమీటర్లలో';
+
+  @override
+  String get voiceGuideColour => 'దీని రంగు మరియు నగిషీ';
+
+  @override
+  String get voiceGuideTime => 'చేయడానికి ఎంత సమయం పట్టింది';
+
+  @override
+  String get voiceGuideCraft => 'ఇది ఏ కళ, మీకు ఎవరు నేర్పారు';
+
+  @override
+  String get voiceGuidePrice => 'మీరు ఎంత ధర కోరుతున్నారు';
 }

@@ -736,6 +736,16 @@ class AppLocalizationsMl extends AppLocalizations {
       'നിങ്ങളുടെ ഉത്തരം പോയില്ല. ദയവായി വീണ്ടും പറയുക.';
 
   @override
+  String get attentionRetakePhotos => 'ഫോട്ടോകൾ വീണ്ടും എടുക്കുക';
+
+  @override
+  String get attentionRetakeSending => 'നിങ്ങളുടെ പുതിയ ഫോട്ടോകൾ അയയ്ക്കുന്നു…';
+
+  @override
+  String get attentionRetakeFailed =>
+      'പുതിയ ഫോട്ടോകൾ പോയില്ല. ദയവായി വീണ്ടും ശ്രമിക്കുക.';
+
+  @override
   String get readBackTitle => 'ഞങ്ങൾക്ക് മനസ്സിലായത് ഇതാണ്';
 
   @override
@@ -764,6 +774,9 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get fieldTechnique => 'എങ്ങനെ ഉണ്ടാക്കി';
+
+  @override
+  String get fieldOrigin => 'എവിടെ ഉണ്ടാക്കി';
 
   @override
   String get fieldQuantity => 'എത്ര എണ്ണം';
@@ -800,6 +813,42 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get correctCancel => 'അങ്ങനെ തന്നെ ഇരിക്കട്ടെ';
+
+  @override
+  String get correctTypeHint => 'ഉത്തരം ഇവിടെ എഴുതുക';
+
+  @override
+  String correctHeard(Object text) {
+    return 'ഞങ്ങൾ കേട്ടത് “$text”';
+  }
+
+  @override
+  String get listingCancelAction => 'ഈ ലിസ്റ്റിംഗ് റദ്ദാക്കുക';
+
+  @override
+  String get listingCancelTitle => 'ഈ ലിസ്റ്റിംഗ് റദ്ദാക്കണോ?';
+
+  @override
+  String get listingCancelBody =>
+      'ഫോട്ടോകളും റെക്കോർഡിംഗും നിങ്ങൾ പറഞ്ഞതെല്ലാം മായ്ക്കപ്പെടും. ഇത് തിരികെ കിട്ടില്ല.';
+
+  @override
+  String get listingCancelConfirm => 'അതെ, റദ്ദാക്കുക';
+
+  @override
+  String get listingCancelKeep => 'വേണ്ട, നിൽക്കട്ടെ';
+
+  @override
+  String get photoSaveAction => 'ഫോട്ടോ സേവ് ചെയ്യുക';
+
+  @override
+  String get photoSaved => 'നിങ്ങളുടെ ഫോട്ടോകളിൽ സേവ് ചെയ്തു';
+
+  @override
+  String get photoSaveFailed => 'ഫോട്ടോ സേവ് ചെയ്യാനായില്ല';
+
+  @override
+  String get photoSaveDenied => 'ഫോട്ടോ സേവ് ചെയ്യാൻ അനുമതി നൽകുക';
 
   @override
   String get colourRed => 'ചുവപ്പ്';
@@ -2013,9 +2062,6 @@ class AppLocalizationsMl extends AppLocalizations {
   String get voiceTypeSave => 'ഈ വിവരണം ഉപയോഗിക്കുക';
 
   @override
-  String get devSimulateResult => 'Dev: show a finished product';
-
-  @override
   String get errorNotAllowed =>
       'ഈ അക്കൗണ്ടിന് ഇത് ചെയ്യാൻ കഴിയില്ല. സഹായത്തിന് ഞങ്ങളെ വിളിക്കുക.';
 
@@ -2029,4 +2075,29 @@ class AppLocalizationsMl extends AppLocalizations {
   @override
   String get errorInvalid =>
       'ചില വിവരങ്ങൾ സ്വീകരിച്ചില്ല. ദയവായി പരിശോധിച്ച് വീണ്ടും ശ്രമിക്കുക.';
+
+  @override
+  String get voiceGuideTitle => 'ഇവയെക്കുറിച്ച് പറയാം';
+
+  @override
+  String get voiceGuideWhat => 'സാധനം എന്താണ് — കലം, ഷാൾ, മാല';
+
+  @override
+  String get voiceGuideMaterial =>
+      'എന്തുകൊണ്ട് ഊണ്ടാക്കി — കളിമണ്ണ്, വെള്ളി, പരുത്തി, മരം';
+
+  @override
+  String get voiceGuideSize => 'എത്ര വലുതാണ് — ഇഞ്ചിലോ സെന്റിമീറ്ററിലോ';
+
+  @override
+  String get voiceGuideColour => 'ഇതിന്റെ നിറവും പണിയും';
+
+  @override
+  String get voiceGuideTime => 'ഊണ്ടാക്കാൻ എത്ര സമയമെടുത്തു';
+
+  @override
+  String get voiceGuideCraft => 'ഇത് ഏത് കലയാണ്, ആരാണ് നിങ്ങളെ പടിപ്പിച്ചത്';
+
+  @override
+  String get voiceGuidePrice => 'നിങ്ങൾ എത്ര വില ചോദിക്കുന്നു';
 }

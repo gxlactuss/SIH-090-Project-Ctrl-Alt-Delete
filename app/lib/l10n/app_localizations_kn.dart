@@ -731,6 +731,17 @@ class AppLocalizationsKn extends AppLocalizations {
   String get attentionFailed => 'ನಿಮ್ಮ ಉತ್ತರ ಹೋಗಲಿಲ್ಲ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಹೇಳಿ.';
 
   @override
+  String get attentionRetakePhotos => 'ಫೋಟೋಗಳನ್ನು ಮತ್ತೆ ತೆಗೆಯಿರಿ';
+
+  @override
+  String get attentionRetakeSending =>
+      'ನಿಮ್ಮ ಹೊಸ ಫೋಟೋಗಳನ್ನು ಕಳುಹಿಸುತ್ತಿದ್ದೇವೆ…';
+
+  @override
+  String get attentionRetakeFailed =>
+      'ಹೊಸ ಫೋಟೋಗಳು ಹೋಗಲಿಲ್ಲ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.';
+
+  @override
   String get readBackTitle => 'ನಮಗೆ ಅರ್ಥವಾದದ್ದು ಇದು';
 
   @override
@@ -759,6 +770,9 @@ class AppLocalizationsKn extends AppLocalizations {
 
   @override
   String get fieldTechnique => 'ಹೇಗೆ ಮಾಡಿದ್ದು';
+
+  @override
+  String get fieldOrigin => 'ಎಲ್ಲಿ ಮಾಡಿದ್ದು';
 
   @override
   String get fieldQuantity => 'ಎಷ್ಟು';
@@ -794,6 +808,42 @@ class AppLocalizationsKn extends AppLocalizations {
 
   @override
   String get correctCancel => 'ಇದ್ದಂತೆ ಇರಲಿ';
+
+  @override
+  String get correctTypeHint => 'ಉತ್ತರವನ್ನು ಇಲ್ಲಿ ಬರೆಯಿರಿ';
+
+  @override
+  String correctHeard(Object text) {
+    return 'ನಾವು ಕೇಳಿದ್ದು “$text”';
+  }
+
+  @override
+  String get listingCancelAction => 'ಈ ಪಟ್ಟಿಯನ್ನು ರದ್ದುಮಾಡಿ';
+
+  @override
+  String get listingCancelTitle => 'ಈ ಪಟ್ಟಿಯನ್ನು ರದ್ದುಮಾಡಬೇಕೇ?';
+
+  @override
+  String get listingCancelBody =>
+      'ಫೋಟೋಗಳು, ಧ್ವನಿಮುದ್ರಣ ಮತ್ತು ನೀವು ಹೇಳಿದ ಎಲ್ಲವೂ ಅಳಿಸಿಹೋಗುತ್ತದೆ. ಇದು ಮತ್ತೆ ಸಿಗುವುದಿಲ್ಲ.';
+
+  @override
+  String get listingCancelConfirm => 'ಹೌದು, ರದ್ದುಮಾಡಿ';
+
+  @override
+  String get listingCancelKeep => 'ಬೇಡ, ಇರಲಿ';
+
+  @override
+  String get photoSaveAction => 'ಫೋಟೋ ಉಳಿಸಿ';
+
+  @override
+  String get photoSaved => 'ನಿಮ್ಮ ಫೋಟೋಗಳಲ್ಲಿ ಉಳಿಸಲಾಗಿದೆ';
+
+  @override
+  String get photoSaveFailed => 'ಫೋಟೋ ಉಳಿಸಲು ಆಗಲಿಲ್ಲ';
+
+  @override
+  String get photoSaveDenied => 'ಫೋಟೋ ಉಳಿಸಲು ಅನುಮತಿ ನೀಡಿ';
 
   @override
   String get colourRed => 'ಕೆಂಪು';
@@ -1999,9 +2049,6 @@ class AppLocalizationsKn extends AppLocalizations {
   String get voiceTypeSave => 'ಈ ವಿವರಣೆಯನ್ನೇ ಇಡಿ';
 
   @override
-  String get devSimulateResult => 'Dev: show a finished product';
-
-  @override
   String get errorNotAllowed =>
       'ಈ ಖಾತೆಯಿಂದ ಇದನ್ನು ಮಾಡಲು ಆಗುವುದಿಲ್ಲ. ಸಹಾಯಕ್ಕಾಗಿ ನಮಗೆ ಕರೆ ಮಾಡಿ.';
 
@@ -2015,4 +2062,29 @@ class AppLocalizationsKn extends AppLocalizations {
   @override
   String get errorInvalid =>
       'ಕೆಲವು ವಿವರಗಳನ್ನು ಸ್ವೀಕರಿಸಲಿಲ್ಲ. ದಯವಿಟ್ಟು ಪರಿಶೀಲಿಸಿ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.';
+
+  @override
+  String get voiceGuideTitle => 'ನೀವು ಇವುಗಳ ಬಗ್ಗೆ ಹೇಳಬಹುದು';
+
+  @override
+  String get voiceGuideWhat => 'ವಸ್ತು ಏನು — ಮಡಕೆ, ಶಾಲು, ಸರ';
+
+  @override
+  String get voiceGuideMaterial =>
+      'ಯಾವುದರಿಂದ ಮಾಡಿದ್ದು — ಮಣ್ಣು, ಬೆಳ್ಳಿ, ಹತ್ತಿ, ಮರ';
+
+  @override
+  String get voiceGuideSize => 'ಎಷ್ಟು ದೆೌಡ್ದು — ಇಂಚು ಅಥವಾ ಸೆಂಟಿಮೀಟರಿನಲ್ಲಿ';
+
+  @override
+  String get voiceGuideColour => 'ಇದರ ಬಣ್ಣ ಮತ್ತು ವಿನ್ಯಾಸ';
+
+  @override
+  String get voiceGuideTime => 'ಮಾಡಲು ಎಷ್ಟು ಸಮಯ ಹಿಡಿಯಿತು';
+
+  @override
+  String get voiceGuideCraft => 'ಇದು ಯಾವ ಕಲೆ, ಮತ್ತು ನಿಮಗೆ ಯಾರು ಕಲಿಸಿದರು';
+
+  @override
+  String get voiceGuidePrice => 'ನೀವು ಎಷ್ಟು ಬೆಲೆ ಕೇಳುತ್ತೀರಿ';
 }

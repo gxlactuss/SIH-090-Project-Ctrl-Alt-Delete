@@ -737,6 +737,16 @@ class AppLocalizationsEn extends AppLocalizations {
       'Your answer did not go through. Please say it again.';
 
   @override
+  String get attentionRetakePhotos => 'Take the photos again';
+
+  @override
+  String get attentionRetakeSending => 'Sending your new photos…';
+
+  @override
+  String get attentionRetakeFailed =>
+      'The new photos did not go through. Please try again.';
+
+  @override
   String get readBackTitle => 'This is what we understood';
 
   @override
@@ -765,6 +775,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get fieldTechnique => 'How it was made';
+
+  @override
+  String get fieldOrigin => 'Where it was made';
 
   @override
   String get fieldQuantity => 'How many';
@@ -800,6 +813,42 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get correctCancel => 'Leave it as it is';
+
+  @override
+  String get correctTypeHint => 'Type the answer here';
+
+  @override
+  String correctHeard(Object text) {
+    return 'We heard “$text”';
+  }
+
+  @override
+  String get listingCancelAction => 'Cancel this listing';
+
+  @override
+  String get listingCancelTitle => 'Cancel this listing?';
+
+  @override
+  String get listingCancelBody =>
+      'The photos, the recording and everything you have said will be deleted. This cannot be undone.';
+
+  @override
+  String get listingCancelConfirm => 'Yes, cancel it';
+
+  @override
+  String get listingCancelKeep => 'No, keep it';
+
+  @override
+  String get photoSaveAction => 'Save photos';
+
+  @override
+  String get photoSaved => 'Saved to your photos';
+
+  @override
+  String get photoSaveFailed => 'Could not save the photo';
+
+  @override
+  String get photoSaveDenied => 'Allow photo access to save the picture';
 
   @override
   String get colourRed => 'Red';
@@ -2008,9 +2057,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get voiceTypeSave => 'Use this description';
 
   @override
-  String get devSimulateResult => 'Dev: show a finished product';
-
-  @override
   String get errorNotAllowed =>
       'This account cannot do that. Please call us for help.';
 
@@ -2024,4 +2070,29 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get errorInvalid =>
       'Some details were not accepted. Please check them and try again.';
+
+  @override
+  String get voiceGuideTitle => 'Things you can talk about';
+
+  @override
+  String get voiceGuideWhat => 'What the item is — a pot, a shawl, a necklace';
+
+  @override
+  String get voiceGuideMaterial =>
+      'What it is made of — clay, silver, cotton, wood';
+
+  @override
+  String get voiceGuideSize => 'How big it is — in inches or centimetres';
+
+  @override
+  String get voiceGuideColour => 'Its colour and pattern';
+
+  @override
+  String get voiceGuideTime => 'How long it took you to make';
+
+  @override
+  String get voiceGuideCraft => 'Which craft it belongs to, and who taught you';
+
+  @override
+  String get voiceGuidePrice => 'The price you want for it';
 }
