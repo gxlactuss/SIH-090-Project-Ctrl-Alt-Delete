@@ -18,6 +18,9 @@ class VoiceTranscriptionResult:
     transcript: str
     language_code: str
     duration_seconds: float
+    # False when the text below is the canned fallback rather than a real
+    # transcription, so callers can tell a working demo from a silent failure.
+    used_live_api: bool = False
 
 
 class VoiceStation:
@@ -104,6 +107,7 @@ class VoiceStation:
             transcript=transcript,
             language_code=language_code,
             duration_seconds=duration,
+            used_live_api=True,
         )
 
     def _synthetic_fallback(self) -> VoiceTranscriptionResult:
@@ -114,4 +118,5 @@ class VoiceStation:
             ),
             language_code="hi",
             duration_seconds=18.5,
+            used_live_api=False,
         )

@@ -76,6 +76,13 @@ import numpy as np
 from PIL import Image, ImageFilter
 import rembg
 
+# Subject gate thresholds, both dimensionless so they hold at any resolution.
+# Calibrated against the sample craft photographs and real bangle shots: a well
+# framed product spans a fifth of the frame or more and hedges over two or three
+# pixels of its outline, while a workshop scene hedges ten times as wide.
+_MIN_EXTENT = 0.05
+_MAX_HEDGE_BAND = 0.010
+
 
 class ImageStation:
     def __init__(self, model_name: str = "isnet-general-use"):
@@ -89,15 +96,33 @@ class ImageStation:
 
     @staticmethod
     def _compute_roi_brightness(gray: np.ndarray) -> float:
+        """Mean brightness of the craft subject.
+
+        Otsu splits the frame into a bright and a dark cluster, but which one holds
+        the craft depends on the backdrop: a dark pot on a white wall and a pale
+        carving on a mud floor land on opposite sides. Picking the bright cluster
+        unconditionally measures the backdrop half the time, which is what made
+        well-lit photos on light backgrounds read as overexposed. The subject is the
+        textured cluster, so choose whichever side carries more Canny edges.
+        """
         _, mask = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-        white_pixel_count = cv2.countNonZero(mask)
+        bright_pixel_count = cv2.countNonZero(mask)
         total_pixels = gray.size
 
-        if white_pixel_count < 0.05 * total_pixels or white_pixel_count > 0.95 * total_pixels:
+        # One cluster covers nearly everything: no meaningful split to make.
+        if bright_pixel_count < 0.05 * total_pixels or bright_pixel_count > 0.95 * total_pixels:
             return float(np.mean(gray))
 
-        roi_mean = cv2.mean(gray, mask=mask)[0]
-        return float(roi_mean)
+        inverse_mask = cv2.bitwise_not(mask)
+        edges = cv2.Canny(gray, 50, 150)
+
+        bright_edges = cv2.countNonZero(cv2.bitwise_and(edges, edges, mask=mask)) / bright_pixel_count
+        dark_edges = cv2.countNonZero(cv2.bitwise_and(edges, edges, mask=inverse_mask)) / (
+            total_pixels - bright_pixel_count
+        )
+
+        subject_mask = mask if bright_edges >= dark_edges else inverse_mask
+        return float(cv2.mean(gray, mask=subject_mask)[0])
 
     @staticmethod
     def assess_quality(image_input) -> Dict[str, Any]:
@@ -111,6 +136,8 @@ class ImageStation:
                     "edge_density": 0.0,
                     "brightness_score": 0.0,
                     "roi_brightness_score": 0.0,
+                    "clipped_fraction": 0.0,
+                    "crushed_fraction": 1.0,
                     "is_blurry": True,
                     "is_too_dark": True,
                     "is_too_bright": False,
@@ -132,14 +159,25 @@ class ImageStation:
 
         brightness_score = float(np.mean(gray))
         roi_brightness_score = ImageStation._compute_roi_brightness(gray)
+        clipped_fraction = float(np.count_nonzero(gray >= 250) / gray.size)
+        crushed_fraction = float(np.count_nonzero(gray <= 5) / gray.size)
 
         is_blurry = laplacian_var < 30.0
         if not is_blurry and laplacian_var < 40.0:
             if edge_density < 0.005:
                 is_blurry = True
 
-        is_too_dark = roi_brightness_score < 55.0
-        is_too_bright = roi_brightness_score > 185.0
+        # Exposure is judged on lost detail, not on brightness alone: dark woods and
+        # pale textiles are legitimately dark or bright, and the old brightness-only
+        # thresholds rejected perfectly usable photos. A quarter of the frame clipped
+        # is unusable whatever the subject reads as; below that it only matters when
+        # the subject itself sits at the extreme.
+        is_too_dark = crushed_fraction > 0.25 or (
+            roi_brightness_score < 55.0 and crushed_fraction > 0.10
+        )
+        is_too_bright = clipped_fraction > 0.25 or (
+            roi_brightness_score > 200.0 and clipped_fraction > 0.10
+        )
 
         warnings = []
         if is_blurry:
@@ -150,12 +188,14 @@ class ImageStation:
         if is_too_dark:
             warnings.append(
                 f"Subject is too dark (ROI brightness: {roi_brightness_score:.1f}/255, "
-                f"overall: {brightness_score:.1f}/255). Floor threshold: 55.0."
+                f"{crushed_fraction * 100:.1f}% of the photo is crushed to black). "
+                f"Rejected once shadows crush past 25% of the frame."
             )
         if is_too_bright:
             warnings.append(
-                f"Subject is overexposed (ROI brightness: {roi_brightness_score:.1f}/255). "
-                f"Ceiling threshold: 185.0."
+                f"Subject is overexposed (ROI brightness: {roi_brightness_score:.1f}/255, "
+                f"{clipped_fraction * 100:.1f}% of the photo is blown out). "
+                f"Rejected once highlights clip past 25% of the frame."
             )
 
         passed = not (is_blurry or is_too_dark or is_too_bright)
@@ -166,6 +206,8 @@ class ImageStation:
             "edge_density": round(edge_density, 4),
             "brightness_score": round(brightness_score, 2),
             "roi_brightness_score": round(roi_brightness_score, 2),
+            "clipped_fraction": round(clipped_fraction, 4),
+            "crushed_fraction": round(crushed_fraction, 4),
             "is_blurry": is_blurry,
             "is_too_dark": is_too_dark,
             "is_too_bright": is_too_bright,
@@ -199,11 +241,108 @@ class ImageStation:
         return cutout
 
     @staticmethod
+    def assess_subject(cutout: Image.Image) -> Dict[str, Any]:
+        """Judge whether the segmented mask describes one clear product.
+
+        The blur and exposure gates run before segmentation, so they cannot tell a
+        product shot from a photo of a workshop. IS-Net answers anyway: asked to
+        find the subject in a picture of a potter at his wheel it returns a faint,
+        scattered mask, which then composites into a washed-out ghost. The mask's
+        own shape is the signal, so read it before publishing anything.
+
+        Both gates read the mask's geometry rather than how many pixels it fills,
+        because filled area is not what either question is actually about. A
+        bangle is a thin ring around a hole: framed well it still only inks about
+        1.5% of the photo, so an area threshold called it too small and told the
+        artisan to move closer to something already filling the frame. Its extent
+        answers that honestly. The same thinness inflates an area-relative hedge
+        ratio - a ring is almost entirely edge - so the hedge is measured across
+        the subject's outline instead, as the width of the band the model was
+        unsure about. Both are read relative to the image, so they mean the same
+        thing whatever resolution the camera sends.
+        """
+        if cutout.mode != "RGBA":
+            cutout = cutout.convert("RGBA")
+
+        alpha = np.array(cutout.split()[-1])
+        confident = alpha >= 160
+        uncertain = (alpha > 25) & (alpha < 160)
+
+        confident_pixels = int(confident.sum())
+        confident_fraction = confident_pixels / alpha.size
+        # Kept for the stored report: useful when reading back why a photo was
+        # judged the way it was, but no longer what either gate turns on.
+        uncertainty_ratio = float(uncertain.sum() / confident_pixels) if confident_pixels else float("inf")
+
+        extent_fraction = 0.0
+        largest_share = 0.0
+        hedge_band = float("inf")
+        if confident_pixels:
+            rows = np.flatnonzero(confident.any(axis=1))
+            cols = np.flatnonzero(confident.any(axis=0))
+            box_height = int(rows[-1] - rows[0] + 1)
+            box_width = int(cols[-1] - cols[0] + 1)
+            extent_fraction = (box_width * box_height) / alpha.size
+
+            count, _, stats, _ = cv2.connectedComponentsWithStats(
+                confident.astype(np.uint8) * 255, 8
+            )
+            if count > 1:
+                largest_share = float(stats[1:, cv2.CC_STAT_AREA].max() / confident_pixels)
+
+            # The hedge spread over the subject's outline: roughly how many pixels
+            # wide the model's uncertainty band is. A crisp cutout hedges over two
+            # or three pixels of anti-aliasing however long its outline; a ghost
+            # hedges over a wash tens of pixels deep. Divided by the short side so
+            # the number means the same on any camera.
+            contours, _ = cv2.findContours(
+                confident.astype(np.uint8) * 255, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE
+            )
+            perimeter = sum(cv2.arcLength(contour, True) for contour in contours)
+            short_side = min(alpha.shape)
+            if perimeter > 0 and short_side:
+                hedge_band = float(uncertain.sum() / perimeter / short_side)
+
+        is_indistinct = hedge_band > _MAX_HEDGE_BAND
+        is_too_small = extent_fraction < _MIN_EXTENT
+        is_scattered = largest_share < 0.75
+
+        warnings = []
+        if is_indistinct:
+            warnings.append(
+                "Could not separate the item from its surroundings. Please photograph "
+                "the item on its own against a plain wall, floor or cloth."
+            )
+        if is_too_small:
+            warnings.append(
+                f"The item covers only {extent_fraction * 100:.1f}% of the photo. "
+                "Please move closer so it fills most of the frame."
+            )
+        if is_scattered:
+            warnings.append(
+                "Several separate objects are visible. Please photograph one item at a time."
+            )
+
+        return {
+            "passed": not (is_indistinct or is_too_small or is_scattered),
+            "confident_fraction": round(confident_fraction, 4),
+            "extent_fraction": round(extent_fraction, 4),
+            "uncertainty_ratio": round(uncertainty_ratio, 2) if confident_pixels else None,
+            "hedge_band": round(hedge_band, 5) if confident_pixels else None,
+            "largest_blob_share": round(largest_share, 2),
+            "is_indistinct": is_indistinct,
+            "is_too_small": is_too_small,
+            "is_scattered": is_scattered,
+            "warnings": warnings,
+        }
+
+    @staticmethod
     def composite_to_marketplace_spec(
         cutout: Image.Image,
         target_size: int = 1024,
         padding_ratio: float = 0.10,
         alpha_threshold: int = 25,
+        confident_alpha: int = 160,
         shadow_blur: int = 16,
         shadow_opacity: float = 0.20,
         shadow_offset_y: int = 10,
@@ -212,13 +351,30 @@ class ImageStation:
             cutout = cutout.convert("RGBA")
 
         alpha = np.array(cutout.split()[-1])
-        non_zero_coords = np.argwhere(alpha > alpha_threshold)
 
-        if non_zero_coords.size == 0:
+        # Frame the crop on pixels the model is confident about. A faint halo of
+        # low-alpha noise can span most of the frame, and including it in the
+        # bounding box shrinks the real subject to a speck in the middle of the
+        # canvas. Fall back to the loose threshold only if nothing is confident.
+        coords = np.argwhere(alpha >= confident_alpha)
+        if coords.size == 0:
+            coords = np.argwhere(alpha > alpha_threshold)
+        if coords.size == 0:
             return Image.new("RGB", (target_size, target_size), (255, 255, 255))
 
-        y0, x0 = non_zero_coords.min(axis=0)
-        y1, x1 = non_zero_coords.max(axis=0) + 1
+        y0, x0 = coords.min(axis=0)
+        y1, x1 = coords.max(axis=0) + 1
+
+        # Anything below the loose threshold is background the model was unsure
+        # about; pasting it over white is what bleached the subject. Drop it, then
+        # stretch the surviving range back to full opacity so the craft stays solid
+        # while genuine soft edges keep their gradient.
+        hardened = np.where(alpha <= alpha_threshold, 0, alpha).astype(np.float32)
+        span = 255.0 - alpha_threshold
+        hardened = np.clip((hardened - alpha_threshold) / span * 255.0, 0, 255)
+
+        cutout = cutout.copy()
+        cutout.putalpha(Image.fromarray(hardened.astype(np.uint8)))
         cropped_cutout = cutout.crop((x0, y0, x1, y1))
 
         content_w = x1 - x0
@@ -279,6 +435,7 @@ class ImageStation:
                 "item_id": item_prefix,
                 "elapsed_seconds": round(time.perf_counter() - start_time, 2),
                 "quality": quality_report,
+                "subject": None,
                 "outputs": {},
             }
 
@@ -294,6 +451,22 @@ class ImageStation:
 
         # Step 3: Background removal
         cutout = self.remove_background(color_corrected)
+
+        # Step 3b: Subject gate. Publishing a translucent ghost is worse than asking
+        # for another photo, so stop here and tell the artisan what to change.
+        subject_report = self.assess_subject(cutout)
+        if not subject_report["passed"]:
+            logger.warning(
+                f"Subject gate rejected: {'; '.join(subject_report['warnings'])}",
+                extra={"item_id": item_prefix},
+            )
+            return {
+                "item_id": item_prefix,
+                "elapsed_seconds": round(time.perf_counter() - start_time, 2),
+                "quality": quality_report,
+                "subject": subject_report,
+                "outputs": {},
+            }
 
         # Step 4: Marketplace compositing
         clean_canvas = self.composite_to_marketplace_spec(cutout)
@@ -317,6 +490,7 @@ class ImageStation:
             "item_id": item_prefix,
             "elapsed_seconds": round(elapsed, 2),
             "quality": quality_report,
+            "subject": subject_report,
             "outputs": {
                 "clean_image": str(clean_path),
                 "thumbnail": str(thumb_path),

@@ -27,7 +27,22 @@ class SpeechStage:
 
     def run(self, context: PipelineContext) -> StageResult:
         audio_media = [m for m in context.media if m.media_type == MediaType.audio]
+
         if not audio_media:
+            # The description step offers a keyboard as well as a microphone.
+            # A typed note needs no transcription, so it stands in for the
+            # transcript rather than the run stopping for missing audio.
+            typed = (context.typed_description or "").strip()
+            if typed:
+                output = SpeechStageOutput(
+                    audio_path="",
+                    transcript=typed,
+                    language=context.seller_language or "hi",
+                    duration_seconds=0.0,
+                )
+                context.speech_output = output
+                logger.info("Listing %s -> using the artisan's typed description", context.listing_id)
+                return StageResult.ok(output=output, metadata={"source": "typed"})
             return StageResult.attention("Voice note audio is required")
 
         primary_audio = audio_media[0]

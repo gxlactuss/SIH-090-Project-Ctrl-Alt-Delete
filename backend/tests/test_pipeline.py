@@ -18,10 +18,12 @@ from app.services.listing import (
     ListingNotFoundError,
     transition_listing,
 )
+from app.services.pipeline.runner import get_default_stages
 from app.services.pipeline import (
     ConfidenceStage,
     FactSheetStage,
     ImageStage,
+    ImageStageOutput,
     PipelineContext,
     PipelineResult,
     PipelineRunner,
@@ -162,6 +164,54 @@ def test_successful_pipeline_execution_and_state_ready(test_db: Session, seeded_
     for stage_name, stage_res in result.stage_results.items():
         assert stage_res.status == StageStatus.success
         assert stage_res.output is not None
+
+
+class PhotoWarningImageStage:
+    """Image stage standing in for one whose vision gate rejected a photo."""
+
+    name = "image"
+
+    def run(self, context: PipelineContext) -> StageResult:
+        context.photo_warnings.append(
+            "Photo 3: The item fills only 1.6% of the photo. Please move closer."
+        )
+        output = ImageStageOutput(
+            image_count=1,
+            image_paths=["raw/photo_3.jpg"],
+            detected_labels=[],
+            dimensions=[{"width": 720, "height": 480}],
+        )
+        context.image_output = output
+        return StageResult.ok(output=output)
+
+
+def test_unusable_photo_still_yields_the_spoken_facts(test_db: Session, seeded_seller_and_listing):
+    """A photo the vision gate cannot use must not discard the voice note.
+
+    Halting at the image stage left the artisan looking at a blank listing and a
+    complaint about a photo, with nothing they had actually said.
+    """
+    seller, listing = seeded_seller_and_listing
+
+    stages = [PhotoWarningImageStage()] + get_default_stages()[1:]
+    runner = PipelineRunner(stages=stages)
+    result = runner.run(listing_id=listing.id, db=test_db, seller_id=seller.id)
+
+    # The photo is still a problem, so the listing waits rather than going out.
+    assert result.final_state == ListingState.needs_attention
+    assert "move closer" in result.reason
+
+    # Every stage after the image ran, and what they understood was saved.
+    for stage_name in ("speech", "fact_sheet", "price", "confidence"):
+        assert result.stage_results[stage_name].status == StageStatus.success
+
+    test_db.refresh(listing)
+    stored = listing.result
+    assert stored is not None
+    assert stored.title
+    assert stored.transcript
+    assert stored.suggested_price_in_paise is not None
+    assert "move closer" in stored.follow_up_question
 
 
 def test_stages_execute_in_strict_authoritative_order(test_db: Session, seeded_seller_and_listing):
@@ -654,10 +704,14 @@ def test_image_stage_live_path_success(tmp_path, monkeypatch):
     assert ctx.image_output is not None
     assert ctx.image_output.image_count == 1
     assert ctx.image_output.image_paths[0] == f"{listing_id}/vision/{media_id}_clean.jpg"
+    # The composite has to be recorded on the media row, or the endpoint that
+    # serves this photo to the app goes on returning the raw camera frame and
+    # the studio image never reaches the listing.
+    assert media.processed_path == f"{listing_id}/vision/{media_id}_clean.jpg"
 
 
 def test_image_stage_live_path_quality_failure(tmp_path, monkeypatch):
-    """Verify ImageStage live processing halts with needs_attention when photo quality fails."""
+    """A photo that fails the quality gate is noted for retake, not fatal to the run."""
     storage_dir = tmp_path / "media"
     storage_dir.mkdir(parents=True, exist_ok=True)
     monkeypatch.setattr("app.core.config.settings.MEDIA_STORAGE_DIR", str(storage_dir))
@@ -684,8 +738,14 @@ def test_image_stage_live_path_quality_failure(tmp_path, monkeypatch):
     stage = ImageStage()
     res = stage.run(ctx)
 
-    assert res.status == StageStatus.needs_attention
-    assert "photo quality check failed" in res.reason.lower()
+    # The run continues so the voice note is still transcribed and understood;
+    # the blurry frame is carried through raw and the retake is asked for at the
+    # end of the run instead.
+    assert res.status == StageStatus.success
+    assert ctx.photo_warnings
+    assert "blurry" in ctx.photo_warnings[0].lower()
+    assert ctx.image_output.image_paths == [media_rel_path]
+    assert media.processed_path is None
 
 
 def test_speech_stage_path_traversal_detection(tmp_path, monkeypatch):
@@ -769,7 +829,7 @@ def test_fact_sheet_stage_with_gemini_mock(monkeypatch):
     )
 
     class MockGeminiExtractor:
-        def extract_fact_sheet(self, transcript, detected_language="hi", allow_synthetic_fallback=True):
+        def extract_fact_sheet(self, transcript, detected_language="hi", image_path=None, seller_story=None, allow_synthetic_fallback=True):
             return GeminiExtractionResult(
                 title="Handcrafted Terracotta Clay Pot",
                 craft_type="Terracotta Pottery",

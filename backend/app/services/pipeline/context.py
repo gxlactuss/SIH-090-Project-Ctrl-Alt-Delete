@@ -58,6 +58,12 @@ class PipelineContext:
     """Evolving runtime context passed through the listing pipeline stages."""
     listing_id: uuid.UUID
     seller_id: Optional[uuid.UUID] = None
+    # The artisan's own profile story. Background for the description only; the
+    # fact sheet stage must not let it decide any product fact.
+    seller_story: Optional[str] = None
+    # Set when the artisan typed the description instead of recording it.
+    typed_description: Optional[str] = None
+    seller_language: Optional[str] = None
     media: List[Media] = field(default_factory=list)
 
     # Sequential stage outputs
@@ -66,6 +72,11 @@ class PipelineContext:
     fact_sheet_output: Optional[FactSheetOutput] = None
     price_output: Optional[PriceStageOutput] = None
     confidence_output: Optional[ConfidenceStageOutput] = None
+
+    # Photo problems the artisan can fix by retaking a shot. These do not stop
+    # the run: the voice note is the listing's substance and must still be
+    # understood. The runner turns them into the follow-up question at the end.
+    photo_warnings: List[str] = field(default_factory=list)
 
     # Tracking attempts and stage results
     stage_attempts: Dict[str, int] = field(default_factory=dict)

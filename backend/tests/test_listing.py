@@ -552,3 +552,212 @@ def test_media_upload_to_real_persisted_listing(client: TestClient, test_db: Ses
             assert "does not belong" in upload_b.json()["detail"].lower()
         finally:
             settings.MEDIA_STORAGE_DIR = orig_storage
+
+
+def test_seller_can_delete_their_listing(client: TestClient, test_db: Session, sellers_and_auth):
+    """A deleted listing is gone from the database and from the seller's list."""
+    (_, headers_a), _ = sellers_and_auth
+
+    created = client.post("/api/v1/listings", json={"client_item_id": "to-delete"}, headers=headers_a)
+    assert created.status_code == 200
+    listing_id = created.json()["id"]
+
+    response = client.delete(f"/api/v1/listings/{listing_id}", headers=headers_a)
+    assert response.status_code == 204
+
+    assert test_db.query(Listing).filter(Listing.id == uuid.UUID(listing_id)).first() is None
+
+    listed = client.get("/api/v1/listings", headers=headers_a)
+    assert listed.status_code == 200
+    assert [item["id"] for item in listed.json()["items"]] == []
+
+
+def test_deleting_the_same_listing_twice_succeeds(client: TestClient, sellers_and_auth):
+    """A phone retrying a delete it already made must not be told the listing is missing."""
+    (_, headers_a), _ = sellers_and_auth
+
+    created = client.post("/api/v1/listings", json={"client_item_id": "delete-twice"}, headers=headers_a)
+    listing_id = created.json()["id"]
+
+    assert client.delete(f"/api/v1/listings/{listing_id}", headers=headers_a).status_code == 204
+    assert client.delete(f"/api/v1/listings/{listing_id}", headers=headers_a).status_code == 204
+
+
+def test_seller_cannot_delete_another_sellers_listing(client: TestClient, test_db: Session, sellers_and_auth):
+    """Ownership is enforced: B deleting A's listing must leave it untouched."""
+    (_, headers_a), (_, headers_b) = sellers_and_auth
+
+    created = client.post("/api/v1/listings", json={"client_item_id": "owned-by-a"}, headers=headers_a)
+    listing_id = created.json()["id"]
+
+    # B is told nothing about a listing that is not theirs, and it survives.
+    assert client.delete(f"/api/v1/listings/{listing_id}", headers=headers_b).status_code == 204
+    assert test_db.query(Listing).filter(Listing.id == uuid.UUID(listing_id)).first() is not None
+
+    listed = client.get("/api/v1/listings", headers=headers_a)
+    assert [item["id"] for item in listed.json()["items"]] == [listing_id]
+
+
+def test_unauthenticated_delete_rejected(client: TestClient, sellers_and_auth):
+    """Deleting without a token is refused."""
+    (_, headers_a), _ = sellers_and_auth
+    created = client.post("/api/v1/listings", json={"client_item_id": "needs-auth"}, headers=headers_a)
+    listing_id = created.json()["id"]
+
+    assert client.delete(f"/api/v1/listings/{listing_id}").status_code == 401
+
+
+def _ready_listing(client: TestClient, test_db: Session, headers, client_item_id: str):
+    """A listing with a result row and one open suggestion about its origin."""
+    from app.models.listing_result import ListingResult
+    from app.models.suggestion import Suggestion as SuggestionModel
+
+    created = client.post(
+        "/api/v1/listings", json={"client_item_id": client_item_id}, headers=headers
+    )
+    listing_id = created.json()["id"]
+
+    test_db.add(ListingResult(listing_id=uuid.UUID(listing_id), title="Clay pot"))
+    suggestion = SuggestionModel(
+        listing_id=uuid.UUID(listing_id),
+        field="origin",
+        value="origin",
+        reason="The voice note did not mention where it was made.",
+        approved=None,
+    )
+    test_db.add(suggestion)
+    test_db.commit()
+    test_db.refresh(suggestion)
+    return listing_id, str(suggestion.id)
+
+
+def test_suggestion_names_the_field_it_is_about(client: TestClient, test_db: Session, sellers_and_auth):
+    """The app needs the field name to know which input to open."""
+    (_, headers_a), _ = sellers_and_auth
+    listing_id, _ = _ready_listing(client, test_db, headers_a, "names-field")
+
+    body = client.get(f"/api/v1/listings/{listing_id}", headers=headers_a).json()
+
+    assert body["suggestions"][0]["field"] == "origin"
+
+
+def test_patch_writes_a_correction_onto_the_fact_sheet(client: TestClient, test_db: Session, sellers_and_auth):
+    """A corrected field is stored and comes back in the fact sheet."""
+    (_, headers_a), _ = sellers_and_auth
+    listing_id, _ = _ready_listing(client, test_db, headers_a, "patch-origin")
+
+    response = client.patch(
+        f"/api/v1/listings/{listing_id}", json={"origin": "Jaipur"}, headers=headers_a
+    )
+
+    assert response.status_code == 200
+    assert response.json()["fact_sheet"]["origin"] == "Jaipur"
+
+    fetched = client.get(f"/api/v1/listings/{listing_id}", headers=headers_a)
+    assert fetched.json()["fact_sheet"]["origin"] == "Jaipur"
+
+
+def test_patch_settles_the_suggestion_it_answers(client: TestClient, test_db: Session, sellers_and_auth):
+    """Filling a gap must stop the same gap being asked again."""
+    (_, headers_a), _ = sellers_and_auth
+    listing_id, _ = _ready_listing(client, test_db, headers_a, "patch-settles")
+
+    client.patch(
+        f"/api/v1/listings/{listing_id}", json={"origin": "Jaipur"}, headers=headers_a
+    )
+
+    body = client.get(f"/api/v1/listings/{listing_id}", headers=headers_a).json()
+    assert body["suggestions"][0]["approved"] is True
+
+
+def test_patch_refuses_a_field_it_cannot_store(client: TestClient, test_db: Session, sellers_and_auth):
+    """Silently dropping a correction would tell the artisan a lie."""
+    (_, headers_a), _ = sellers_and_auth
+    listing_id, _ = _ready_listing(client, test_db, headers_a, "patch-unknown")
+
+    response = client.patch(
+        f"/api/v1/listings/{listing_id}",
+        json={"imageUrls": ["a.jpg"]},
+        headers=headers_a,
+    )
+
+    assert response.status_code == 400
+    assert "imageUrls" in response.json()["detail"]
+
+
+def test_patch_price_is_stored_in_paise(client: TestClient, test_db: Session, sellers_and_auth):
+    """The app sends money in paise; it must not be reinterpreted."""
+    (_, headers_a), _ = sellers_and_auth
+    listing_id, _ = _ready_listing(client, test_db, headers_a, "patch-price")
+
+    response = client.patch(
+        f"/api/v1/listings/{listing_id}", json={"price": 45000}, headers=headers_a
+    )
+
+    assert response.json()["fact_sheet"]["price_in_paise"] == 45000
+
+
+def test_answer_stores_the_spoken_value_and_the_recording(client: TestClient, test_db: Session, sellers_and_auth):
+    """A spoken answer reaches the fact sheet, and the audio is kept."""
+    from app.models.media import Media
+
+    (_, headers_a), _ = sellers_and_auth
+    listing_id, _ = _ready_listing(client, test_db, headers_a, "answer-origin")
+
+    response = client.post(
+        f"/api/v1/listings/{listing_id}/answer",
+        files={"voiceReply": ("reply.m4a", b"fake audio bytes", "audio/mp4")},
+        data={"field": "origin", "transcript": "Jaipur"},
+        headers=headers_a,
+    )
+
+    assert response.status_code == 200, response.text
+    assert response.json()["fact_sheet"]["origin"] == "Jaipur"
+
+    kept = test_db.query(Media).filter(Media.listing_id == uuid.UUID(listing_id)).all()
+    assert len(kept) == 1
+
+
+def test_answer_settles_the_suggestion(client: TestClient, test_db: Session, sellers_and_auth):
+    """The gap the answer filled is not asked again."""
+    (_, headers_a), _ = sellers_and_auth
+    listing_id, _ = _ready_listing(client, test_db, headers_a, "answer-settles")
+
+    client.post(
+        f"/api/v1/listings/{listing_id}/answer",
+        files={"voiceReply": ("reply.m4a", b"fake audio bytes", "audio/mp4")},
+        data={"field": "origin", "transcript": "Jaipur"},
+        headers=headers_a,
+    )
+
+    body = client.get(f"/api/v1/listings/{listing_id}", headers=headers_a).json()
+    assert body["suggestions"][0]["approved"] is True
+
+
+def test_suggestion_approval_is_persisted(client: TestClient, test_db: Session, sellers_and_auth):
+    """Approval used to be echoed back and stored nowhere."""
+    (_, headers_a), _ = sellers_and_auth
+    listing_id, suggestion_id = _ready_listing(client, test_db, headers_a, "approval")
+
+    response = client.post(
+        f"/api/v1/listings/{listing_id}/suggestions/{suggestion_id}/approval",
+        json={"approved": False},
+        headers=headers_a,
+    )
+    assert response.status_code == 200
+
+    body = client.get(f"/api/v1/listings/{listing_id}", headers=headers_a).json()
+    assert body["suggestions"][0]["approved"] is False
+
+
+def test_another_seller_cannot_correct_your_listing(client: TestClient, test_db: Session, sellers_and_auth):
+    """Ownership is enforced on the write paths too."""
+    (_, headers_a), (_, headers_b) = sellers_and_auth
+    listing_id, _ = _ready_listing(client, test_db, headers_a, "owned")
+
+    assert client.patch(
+        f"/api/v1/listings/{listing_id}", json={"origin": "Nowhere"}, headers=headers_b
+    ).status_code == 404
+
+    body = client.get(f"/api/v1/listings/{listing_id}", headers=headers_a).json()
+    assert body["fact_sheet"]["origin"] is None

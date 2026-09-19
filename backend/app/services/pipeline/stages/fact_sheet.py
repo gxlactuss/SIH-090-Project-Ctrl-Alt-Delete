@@ -1,7 +1,7 @@
 """Fact Sheet Station stage: Extracts structured craft metadata via Gemini 2.0 Flash."""
 import logging
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, List, Optional
 
 from app.core.config import settings
 from app.services.llm.gemini import GeminiExtractor
@@ -20,6 +20,37 @@ def _get_gemini_extractor() -> GeminiExtractor:
     return _gemini_extractor_instance
 
 
+def _primary_image_path(context: PipelineContext, storage_base: Path) -> Optional[str]:
+    """Absolute path of the best image to show the model, or None if none is on disk.
+
+    Prefers the image stage's processed output - a centred cutout on white - and
+    falls back to the artisan's original upload. Returning None is the signal
+    that this is a synthetic fixture with no real bytes anywhere.
+    """
+    candidates: List[str] = []
+    if context.image_output is not None:
+        candidates.extend(context.image_output.image_paths)
+    candidates.extend(m.storage_path for m in context.media if m.storage_path)
+
+    for candidate in candidates:
+        if not candidate:
+            continue
+        path = Path(candidate)
+        resolved = path if path.is_absolute() else (storage_base / path)
+        try:
+            resolved = resolved.resolve()
+        except OSError:
+            continue
+        # Never let a stored path walk out of the media root and feed an
+        # arbitrary file on the host into an outbound API request.
+        if not resolved.is_relative_to(storage_base):
+            logger.warning("Ignoring out-of-root image path: %s", candidate)
+            continue
+        if resolved.is_file():
+            return str(resolved)
+    return None
+
+
 class FactSheetStage:
     """Production Fact Sheet Station: Extracts structured attributes and marketing copy from voice transcript."""
 
@@ -34,20 +65,27 @@ class FactSheetStage:
         detected_language = context.speech_output.language or "hi"
 
         extractor = _get_gemini_extractor()
+        storage_base = Path(settings.MEDIA_STORAGE_DIR).resolve()
+
+        # The photograph is half the evidence. The image stage has already
+        # graded, cut out and composited it, so hand that studio image to the
+        # model rather than the raw camera frame: the clutter the artisan was
+        # standing in is gone, which is exactly what made craft form, colour and
+        # material hard to read. Without this the extraction was transcript-only
+        # and the whole vision stage informed nothing downstream.
+        image_path = _primary_image_path(context, storage_base)
+
         # If running on in-memory / synthetic test fixtures without physical files on disk,
         # use deterministic synthetic fallback to guarantee 100% offline test reliability.
-        storage_base = Path(settings.MEDIA_STORAGE_DIR).resolve()
-        has_real_files = bool(context.media) and any(
-            bool(m.storage_path) and (storage_base / m.storage_path).exists()
-            for m in context.media
-        )
-        if not has_real_files and hasattr(extractor, "_synthetic_fallback"):
+        if image_path is None and hasattr(extractor, "_synthetic_fallback"):
             extraction = extractor._synthetic_fallback(transcript)
         else:
             try:
                 extraction = extractor.extract_fact_sheet(
                     transcript=transcript,
                     detected_language=detected_language,
+                    image_path=image_path,
+                    seller_story=context.seller_story,
                     allow_synthetic_fallback=True,
                 )
             except Exception as e:
@@ -56,12 +94,30 @@ class FactSheetStage:
 
         attributes: Dict[str, Any] = dict(extraction.attributes)
         attributes["image_count"] = context.image_output.image_count
-        if "primary_colors" not in attributes or not attributes["primary_colors"]:
-            attributes["primary_colors"] = extraction.colors or ["ochre", "indigo", "lampblack"]
-        if "dimensions" not in attributes or not attributes["dimensions"]:
-            attributes["dimensions"] = extraction.dimensions or "1024x768"
-        if "origin" not in attributes or not attributes["origin"]:
-            attributes["origin"] = extraction.origin or "Mithila region"
+        # Carried through so a listing written from canned facts can be told
+        # from one a real model wrote.
+        attributes["used_live_model"] = bool(getattr(extraction, "used_live_api", False))
+        attributes["image_sent_to_model"] = image_path is not None
+        # Fall back only to what the extraction itself found. These used to
+        # default to a sample painting's facts - "1024x768" as a physical size,
+        # "Mithila region", an ochre/indigo palette - which showed the artisan an
+        # image resolution under "Size" and contradicted missing_fields in the
+        # same response. A fact nobody stated stays empty, and the artisan is
+        # asked for it instead.
+        for key, found in (
+            ("primary_colors", extraction.colors),
+            ("dimensions", extraction.dimensions),
+            ("origin", extraction.origin),
+        ):
+            if not attributes.get(key) and found:
+                attributes[key] = found
+
+        # Anything still empty is something to ask about, not to invent.
+        missing = list(attributes.get("missing_fields") or [])
+        for key, field in (("dimensions", "dimensions"), ("primary_colors", "colors")):
+            if not attributes.get(key) and field not in missing:
+                missing.append(field)
+        attributes["missing_fields"] = missing
 
         output = FactSheetOutput(
             title=extraction.title,

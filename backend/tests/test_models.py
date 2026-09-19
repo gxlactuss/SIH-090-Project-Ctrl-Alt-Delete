@@ -27,11 +27,14 @@ EXPECTED_TABLES = {
     "listing_consents",
     "suggestions",
     "listing_approvals",
+    # Where a pipeline run's conclusions are kept, so the app can read back
+    # what was actually understood about a listing.
+    "listing_results",
 }
 
 
 def test_metadata_contains_exact_domain_tables():
-    """Verify Base.metadata contains exactly the six application tables."""
+    """Verify Base.metadata contains exactly the application tables."""
     assert set(Base.metadata.tables.keys()) == EXPECTED_TABLES
 
 

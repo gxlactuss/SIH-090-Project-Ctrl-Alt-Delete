@@ -547,3 +547,255 @@ def test_unpersisted_stub_listing_seam_preserved(
 
     stored_file = isolated_storage / stub_listing_id / f"{res['id']}.jpg"
     assert stored_file.is_file()
+
+
+def _upload(client: TestClient, listing_id, headers, media_type: MediaType):
+    """Upload one media file of the given type to a listing."""
+    if media_type is MediaType.image:
+        payload = ("craft.jpg", b"\xff\xd8\xff\xe0\x00\x10JFIF\x00\x01", "image/jpeg")
+    else:
+        payload = ("note.wav", b"RIFF....WAVEfmt ....data....", "audio/wav")
+    return client.post(
+        f"/api/v1/listings/{listing_id}/media",
+        files={"file": (payload[0], io.BytesIO(payload[1]), payload[2])},
+        data={"media_type": media_type.value},
+        headers=headers,
+    )
+
+
+@pytest.fixture(scope="function")
+def persisted_listing(test_db: Session, seller_and_auth):
+    """A queued listing owned by the authenticated test seller."""
+    seller, headers = seller_and_auth
+    listing = Listing(
+        id=uuid.uuid4(),
+        seller_id=seller.id,
+        client_item_id=f"capture-{uuid.uuid4()}",
+        state=ListingState.queued,
+    )
+    test_db.add(listing)
+    test_db.commit()
+    test_db.refresh(listing)
+    return listing, headers
+
+
+def test_pipeline_not_triggered_until_both_media_present(
+    media_client: TestClient,
+    isolated_storage: Path,
+    persisted_listing,
+):
+    """A photo alone must not start the pipeline: the speech stage needs audio too."""
+    listing, headers = persisted_listing
+
+    with patch("app.api.routes.media.process_listing") as mock_process:
+        assert _upload(media_client, listing.id, headers, MediaType.image).status_code == 200
+
+    mock_process.assert_not_called()
+
+
+def test_pipeline_triggered_once_photo_and_voice_note_are_both_uploaded(
+    media_client: TestClient,
+    isolated_storage: Path,
+    persisted_listing,
+):
+    """The upload completing the photo/voice-note pair schedules the pipeline."""
+    listing, headers = persisted_listing
+
+    with patch("app.api.routes.media.process_listing") as mock_process:
+        assert _upload(media_client, listing.id, headers, MediaType.image).status_code == 200
+        assert _upload(media_client, listing.id, headers, MediaType.audio).status_code == 200
+
+    mock_process.assert_called_once_with(listing_id=listing.id, seller_id=listing.seller_id)
+
+
+def test_pipeline_not_retriggered_for_a_listing_already_processing(
+    media_client: TestClient,
+    isolated_storage: Path,
+    test_db: Session,
+    persisted_listing,
+):
+    """Extra uploads on an in-flight listing must not queue a second pipeline run."""
+    listing, headers = persisted_listing
+
+    with patch("app.api.routes.media.process_listing") as mock_process:
+        assert _upload(media_client, listing.id, headers, MediaType.image).status_code == 200
+        assert _upload(media_client, listing.id, headers, MediaType.audio).status_code == 200
+        mock_process.assert_called_once()
+        mock_process.reset_mock()
+
+        listing.state = ListingState.processing
+        test_db.commit()
+
+        assert _upload(media_client, listing.id, headers, MediaType.image).status_code == 200
+
+    mock_process.assert_not_called()
+
+
+def test_pipeline_not_triggered_for_unpersisted_stub_listing(
+    media_client: TestClient,
+    isolated_storage: Path,
+    seller_and_auth,
+):
+    """The stub-listing seam still short-circuits before any pipeline work."""
+    seller, headers = seller_and_auth
+
+    with patch("app.api.routes.media.process_listing") as mock_process:
+        assert _upload(media_client, "lst-stub-909", headers, MediaType.image).status_code == 200
+        assert _upload(media_client, "lst-stub-909", headers, MediaType.audio).status_code == 200
+
+    mock_process.assert_not_called()
+
+
+def _listing_with_photo(test_db: Session, seller, isolated_storage: Path):
+    """A persisted listing whose single photo is on disk as the artisan sent it."""
+    listing = Listing(
+        id=uuid.uuid4(),
+        seller_id=seller.id,
+        client_item_id="client-mobile-vision",
+        state=ListingState.ready,
+    )
+    test_db.add(listing)
+    test_db.commit()
+
+    media_id = uuid.uuid4()
+    raw_rel = f"{listing.id}/{media_id}.jpg"
+    raw_path = isolated_storage / raw_rel
+    raw_path.parent.mkdir(parents=True, exist_ok=True)
+    raw_path.write_bytes(b"raw-camera-frame")
+
+    media = Media(
+        id=media_id,
+        listing_id=listing.id,
+        media_type=MediaType.image,
+        original_filename="artisan_item.jpg",
+        storage_path=raw_rel,
+        mime_type="image/jpeg",
+        file_size_bytes=raw_path.stat().st_size,
+    )
+    test_db.add(media)
+    test_db.commit()
+    return listing, media
+
+
+def _write_composite(test_db: Session, media: Media, isolated_storage: Path) -> Path:
+    """Stand in for the Vision Station writing a studio image for `media`."""
+    clean_rel = f"{media.listing_id}/vision/{media.id}_clean.jpg"
+    clean_path = isolated_storage / clean_rel
+    clean_path.parent.mkdir(parents=True, exist_ok=True)
+    clean_path.write_bytes(b"studio-composite")
+    media.processed_path = clean_rel
+    test_db.add(media)
+    test_db.commit()
+    return clean_path
+
+
+def test_media_endpoint_serves_the_vision_composite_once_one_exists(
+    media_client: TestClient,
+    isolated_storage: Path,
+    test_db: Session,
+    seller_and_auth,
+):
+    """The polished image has to be what this URL returns, or it never reaches the listing."""
+    seller, headers = seller_and_auth
+    listing, media = _listing_with_photo(test_db, seller, isolated_storage)
+
+    before = media_client.get(f"/api/v1/listings/{listing.id}/media/{media.id}", headers=headers)
+    assert before.status_code == 200
+    assert before.content == b"raw-camera-frame"
+
+    _write_composite(test_db, media, isolated_storage)
+
+    after = media_client.get(f"/api/v1/listings/{listing.id}/media/{media.id}", headers=headers)
+    assert after.status_code == 200
+    assert after.content == b"studio-composite"
+    # The composite is written as JPEG whatever the phone uploaded.
+    assert after.headers["content-type"] == "image/jpeg"
+
+
+def test_media_endpoint_falls_back_to_the_upload_when_the_composite_is_gone(
+    media_client: TestClient,
+    isolated_storage: Path,
+    test_db: Session,
+    seller_and_auth,
+):
+    """A missing studio image must not cost the artisan their photo."""
+    seller, headers = seller_and_auth
+    listing, media = _listing_with_photo(test_db, seller, isolated_storage)
+    clean_path = _write_composite(test_db, media, isolated_storage)
+    clean_path.unlink()
+
+    response = media_client.get(f"/api/v1/listings/{listing.id}/media/{media.id}", headers=headers)
+    assert response.status_code == 200
+    assert response.content == b"raw-camera-frame"
+
+
+def test_listing_image_url_changes_when_the_composite_appears(
+    isolated_storage: Path,
+    test_db: Session,
+    seller_and_auth,
+):
+    """The app caches by URL, so the same URL would keep showing the camera frame."""
+    from app.services.listing_view import listing_image_urls
+
+    seller, _ = seller_and_auth
+    listing, media = _listing_with_photo(test_db, seller, isolated_storage)
+    test_db.refresh(listing)
+
+    raw_urls = listing_image_urls(listing)
+    assert raw_urls == [f"/api/v1/listings/{listing.id}/media/{media.id}"]
+
+    _write_composite(test_db, media, isolated_storage)
+    test_db.refresh(listing)
+
+    processed_urls = listing_image_urls(listing)
+    assert processed_urls != raw_urls
+    assert processed_urls[0].startswith(raw_urls[0] + "?v=")
+
+
+def test_typed_description_waits_for_every_photo_before_processing(
+    media_client: TestClient,
+    isolated_storage: Path,
+    test_db: Session,
+    persisted_listing,
+):
+    """The run must see the whole set, or the later photos are never composited.
+
+    A typed description already satisfies "an account of the piece", so without
+    the declared count the first photo started the run and the artisan's other
+    photos landed after it had read its media - published as raw camera frames
+    while the first one came back as a studio image.
+    """
+    listing, headers = persisted_listing
+    listing.typed_description = "Bronze bangles, five days of work."
+    listing.expected_photo_count = 3
+    test_db.add(listing)
+    test_db.commit()
+
+    with patch("app.api.routes.media.process_listing") as mock_process:
+        assert _upload(media_client, listing.id, headers, MediaType.image).status_code == 200
+        assert _upload(media_client, listing.id, headers, MediaType.image).status_code == 200
+        mock_process.assert_not_called()
+
+        assert _upload(media_client, listing.id, headers, MediaType.image).status_code == 200
+
+    mock_process.assert_called_once_with(listing_id=listing.id, seller_id=listing.seller_id)
+
+
+def test_voice_note_still_completes_the_set_whatever_the_declared_count(
+    media_client: TestClient,
+    isolated_storage: Path,
+    test_db: Session,
+    persisted_listing,
+):
+    """The recording is uploaded last, so it is itself proof the capture is done."""
+    listing, headers = persisted_listing
+    listing.expected_photo_count = 3
+    test_db.add(listing)
+    test_db.commit()
+
+    with patch("app.api.routes.media.process_listing") as mock_process:
+        assert _upload(media_client, listing.id, headers, MediaType.image).status_code == 200
+        mock_process.assert_not_called()
+        assert _upload(media_client, listing.id, headers, MediaType.audio).status_code == 200
+
+    mock_process.assert_called_once_with(listing_id=listing.id, seller_id=listing.seller_id)

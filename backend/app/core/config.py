@@ -26,6 +26,10 @@ class Settings(BaseSettings):
     # Firebase Authentication configuration
     FIREBASE_SERVICE_ACCOUNT_JSON: Union[str, None] = None
     FIREBASE_SERVICE_ACCOUNT_PATH: Union[str, None] = None
+    # Verifying an ID token needs the project id to check the token's audience.
+    # A service account carries it; without one it has to be given explicitly,
+    # which is what lets a dev machine verify tokens with no secret at all.
+    FIREBASE_PROJECT_ID: Union[str, None] = None
 
     # Media storage configuration
     MEDIA_STORAGE_DIR: str = "./media"
@@ -38,9 +42,34 @@ class Settings(BaseSettings):
     SARVAM_API_KEY: Union[str, None] = None
     GEMINI_API_KEY: Union[str, None] = None
     GEMINI_MODEL: str = "gemini-3.5-flash"
+    # A multimodal extraction on the preferred model measures around 25s, so a
+    # 30s ceiling trips its own read timeout on healthy calls.
+    GEMINI_TIMEOUT_SECONDS: float = 90.0
+    # Tried in order when the preferred model is overloaded. A listing written
+    # by a lighter model beats one written from canned facts, so the chain is
+    # exhausted before any synthetic fallback.
+    GEMINI_FALLBACK_MODELS: Union[List[str], str] = [
+        "gemini-3-flash-preview",
+        "gemini-3.1-flash-lite",
+    ]
 
     # CORS origins
     CORS_ORIGINS: Union[List[str], str] = ["*"]
+
+    @property
+    def gemini_fallback_models(self) -> List[str]:
+        """The fallback chain as a list, however it was configured."""
+        configured = self.GEMINI_FALLBACK_MODELS
+        if isinstance(configured, str):
+            return [m.strip() for m in configured.split(",") if m.strip()]
+        return list(configured)
+
+    @field_validator("GEMINI_FALLBACK_MODELS", mode="before")
+    @classmethod
+    def assemble_gemini_fallback_models(cls, v: Union[str, List[str]]) -> Union[str, List[str]]:
+        if isinstance(v, str) and not v.startswith("["):
+            return [m.strip() for m in v.split(",") if m.strip()]
+        return v
 
     @field_validator("CORS_ORIGINS", mode="before")
     @classmethod

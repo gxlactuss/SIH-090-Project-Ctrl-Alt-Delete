@@ -16,6 +16,7 @@ from app.services.listing import (
     transition_listing,
 )
 from app.services.pipeline.context import PipelineContext
+from app.services.pipeline.persist import save_pipeline_result, save_attention_reason
 from app.services.pipeline.result import PipelineResult, StageResult, StageStatus
 from app.services.pipeline.stage import PipelineStage
 from app.services.pipeline.stages.confidence import ConfidenceStage
@@ -91,6 +92,9 @@ class PipelineRunner:
         context = PipelineContext(
             listing_id=listing.id,
             seller_id=listing.seller_id,
+            seller_story=listing.seller.craft_story if listing.seller else None,
+            typed_description=listing.typed_description,
+            seller_language=listing.seller.language if listing.seller else None,
             media=media,
         )
 
@@ -141,6 +145,7 @@ class PipelineRunner:
                         res.reason,
                     )
                     # Needs attention halts the pipeline immediately without retry
+                    save_attention_reason(db, listing, context, res.reason)
                     transition_listing(db, listing, ListingState.needs_attention)
                     return PipelineResult(
                         listing_id=listing.id,
@@ -167,6 +172,7 @@ class PipelineRunner:
                             self.max_stage_attempts,
                             res.reason,
                         )
+                        save_attention_reason(db, listing, context, res.reason)
                         transition_listing(db, listing, ListingState.needs_attention)
                         return PipelineResult(
                             listing_id=listing.id,
@@ -177,6 +183,7 @@ class PipelineRunner:
                         )
 
             if not stage_success:
+                save_attention_reason(db, listing, context, f"Stage '{stage_name}' did not complete.")
                 transition_listing(db, listing, ListingState.needs_attention)
                 return PipelineResult(
                     listing_id=listing.id,
@@ -186,7 +193,34 @@ class PipelineRunner:
                     reason=f"Stage '{stage_name}' did not complete successfully.",
                 )
 
-        # 6. All stages succeeded -> Transition to ready
+        # 6. All stages succeeded -> store what was understood, then mark ready.
+        # The result is written first so a listing is never 'ready' with nothing
+        # to read back.
+        result_row = save_pipeline_result(db, listing, context)
+
+        # A photo the vision gate could not use does not invalidate the voice
+        # note, so the run completed and its conclusions are saved above. The
+        # listing still must not go out on an ungraded frame, so it waits in
+        # needs_attention with the retake as its question.
+        if context.photo_warnings:
+            reason = " ".join(context.photo_warnings)
+            result_row.follow_up_question = reason
+            db.add(result_row)
+            db.commit()
+            transition_listing(db, listing, ListingState.needs_attention)
+            logger.info(
+                "Listing %s -> pipeline complete but photos need attention: %s",
+                listing.id,
+                reason,
+            )
+            return PipelineResult(
+                listing_id=listing.id,
+                final_state=ListingState.needs_attention,
+                stage_results=context.stage_results,
+                success=False,
+                reason=reason,
+            )
+
         transition_listing(db, listing, ListingState.ready)
         logger.info("Listing %s -> All pipeline stages succeeded. Transitioned to 'ready'.", listing.id)
         return PipelineResult(

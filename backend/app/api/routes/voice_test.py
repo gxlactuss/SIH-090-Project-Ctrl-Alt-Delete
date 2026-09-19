@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Any, Dict, Optional
 import uuid
 
-from fastapi import APIRouter, File, Form, HTTPException, UploadFile, status
+from fastapi import APIRouter, File, Form, UploadFile, status
 
 from app.core.config import settings
 from app.services.llm.gemini import GeminiExtractor
@@ -33,6 +33,8 @@ router = APIRouter(prefix="/voice", tags=["Voice Demo"])
 )
 async def voice_to_catalog_demo(
     file: UploadFile = File(...),
+    image: Optional[UploadFile] = File(None),
+    seller_story: Optional[str] = Form(None),
     sarvam_key: Optional[str] = Form(None),
     gemini_key: Optional[str] = Form(None),
     model_name: Optional[str] = Form(None),
@@ -48,7 +50,51 @@ async def voice_to_catalog_demo(
         content = await file.read()
         tmp_file.write(content)
 
+    # Save the optional craft photo alongside it. Without this the fact sheet was
+    # built from audio alone while the response advertised a multimodal pipeline.
+    image_path: Optional[Path] = None
+    if image is not None and image.filename:
+        image_suffix = Path(image.filename).suffix or ".jpg"
+        with tempfile.NamedTemporaryFile(delete=False, suffix=image_suffix) as tmp_image:
+            image_path = Path(tmp_image.name)
+            tmp_image.write(await image.read())
+
+    vision_report: Optional[Dict[str, Any]] = None
+    gemini_image_path: Optional[Path] = None
+    demo_id = uuid.uuid4()
+
     try:
+        # Step 0: Vision Station, so Gemini sees the same studio cutout the
+        # marketplace will show rather than the raw camera roll photo.
+        if image_path is not None:
+            from app.services.vision.pipeline import ImageStation
+
+            # Written under the media root rather than a temp dir: the response
+            # reports these paths, so they have to outlive the request.
+            vision_dir = Path(settings.MEDIA_STORAGE_DIR).resolve() / "voice_demo" / str(demo_id)
+            vision_dir.mkdir(parents=True, exist_ok=True)
+            try:
+                vision_result = ImageStation().process_image(
+                    input_path=str(image_path),
+                    output_dir=str(vision_dir),
+                    item_id=f"demo_{demo_id.hex[:8]}",
+                )
+                quality = vision_result.get("quality", {})
+                clean_image = vision_result.get("outputs", {}).get("clean_image")
+                vision_report = {
+                    "quality_passed": quality.get("passed", False),
+                    "warnings": quality.get("warnings", []),
+                    "blur_score": quality.get("blur_score"),
+                    "roi_brightness_score": quality.get("roi_brightness_score"),
+                    "outputs": vision_result.get("outputs", {}),
+                }
+                # A rejected photo produces no cutout, so fall back to the original
+                # upload: the artisan still gets a fact sheet plus the retake advice.
+                gemini_image_path = Path(clean_image) if clean_image else image_path
+            except Exception as exc:  # noqa: BLE001 - demo endpoint stays responsive
+                vision_report = {"quality_passed": False, "error": str(exc)}
+                gemini_image_path = image_path
+
         # Step 1: Voice Station (Sarvam AI translation)
         voice_station = VoiceStation(api_key=effective_sarvam_key)
         voice_res = voice_station.process_audio(tmp_path, allow_synthetic_fallback=True)
@@ -58,16 +104,18 @@ async def voice_to_catalog_demo(
         extraction = gemini_extractor.extract_fact_sheet(
             transcript=voice_res.transcript,
             detected_language=voice_res.language_code,
+            image_path=str(gemini_image_path) if gemini_image_path else None,
+            seller_story=seller_story,
             allow_synthetic_fallback=True,
         )
 
         # Step 3: Pricing Advisor Stage
         context = PipelineContext(listing_id=uuid.uuid4())
         context.image_output = ImageStageOutput(
-            image_count=1,
-            image_paths=["demo/product_clean.jpg"],
+            image_count=1 if gemini_image_path else 0,
+            image_paths=[str(gemini_image_path)] if gemini_image_path else [],
             detected_labels=[extraction.craft_type],
-            dimensions=[{"width": 1024, "height": 1024}],
+            dimensions=[{"width": 1024, "height": 1024}] if gemini_image_path else [],
         )
         context.speech_output = SpeechStageOutput(
             audio_path=str(tmp_path),
@@ -97,7 +145,7 @@ async def voice_to_catalog_demo(
             category=extraction.craft_type,
             materials=[extraction.material],
             dimensions=extraction.dimensions,
-            media_urls=["https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?w=800&q=80"],
+            media_urls=[str(gemini_image_path)] if gemini_image_path else [],
             attributes=extraction.attributes,
         )
 
@@ -111,8 +159,9 @@ async def voice_to_catalog_demo(
                 "transcript": voice_res.transcript,
                 "detected_language": voice_res.language_code,
                 "duration_seconds": voice_res.duration_seconds,
-                "live_api_used": bool(effective_sarvam_key),
+                "live_api_used": voice_res.used_live_api,
             },
+            "vision_station": vision_report,
             "fact_sheet": {
                 "title": extraction.title,
                 "craft_type": extraction.craft_type,
@@ -123,7 +172,9 @@ async def voice_to_catalog_demo(
                 "origin": extraction.origin,
                 "colors": extraction.colors,
                 "missing_fields": extraction.missing_fields,
-                "live_api_used": bool(effective_gemini_key),
+                "live_api_used": extraction.used_live_api,
+                "image_used": gemini_image_path is not None,
+                "seller_story_used": bool((seller_story or "").strip()),
                 "model": effective_model,
             },
             "pricing": {
@@ -155,5 +206,8 @@ async def voice_to_catalog_demo(
             },
         }
     finally:
-        if tmp_path.exists():
-            tmp_path.unlink()
+        # The generated studio assets stay on disk for the caller to inspect; only
+        # the raw uploads are discarded.
+        for path in (tmp_path, image_path):
+            if path is not None and path.exists():
+                path.unlink()

@@ -237,15 +237,12 @@ def test_get_listing_readback() -> None:
     )
     listing_id = create_res.json()["id"]
 
+    # Nothing has been processed, so there is genuinely nothing to read back.
+    # This used to answer 200 with a hardcoded Madhubani painting for every
+    # listing, whatever the artisan had photographed.
     response = client.get(f"/api/v1/listings/{listing_id}/readback", headers=AUTH_HEADERS)
-    assert response.status_code == 200
-    data = response.json()
-    assert data["listing_id"] == listing_id
-    assert "language" in data
-    assert "title" in data
-    assert "description" in data
-    assert "price" in data
-    assert "audio_url" in data
+    assert response.status_code == 409
+    assert "processed" in response.json()["detail"].lower()
 
 
 def test_approve_listing() -> None:

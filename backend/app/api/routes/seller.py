@@ -26,6 +26,7 @@ def get_seller(
         cluster=current_seller.cluster,
         ondc_seller_id=current_seller.ondc_seller_id,
         phone_number=current_seller.phone_number,
+        craft_story=current_seller.craft_story,
     )
 
 
@@ -34,7 +35,7 @@ def get_seller(
     response_model=SellerResponse,
     status_code=status.HTTP_200_OK,
     summary="Update Seller Profile",
-    description="Update profile fields (name, language, cluster) for the currently authenticated seller.",
+    description="Update profile fields (name, language, cluster, craft story) for the currently authenticated seller.",
 )
 def update_seller(
     payload: SellerUpdateRequest,
@@ -47,6 +48,10 @@ def update_seller(
         current_seller.language = payload.language
     if payload.cluster is not None:
         current_seller.cluster = payload.cluster
+    if payload.craft_story is not None:
+        # Empty string clears it, so an artisan can take their story back down.
+        story = payload.craft_story.strip()
+        current_seller.craft_story = story or None
 
     db.commit()
     db.refresh(current_seller)
@@ -58,4 +63,5 @@ def update_seller(
         cluster=current_seller.cluster,
         ondc_seller_id=current_seller.ondc_seller_id,
         phone_number=current_seller.phone_number,
+        craft_story=current_seller.craft_story,
     )

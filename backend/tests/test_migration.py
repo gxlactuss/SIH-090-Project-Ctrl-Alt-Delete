@@ -6,7 +6,7 @@ from alembic import command
 
 
 def test_migration_file_exists_and_discoverable():
-    """Verify Alembic detects all migrations in the chain up to 0002_firebase_authentication."""
+    """Verify Alembic detects all migrations in the chain up to the current head."""
     backend_dir = Path(__file__).resolve().parent.parent
     ini_path = backend_dir / "alembic.ini"
     config = Config(str(ini_path))
@@ -15,7 +15,10 @@ def test_migration_file_exists_and_discoverable():
     script = ScriptDirectory.from_config(config)
     head_revision = script.get_current_head()
 
-    assert head_revision == "0002_firebase_authentication"
+    assert head_revision == "0007_listing_origin"
+
+    rev_head = script.get_revision(head_revision)
+    assert rev_head.down_revision == "0006_expected_photo_count"
 
     # Verify 0001_domain_tables
     rev_0001 = script.get_revision("0001_domain_tables")
@@ -33,12 +36,19 @@ def test_migration_file_exists_and_discoverable():
     assert callable(rev_0002.module.downgrade)
 
 
-def test_migration_sql_generation_offline(capsys):
+def test_migration_sql_generation_offline(capsys, monkeypatch):
     """Verify that Alembic can render the offline SQL for the entire migration chain."""
     backend_dir = Path(__file__).resolve().parent.parent
     ini_path = backend_dir / "alembic.ini"
     config = Config(str(ini_path))
     config.set_main_option("script_location", str(backend_dir / "alembic"))
+
+    # The assertions below are PostgreSQL DDL, so pin the dialect rather than
+    # inheriting whatever DATABASE_URL this machine happens to have in .env.
+    monkeypatch.setenv(
+        "ALEMBIC_DATABASE_URL",
+        "postgresql+psycopg2://user:pass@localhost:5432/listing_factory",
+    )
 
     # Run upgrade in offline mode
     command.upgrade(config, "head", sql=True)
