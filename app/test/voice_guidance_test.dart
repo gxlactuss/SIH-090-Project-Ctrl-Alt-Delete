@@ -331,7 +331,7 @@ void main() {
     await advance(tester);
 
     expect(find.text(l10n.voiceGuideTitle), findsOneWidget);
-    expect(find.text(l10n.voiceGuideMaterial), findsOneWidget);
+    expect(find.text(l10n.voiceGuideColour), findsOneWidget);
 
     await tester.enterText(
       find.byType(TextField),
@@ -401,12 +401,9 @@ void main() {
           for (final prompt in [
             l10n.voiceGuideTitle,
             l10n.voiceGuideWhat,
-            l10n.voiceGuideMaterial,
-            l10n.voiceGuideSize,
             l10n.voiceGuideColour,
+            l10n.voiceGuideSize,
             l10n.voiceGuideTime,
-            l10n.voiceGuideCraft,
-            l10n.voiceGuidePrice,
           ]) {
             final finder = find.text(prompt);
             expect(
@@ -421,7 +418,7 @@ void main() {
 
           await tester.tap(find.text(l10n.voiceTypeInstead));
           await advance(tester);
-          final typed = find.text(l10n.voiceGuidePrice);
+          final typed = find.text(l10n.voiceGuideTime);
           expect(typed, findsWidgets, reason: '$label typing view');
           await tester.ensureVisible(typed.first);
           await tester.pump();

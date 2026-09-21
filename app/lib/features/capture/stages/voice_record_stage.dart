@@ -27,12 +27,9 @@ class VoiceRecordStage extends StatefulWidget {
 
 List<String> _guidePoints(AppLocalizations l10n) => [
   l10n.voiceGuideWhat,
-  l10n.voiceGuideMaterial,
-  l10n.voiceGuideSize,
   l10n.voiceGuideColour,
+  l10n.voiceGuideSize,
   l10n.voiceGuideTime,
-  l10n.voiceGuideCraft,
-  l10n.voiceGuidePrice,
 ];
 
 class _VoiceRecordStageState extends State<VoiceRecordStage> {
