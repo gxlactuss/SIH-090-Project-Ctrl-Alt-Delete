@@ -1,82 +1,232 @@
 """
-price_advisor.py — Price floor + market band suggestion
-Language layer (temporarily built by Shivam, on behalf of Ayush Shivdikar's role)
+price_advisor.py — Deterministic, source-backed artisan price engine.
 
-No LLM call needed here — this is plain arithmetic + a small lookup table,
-per the project doc: "a floor from the cost and hours they state, and a
-band from a reference table." Deliberately simple and deterministic, so
-it never "hallucinates" a price — every number is traceable to either the
-artisan's stated cost/hours or the reference table below.
+Pricing policy:
+1. Build a cost floor from the artisan's stated material cost + hours.
+2. Use a configurable labour-rate benchmark. The demo default is a
+   Maharashtra skilled-wage proxy, not a universal national artisan wage.
+3. Use an observed retail reference corpus from current, source-backed
+   listings. The market band is derived from the observed sample using
+   P25 / median / P75.
+4. Do NOT add an arbitrary blanket profit margin. The market benchmark is
+   used to position the recommendation instead.
+5. The engine never writes FactSheet.price_final. The seller must approve
+   or change the recommendation.
+
+This is a recommendation engine, not a guarantee of "fair value".
+Market references are category-level observations and can be affected by
+size, design, material, brand, discounts, geography and seller reputation.
 """
 
+from __future__ import annotations
+
+from datetime import date
 import pandas as pd
+
 from factsheet_schema import FactSheet
 
-DEFAULT_HOURLY_RATE = 50       # INR/hour — adjust with the team
-DEFAULT_MARGIN = 0.30          # 30% margin over cost — adjust with the team
 
-# Small reference table: category -> typical market price range (INR)
-# Replace/expand with real data once the team has it (e.g. from Etsy
-# datasets or GEM/ONDC category benchmarks discussed earlier).
-REFERENCE_PRICES = pd.DataFrame([
-    {"category": "textile",   "low": 300,  "median": 600,  "high": 1500},
-    {"category": "pottery",   "low": 200,  "median": 450,  "high": 1200},
-    {"category": "jewellery", "low": 250,  "median": 800,  "high": 3000},
-    {"category": "woodwork",  "low": 400,  "median": 900,  "high": 2500},
-])
+# ---------------------------------------------------------------------------
+# Labour-rate policy
+# ---------------------------------------------------------------------------
+
+# Maharashtra Government notification for skilled workers in silver
+# article/ornament manufacturing (30 Aug 2024):
+#   Zone-I basic monthly skilled wage = ₹16,570.
+# The notification explains that daily wage = monthly / 26 and part-time
+# hourly wage = daily / 8 with a 15% increase.
+#
+# Derived benchmark:
+#   (16,570 / 26 / 8) × 1.15 ≈ ₹91.61/hour
+#
+# We round to ₹90/hour for a simple demo default.
+#
+# IMPORTANT: this is NOT a universal artisan wage. For production use,
+# the rate should be selected by seller state + craft/skill level.
+DEFAULT_HOURLY_RATE = 90.0
+
+# There is intentionally NO DEFAULT_MARGIN.
+# A blanket 30% margin is not supported by the project architecture or a
+# single authoritative national pricing standard for artisans.
+
+
+# ---------------------------------------------------------------------------
+# Source-backed market reference corpus
+# ---------------------------------------------------------------------------
+#
+# These are observed prices from IndiaHandmade, a Government of India
+# Ministry of Textiles marketplace for verified artisans/weavers/producer
+# companies. We keep the raw observations rather than inventing a fixed
+# low/median/high table.
+#
+# The engine derives:
+#   market_low    = P25
+#   market_median = P50
+#   market_high   = P75
+#
+# Small / heterogeneous samples are deliberately not represented as
+# "national market prices". Add more comparable observations as the team
+# collects them.
+#
+# Source pages:
+#   Pottery:
+#     150  -> Handmade Decorative Kulhad Pot
+#     450  -> Handmade Pottery Handi
+#     1200 -> Handcrafted Terracotta Planter
+#     1700 -> Terracotta Hand-Painted Decorative Pot
+#     1950 -> Handmade Terracotta Handi
+#
+#   Baskets:
+#     2500, 3500, 3500, 2450, 250, 1999
+#
+#   Kurtas:
+#     1500, 1799, 499, 720, 499, 799, 2500, 499, 799
+#
+# Only categories with enough comparable observations are included.
+# ---------------------------------------------------------------------------
+
+MARKET_REFERENCE_OBSERVED_ON = date(2026, 9, 21).isoformat()
+
+REFERENCE_SAMPLES = pd.DataFrame(
+    [
+        # Pottery — IndiaHandmade
+        {"category": "pottery", "price": 150, "source": "IndiaHandmade", "source_url": "https://www.indiahandmade.com/catalog/product/view/id/23340/s/decorative-kulhad-pot/category/2/"},
+        {"category": "pottery", "price": 450, "source": "IndiaHandmade", "source_url": "https://www.indiahandmade.com/catalog/product/view/id/22350/s/handmade-pottery-handi/category/179/"},
+        {"category": "pottery", "price": 1200, "source": "IndiaHandmade", "source_url": "https://www.indiahandmade.com/buy-terracotta-planter-online.html"},
+        {"category": "pottery", "price": 1700, "source": "IndiaHandmade", "source_url": "https://www.indiahandmade.com/catalog/product/view/_ignore_category/1/id/11768/s/buy-handmade-terracotta-decorative-pot-online/"},
+        {"category": "pottery", "price": 1950, "source": "IndiaHandmade", "source_url": "https://www.indiahandmade.com/handmade-terracotta-handi.html"},
+
+        # Baskets — IndiaHandmade
+        {"category": "basket", "price": 2500, "source": "IndiaHandmade", "source_url": "https://www.indiahandmade.com/catalogsearch/result/?q=bamboo+basket"},
+        {"category": "basket", "price": 3500, "source": "IndiaHandmade", "source_url": "https://www.indiahandmade.com/catalogsearch/result/?q=bamboo+basket"},
+        {"category": "basket", "price": 3500, "source": "IndiaHandmade", "source_url": "https://www.indiahandmade.com/catalogsearch/result/?q=bamboo+basket"},
+        {"category": "basket", "price": 2450, "source": "IndiaHandmade", "source_url": "https://www.indiahandmade.com/catalogsearch/result/?q=bamboo+basket"},
+        {"category": "basket", "price": 250, "source": "IndiaHandmade", "source_url": "https://www.indiahandmade.com/catalogsearch/result/?q=bamboo+basket"},
+        {"category": "basket", "price": 1999, "source": "IndiaHandmade", "source_url": "https://www.indiahandmade.com/catalogsearch/result/?q=bamboo+basket"},
+
+        # Kurtas — IndiaHandmade
+        {"category": "kurta", "price": 1500, "source": "IndiaHandmade", "source_url": "https://www.indiahandmade.com/men-s-wear/shirt/kurtas.html"},
+        {"category": "kurta", "price": 1799, "source": "IndiaHandmade", "source_url": "https://www.indiahandmade.com/men-s-wear/shirt/kurtas.html"},
+        {"category": "kurta", "price": 499, "source": "IndiaHandmade", "source_url": "https://www.indiahandmade.com/men-s-wear/shirt/kurtas.html"},
+        {"category": "kurta", "price": 720, "source": "IndiaHandmade", "source_url": "https://www.indiahandmade.com/men-s-wear/shirt/kurtas.html"},
+        {"category": "kurta", "price": 499, "source": "IndiaHandmade", "source_url": "https://www.indiahandmade.com/men-s-wear/shirt/kurtas.html"},
+        {"category": "kurta", "price": 799, "source": "IndiaHandmade", "source_url": "https://www.indiahandmade.com/men-s-wear/shirt/kurtas.html"},
+        {"category": "kurta", "price": 2500, "source": "IndiaHandmade", "source_url": "https://www.indiahandmade.com/men-s-wear/shirt/kurtas.html"},
+        {"category": "kurta", "price": 499, "source": "IndiaHandmade", "source_url": "https://www.indiahandmade.com/men-s-wear/shirt/kurtas.html"},
+        {"category": "kurta", "price": 799, "source": "IndiaHandmade", "source_url": "https://www.indiahandmade.com/men-s-wear/shirt/kurtas.html"},
+    ]
+)
+
+MIN_MARKET_SAMPLE_SIZE = 5
+
+
+def _normalise_category(category: str | None) -> str | None:
+    if category is None:
+        return None
+    value = category.strip().lower()
+    return value or None
+
+
+def _round_price(value: float) -> float:
+    """Round to a simple buyer-facing ₹10 amount."""
+    rounded = float(round(value / 10) * 10)
+    return rounded
 
 
 def compute_price_floor(
     cost_of_materials: float | None,
     hours_spent: float | None,
     hourly_rate: float = DEFAULT_HOURLY_RATE,
-    margin: float = DEFAULT_MARGIN,
 ) -> float | None:
     """
-    floor = (materials cost + labor cost) * (1 + margin)
-    Returns None if we don't have enough info to compute anything —
-    never guesses a floor out of thin air.
+    Cost floor = material cost + labour cost.
+
+    labour cost = hours_spent × hourly_rate
+
+    Missing cost/hours are NOT invented:
+      - neither supplied -> None
+      - only one supplied -> use the supplied component
     """
     if cost_of_materials is None and hours_spent is None:
         return None
 
-    material_cost = cost_of_materials or 0
-    labor_cost = (hours_spent or 0) * hourly_rate
+    if cost_of_materials is not None and cost_of_materials < 0:
+        raise ValueError("cost_of_materials cannot be negative")
 
-    if material_cost == 0 and labor_cost == 0:
+    if hours_spent is not None and hours_spent < 0:
+        raise ValueError("hours_spent cannot be negative")
+
+    if hourly_rate < 0:
+        raise ValueError("hourly_rate cannot be negative")
+
+    material_cost = float(cost_of_materials or 0.0)
+    labour_cost = float(hours_spent or 0.0) * float(hourly_rate)
+    direct_cost = material_cost + labour_cost
+
+    if direct_cost <= 0:
         return None
 
-    floor = (material_cost + labor_cost) * (1 + margin)
-    return round(floor, 2)
+    return round(direct_cost, 2)
 
 
 def get_market_band(category: str | None) -> dict | None:
     """
-    Looks up the reference low/median/high for a category.
-    Returns None if the category isn't in the table or wasn't provided —
-    never invents a band for an unknown category.
+    Derive an observed category price band from source-backed samples.
+
+    Returns P25 / median / P75 and provenance.
+    Returns None when there are too few observations.
     """
+    category = _normalise_category(category)
     if category is None:
         return None
 
-    match = REFERENCE_PRICES[REFERENCE_PRICES["category"] == category.lower()]
-    if match.empty:
+    rows = REFERENCE_SAMPLES[
+        REFERENCE_SAMPLES["category"].str.lower() == category
+    ]
+
+    if len(rows) < MIN_MARKET_SAMPLE_SIZE:
         return None
 
-    row = match.iloc[0]
-    return {"low": row["low"], "median": row["median"], "high": row["high"]}
+    prices = rows["price"].astype(float)
+
+    return {
+        "low": round(float(prices.quantile(0.25)), 2),
+        "median": round(float(prices.quantile(0.50)), 2),
+        "high": round(float(prices.quantile(0.75)), 2),
+        "sample_size": int(len(prices)),
+        "source": "IndiaHandmade (Government of India, Ministry of Textiles)",
+        "observed_on": MARKET_REFERENCE_OBSERVED_ON,
+        "source_urls": sorted(rows["source_url"].unique().tolist()),
+    }
 
 
-def suggest_price(sheet: FactSheet) -> dict:
+def suggest_price(
+    sheet: FactSheet,
+    hourly_rate: float = DEFAULT_HOURLY_RATE,
+) -> dict:
     """
-    Returns a dict with:
-      - floor: cost-based minimum (or None if not computable)
-      - market_band: category-based low/median/high (or None if unknown category)
-      - suggested_price: floor, nudged up toward the market median if the
-        floor sits below the market's low end (still never below the floor)
-      - explanation: short trace of how the number was reached, for transparency
+    Return a transparent price recommendation.
+
+    Policy:
+      A. Cost floor + market band:
+         - floor below P25  -> suggest P25
+         - floor inside band -> keep floor
+         - floor above P75 -> keep floor and flag mismatch
+      B. Cost floor only:
+         - suggest the rounded floor
+      C. Market band only:
+         - suggest the observed median, but mark low confidence
+      D. Neither:
+         - no recommendation
+
+    No automatic margin is added.
+    The engine never writes sheet.price_final.
     """
-    floor = compute_price_floor(sheet.cost_of_materials, sheet.hours_spent)
+    floor = compute_price_floor(
+        sheet.cost_of_materials,
+        sheet.hours_spent,
+        hourly_rate=hourly_rate,
+    )
     band = get_market_band(sheet.category)
 
     if floor is None and band is None:
@@ -84,58 +234,93 @@ def suggest_price(sheet: FactSheet) -> dict:
             "floor": None,
             "market_band": None,
             "suggested_price": None,
-            "explanation": "Not enough information yet — need cost/hours or a known category.",
+            "confidence": "insufficient_data",
+            "explanation": (
+                "Not enough information for a source-backed recommendation. "
+                "Need stated cost/hours and/or enough comparable market observations."
+            ),
         }
 
     if floor is None:
-        suggested = band["median"]
-        explanation = f"No cost/hours given — using market median for '{sheet.category}'."
-    elif band is None:
+        suggested = _round_price(band["median"])
+        return {
+            "floor": None,
+            "market_band": band,
+            "suggested_price": suggested,
+            "confidence": "low",
+            "explanation": (
+                f"No cost/hours were stated. Using the observed market median "
+                f"(₹{band['median']:.0f}) for '{_normalise_category(sheet.category)}' "
+                "as a benchmark only."
+            ),
+        }
+
+    if band is None:
+        suggested = _round_price(floor)
+        if suggested < floor:
+            suggested += 10
+
+        return {
+            "floor": floor,
+            "market_band": None,
+            "suggested_price": suggested,
+            "confidence": "medium",
+            "explanation": (
+                f"No sufficiently sized reference corpus exists for "
+                f"'{sheet.category}'. Using the cost floor of ₹{floor:.0f}; "
+                "the labour-rate benchmark is configurable."
+            ),
+        }
+
+    if floor < band["low"]:
+        suggested = band["low"]
+        explanation = (
+            f"Cost floor (₹{floor:.0f}) is below the observed P25 market "
+            f"reference (₹{band['low']:.0f}) for "
+            f"'{_normalise_category(sheet.category)}'. "
+            f"Suggesting the P25 reference rather than adding an arbitrary margin."
+        )
+        confidence = "medium"
+    elif floor <= band["high"]:
         suggested = floor
-        explanation = "No market data for this category — using cost-based floor only."
+        explanation = (
+            f"Cost floor (₹{floor:.0f}) is inside the observed P25–P75 "
+            f"reference band (₹{band['low']:.0f}–₹{band['high']:.0f}) for "
+            f"'{_normalise_category(sheet.category)}'. Keeping the cost floor."
+        )
+        confidence = "high"
     else:
-        if floor < band["low"]:
-            # artisan's floor is unusually low vs. market — nudge toward market low,
-            # but never suggest anything below their actual cost floor
-            suggested = max(floor, band["low"])
-            explanation = (
-                f"Cost floor (₹{floor}) is below typical market range for "
-                f"'{sheet.category}' (₹{band['low']}–₹{band['high']}) — "
-                f"suggesting the market low instead."
-            )
-        else:
-            suggested = floor
-            explanation = f"Cost floor (₹{floor}) already sits within market range."
+        suggested = floor
+        explanation = (
+            f"Cost floor (₹{floor:.0f}) is above the observed P75 reference "
+            f"(₹{band['high']:.0f}) for '{_normalise_category(sheet.category)}'. "
+            "The engine does not force the price below the seller's stated-cost "
+            "floor; the market mismatch is flagged."
+        )
+        confidence = "medium"
+
+    suggested = _round_price(suggested)
+    if suggested < floor:
+        suggested = float(int(floor // 10 + 1) * 10)
 
     return {
         "floor": floor,
         "market_band": band,
-        "suggested_price": round(suggested, 2) if suggested else None,
+        "suggested_price": suggested,
+        "confidence": confidence,
         "explanation": explanation,
     }
 
 
 if __name__ == "__main__":
-    # Test case 1: full info, textile
-    sheet1 = FactSheet(
-        category="textile",
-        cost_of_materials=200,
-        hours_spent=4,
-    )
-    print("Test 1 (jute bag, textile):")
-    print(suggest_price(sheet1))
+    examples = [
+        FactSheet(category="pottery", hours_spent=3),
+        FactSheet(category="pottery", cost_of_materials=200, hours_spent=4),
+        FactSheet(category="kurta", cost_of_materials=300, hours_spent=6),
+        FactSheet(category="woodwork", cost_of_materials=500, hours_spent=5),
+        FactSheet(category="unknown"),
+    ]
 
-    # Test case 2: no category, just cost/hours
-    sheet2 = FactSheet(cost_of_materials=500, hours_spent=10)
-    print("\nTest 2 (no category):")
-    print(suggest_price(sheet2))
-
-    # Test case 3: category but no cost/hours stated yet
-    sheet3 = FactSheet(category="jewellery")
-    print("\nTest 3 (jewellery, no cost/hours):")
-    print(suggest_price(sheet3))
-
-    # Test case 4: nothing at all
-    sheet4 = FactSheet()
-    print("\nTest 4 (empty sheet):")
-    print(suggest_price(sheet4))
+    for index, sheet in enumerate(examples, 1):
+        print(f"\nTest {index}:")
+        print(suggest_price(sheet))

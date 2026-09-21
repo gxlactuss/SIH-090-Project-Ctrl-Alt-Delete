@@ -98,12 +98,21 @@ def map_to_ondc_item(fact_sheet: dict, image_urls: list[str], thumbnail_url: str
         "price": {
             "currency": "INR",
             "value": str(fact_sheet["price_final"]),
-            "maximum_value": str(fact_sheet.get("price_mrp", fact_sheet["price_final"])),
+            "maximum_value": str(
+    fact_sheet["price_mrp"]
+    if fact_sheet.get("price_mrp") is not None
+    else fact_sheet["price_final"]),
         },
         "category_id": category,
         "quantity": {
             "available": {"count": str(fact_sheet["stock_count"])},
-            "maximum": {"count": str(fact_sheet.get("stock_max", fact_sheet["stock_count"]))},
+            "maximum": {
+    "count": str(
+        fact_sheet["stock_max"]
+        if fact_sheet.get("stock_max") is not None
+        else fact_sheet["stock_count"]
+    )
+},
         },
         "@ondc/org/cancellable": True,            # TODO: confirm default with team
         "@ondc/org/available_on_cod": True,       # TODO: confirm default with team
