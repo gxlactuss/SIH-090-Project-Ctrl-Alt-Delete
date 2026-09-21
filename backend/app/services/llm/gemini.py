@@ -5,11 +5,12 @@ import logging
 import os
 import time
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional, TypeVar
 
 import httpx
 
 from app.core.config import settings
+from app.services.factsheet.schema import CATEGORIES, normalize_category
 
 logger = logging.getLogger("app.services.llm.gemini")
 
@@ -34,6 +35,17 @@ DEFAULT_IMAGE_MIME_TYPE = "image/jpeg"
 _RETRYABLE_STATUS = frozenset({429, 500, 502, 503, 504})
 
 
+def _positive_number(value: Any) -> Optional[float]:
+    """A stated quantity as a float, or None when it is absent or not a real amount."""
+    if value is None or isinstance(value, bool):
+        return None
+    try:
+        number = float(value)
+    except (TypeError, ValueError):
+        return None
+    return number if number > 0 else None
+
+
 def image_mime_type(path: str) -> str:
     """Map a file extension to the mime type Gemini should be told to expect."""
     return _IMAGE_MIME_TYPES.get(os.path.splitext(path)[1].lower(), DEFAULT_IMAGE_MIME_TYPE)
@@ -51,6 +63,13 @@ class GeminiExtractionResult:
     colors: List[str] = field(default_factory=list)
     missing_fields: List[str] = field(default_factory=list)
     attributes: Dict[str, Any] = field(default_factory=dict)
+    # The fact sheet fields the price advisor and the ONDC catalog need. Each
+    # stays None unless the artisan actually said it.
+    category: Optional[str] = None
+    cost_of_materials: Optional[float] = None
+    hours_spent: Optional[float] = None
+    stock_count: Optional[int] = None
+    returnable: Optional[bool] = None
     # False when these facts are the canned fallback rather than a real
     # extraction, so callers can tell a working demo from a silent failure.
     used_live_api: bool = False
@@ -97,6 +116,31 @@ EXTRACTION_SCHEMA = {
             "items": {"type": "STRING"},
             "description": "Key commercial fields missing from audio note (e.g. ['price', 'dimensions'])",
         },
+        "category": {
+            "type": "STRING",
+            "nullable": True,
+            "description": "Product category, one of: " + ", ".join(CATEGORIES) + ". Null if none clearly matches.",
+        },
+        "cost_of_materials": {
+            "type": "NUMBER",
+            "nullable": True,
+            "description": "What the materials cost the artisan in INR, only if stated. Null otherwise.",
+        },
+        "hours_spent": {
+            "type": "NUMBER",
+            "nullable": True,
+            "description": "Hours the artisan spent making one piece, only if stated. Null otherwise.",
+        },
+        "stock_count": {
+            "type": "INTEGER",
+            "nullable": True,
+            "description": "How many pieces the artisan has ready to sell, only if stated. Null otherwise.",
+        },
+        "returnable": {
+            "type": "BOOLEAN",
+            "nullable": True,
+            "description": "Whether the artisan accepts returns, only if stated. Null otherwise.",
+        },
     },
     "required": ["title", "craft_type", "material", "story_summary"],
 }
@@ -112,6 +156,11 @@ RULES:
 5. Preserve authentic Indian craft terminology (e.g., Madhubani, Warli, Terracotta Pottery, Zari, Pattachitra, Blue Pottery).
 6. Craft a compelling artisan story summary highlighting their traditional heritage, craft technique, and craftsmanship.
 7. If an image is provided, examine it closely to confirm craft form, natural colors, visible textures, and authentic material composition.
+8. `cost_of_materials`, `hours_spent`, `stock_count` and `returnable` come only from what the artisan said. If a value was not mentioned, set it to null. Never guess, infer or estimate a "reasonable" value. Do not round or convert units unless the artisan's own words make the value unambiguous ("two hours" -> 2, "about 300 rupees" -> 300). A price the artisan asks for is `stated_price`, never `cost_of_materials`.
+
+CATEGORY:
+Use the MOST SPECIFIC matching value from: {categories}.
+"saree" for sarees specifically; "kurta" for kurtas and tunics; "scarf" for dupattas, shawls and scarves; "fabric" for unstitched or raw fabric; "basket" for woven baskets and kitchen storage; "textile" only as a fallback when the piece is clearly fabric-based but matches nothing more specific. Terracotta, clay and ceramic pieces are "pottery" even if the artisan never says the word. If nothing matches clearly, set category to null rather than guessing.
 
 ABOUT THE ARTISAN'S OWN STORY:
 If the artisan's profile story is supplied, it is background about the maker, not
@@ -126,7 +175,9 @@ have practised, who taught them, or where they work. Rules:
   material, dimensions, price, colors or origin, all of which come only from the
   voice note and the photograph.
 - Never invent detail that is not in the story.
-"""
+""".replace("{categories}", ", ".join(CATEGORIES))
+
+T = TypeVar("T")
 
 
 class GeminiExtractor:
@@ -178,79 +229,135 @@ class GeminiExtractor:
             raise ValueError("Cannot extract from empty transcript")
 
         if self.api_key:
-            last_error: Optional[BaseException] = None
-
-            # Work down the model chain. The preferred Flash model is the most
-            # capable but also the busiest, and a listing written from canned
-            # facts is worse than one written by a lighter model, so exhaust
-            # every real model before falling back to synthetic output.
-            for model_name in self._model_chain():
-                for attempt in range(self.max_attempts):
-                    last_attempt = attempt == self.max_attempts - 1
-                    try:
-                        return self._call_gemini_api(
-                            transcript,
-                            detected_language,
-                            image_path=image_path,
-                            seller_story=seller_story,
-                            model_name=model_name,
-                        )
-                    except httpx.HTTPStatusError as e:
-                        last_error = e
-                        status = e.response.status_code
-                        # 503 and 429 are routine on the shared Flash tier; the
-                        # first live call of a session commonly draws one.
-                        if status in _RETRYABLE_STATUS and not last_attempt:
-                            delay = self.retry_backoff_seconds * (2 ** attempt)
-                            logger.info(
-                                "Gemini model %s returned %s, retrying in %.1fs (attempt %d/%d)",
-                                model_name, status, delay, attempt + 1, self.max_attempts,
-                            )
-                            time.sleep(delay)
-                            continue
-                        logger.warning(
-                            "Gemini model %s HTTP error %s: %s",
-                            model_name, status, e.response.text[:500],
-                        )
-                        break
-                    except (httpx.TimeoutException, httpx.TransportError) as e:
-                        # A dropped connection says nothing about the request,
-                        # so it is worth the same second chance as a 503.
-                        last_error = e
-                        if not last_attempt:
-                            delay = self.retry_backoff_seconds * (2 ** attempt)
-                            logger.info(
-                                "Gemini model %s transport error (%s), retrying in %.1fs",
-                                model_name, e, delay,
-                            )
-                            time.sleep(delay)
-                            continue
-                        logger.warning(
-                            "Gemini model %s unreachable after %d attempts: %s",
-                            model_name, self.max_attempts, e,
-                        )
-                        break
-                    except Exception as e:
-                        # A malformed response or a bad request will not fix
-                        # itself on a retry, so move to the next model.
-                        last_error = e
-                        logger.warning("Gemini model %s call failed: %s", model_name, e)
-                        break
-
-                if len(self._model_chain()) > 1:
-                    logger.info("Falling through to the next Gemini model after %s", model_name)
-
-            if allow_synthetic_fallback:
-                logger.info("Falling back to synthetic extraction after Gemini API failure")
-                return self._synthetic_fallback(transcript, image_path=image_path)
-            if last_error is not None:
-                raise last_error
-            raise RuntimeError("Gemini extraction failed for every configured model")
+            try:
+                return self._run_model_chain(
+                    lambda model_name: self._call_gemini_api(
+                        transcript,
+                        detected_language,
+                        image_path=image_path,
+                        seller_story=seller_story,
+                        model_name=model_name,
+                    )
+                )
+            except Exception:
+                if not allow_synthetic_fallback:
+                    raise
+            logger.info("Falling back to synthetic extraction after Gemini API failure")
+            return self._synthetic_fallback(transcript, image_path=image_path)
 
         if allow_synthetic_fallback:
             return self._synthetic_fallback(transcript, image_path=image_path)
 
         raise RuntimeError("Gemini API key is missing and synthetic fallback is disabled")
+
+    def generate_json(
+        self,
+        system_instruction: str,
+        prompt: str,
+        response_schema: Dict[str, Any],
+        temperature: float = 0.2,
+    ) -> Dict[str, Any]:
+        """One structured text-only call, parsed from JSON, down the same model chain.
+
+        The fact sheet writer and the suggested additions use this, so they get
+        the same header auth, retries and fallback models as extraction.
+        """
+        if not self.api_key:
+            raise RuntimeError("Gemini API key is missing")
+
+        payload = {
+            "system_instruction": {"parts": [{"text": system_instruction}]},
+            "contents": [{"parts": [{"text": prompt}]}],
+            "generationConfig": {
+                "response_mime_type": "application/json",
+                "response_schema": response_schema,
+                "temperature": temperature,
+            },
+        }
+        return self._run_model_chain(lambda model_name: self._post_json(model_name, payload))
+
+    def _post_json(self, model_name: str, payload: Dict[str, Any]) -> Dict[str, Any]:
+        endpoint = f"{GEMINI_API_BASE_URL}/{model_name}:generateContent"
+        with httpx.Client(timeout=self.timeout_seconds) as client:
+            response = client.post(
+                endpoint,
+                json=payload,
+                headers={"x-goog-api-key": self.api_key or ""},
+            )
+            response.raise_for_status()
+            data = response.json()
+        candidates = data.get("candidates", [])
+        if not candidates:
+            raise ValueError("Gemini returned no candidates")
+        parts = candidates[0].get("content", {}).get("parts", [])
+        if not parts:
+            raise ValueError("Gemini returned empty content parts")
+        return json.loads(parts[0].get("text", "{}"))
+
+    def _run_model_chain(self, call: Callable[[str], T]) -> T:
+        """Run `call` against each model in turn until one answers.
+
+        Raises the last error once every model and every attempt is spent.
+        """
+        last_error: Optional[BaseException] = None
+
+        # Work down the model chain. The preferred Flash model is the most
+        # capable but also the busiest, and a listing written from canned
+        # facts is worse than one written by a lighter model, so exhaust
+        # every real model before falling back to synthetic output.
+        for model_name in self._model_chain():
+            for attempt in range(self.max_attempts):
+                last_attempt = attempt == self.max_attempts - 1
+                try:
+                    return call(model_name)
+                except httpx.HTTPStatusError as e:
+                    last_error = e
+                    status = e.response.status_code
+                    # 503 and 429 are routine on the shared Flash tier; the
+                    # first live call of a session commonly draws one.
+                    if status in _RETRYABLE_STATUS and not last_attempt:
+                        delay = self.retry_backoff_seconds * (2 ** attempt)
+                        logger.info(
+                            "Gemini model %s returned %s, retrying in %.1fs (attempt %d/%d)",
+                            model_name, status, delay, attempt + 1, self.max_attempts,
+                        )
+                        time.sleep(delay)
+                        continue
+                    logger.warning(
+                        "Gemini model %s HTTP error %s: %s",
+                        model_name, status, e.response.text[:500],
+                    )
+                    break
+                except (httpx.TimeoutException, httpx.TransportError) as e:
+                    # A dropped connection says nothing about the request,
+                    # so it is worth the same second chance as a 503.
+                    last_error = e
+                    if not last_attempt:
+                        delay = self.retry_backoff_seconds * (2 ** attempt)
+                        logger.info(
+                            "Gemini model %s transport error (%s), retrying in %.1fs",
+                            model_name, e, delay,
+                        )
+                        time.sleep(delay)
+                        continue
+                    logger.warning(
+                        "Gemini model %s unreachable after %d attempts: %s",
+                        model_name, self.max_attempts, e,
+                    )
+                    break
+                except Exception as e:
+                    # A malformed response or a bad request will not fix
+                    # itself on a retry, so move to the next model.
+                    last_error = e
+                    logger.warning("Gemini model %s call failed: %s", model_name, e)
+                    break
+
+            if len(self._model_chain()) > 1:
+                logger.info("Falling through to the next Gemini model after %s", model_name)
+
+        if last_error is not None:
+            raise last_error
+        raise RuntimeError("Gemini call failed for every configured model")
 
     def _model_chain(self) -> List[str]:
         """The configured model first, then the declared fallbacks, deduplicated."""
@@ -366,12 +473,26 @@ class GeminiExtractor:
         if stated_price is None and "price" not in missing_fields:
             missing_fields.append("price")
 
+        category = normalize_category(parsed.get("category"))
+        cost_of_materials = _positive_number(parsed.get("cost_of_materials"))
+        hours_spent = _positive_number(parsed.get("hours_spent"))
+        stock = _positive_number(parsed.get("stock_count"))
+        stock_count = int(stock) if stock is not None else None
+        returnable = parsed.get("returnable")
+        if not isinstance(returnable, bool):
+            returnable = None
+
         attributes = {
             "origin": origin,
             "dimensions": dimensions,
             "primary_colors": colors,
             "stated_price": stated_price,
             "missing_fields": missing_fields,
+            "category": category,
+            "cost_of_materials": cost_of_materials,
+            "hours_spent": hours_spent,
+            "stock_count": stock_count,
+            "returnable": returnable,
         }
 
         return GeminiExtractionResult(
@@ -385,6 +506,11 @@ class GeminiExtractor:
             colors=colors,
             missing_fields=missing_fields,
             attributes=attributes,
+            category=category,
+            cost_of_materials=cost_of_materials,
+            hours_spent=hours_spent,
+            stock_count=stock_count,
+            returnable=returnable,
             used_live_api=True,
         )
 
@@ -397,6 +523,7 @@ class GeminiExtractor:
                 "primary_colors": ["terracotta", "earthy red", "natural clay"],
                 "stated_price": None,
                 "missing_fields": ["price"],
+                "category": "pottery",
             }
             return GeminiExtractionResult(
                 title="Handcrafted Terracotta Clay Water Pot",
@@ -409,6 +536,7 @@ class GeminiExtractor:
                 colors=["terracotta", "earthy red", "natural clay"],
                 missing_fields=["price"],
                 attributes=attributes,
+                category="pottery",
             )
 
         attributes = {

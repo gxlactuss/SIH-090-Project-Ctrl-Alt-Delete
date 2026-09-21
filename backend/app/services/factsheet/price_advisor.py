@@ -9,8 +9,7 @@ it never "hallucinates" a price — every number is traceable to either the
 artisan's stated cost/hours or the reference table below.
 """
 
-import pandas as pd
-from factsheet_schema import FactSheet
+from app.services.factsheet.schema import FactSheet
 
 DEFAULT_HOURLY_RATE = 50       # INR/hour — adjust with the team
 DEFAULT_MARGIN = 0.30          # 30% margin over cost — adjust with the team
@@ -18,12 +17,22 @@ DEFAULT_MARGIN = 0.30          # 30% margin over cost — adjust with the team
 # Small reference table: category -> typical market price range (INR)
 # Replace/expand with real data once the team has it (e.g. from Etsy
 # datasets or GEM/ONDC category benchmarks discussed earlier).
-REFERENCE_PRICES = pd.DataFrame([
-    {"category": "textile",   "low": 300,  "median": 600,  "high": 1500},
-    {"category": "pottery",   "low": 200,  "median": 450,  "high": 1200},
-    {"category": "jewellery", "low": 250,  "median": 800,  "high": 3000},
-    {"category": "woodwork",  "low": 400,  "median": 900,  "high": 2500},
-])
+REFERENCE_PRICES = {
+    "textile":   {"low": 300,  "median": 600,  "high": 1500},
+    "pottery":   {"low": 200,  "median": 450,  "high": 1200},
+    "jewellery": {"low": 250,  "median": 800,  "high": 3000},
+    "woodwork":  {"low": 400,  "median": 900,  "high": 2500},
+}
+
+# The more specific fabric categories extraction can choose share the
+# textile band until the table has rows of their own.
+BAND_PARENT = {
+    "saree": "textile",
+    "kurta": "textile",
+    "scarf": "textile",
+    "fabric": "textile",
+    "apparel": "textile",
+}
 
 
 def compute_price_floor(
@@ -59,12 +68,12 @@ def get_market_band(category: str | None) -> dict | None:
     if category is None:
         return None
 
-    match = REFERENCE_PRICES[REFERENCE_PRICES["category"] == category.lower()]
-    if match.empty:
+    key = category.lower()
+    row = REFERENCE_PRICES.get(BAND_PARENT.get(key, key))
+    if row is None:
         return None
 
-    row = match.iloc[0]
-    return {"low": row["low"], "median": row["median"], "high": row["high"]}
+    return dict(row)
 
 
 def suggest_price(sheet: FactSheet) -> dict:

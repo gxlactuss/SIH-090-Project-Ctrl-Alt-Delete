@@ -1,5 +1,5 @@
 """
-test_transcripts.py — 15 realistic artisan transcripts + expected fact sheets
+extraction_cases.py — 15 realistic artisan transcripts + expected fact sheets
 Language layer test data (per project doc: "keep a file of fifteen realistic
 transcripts and the fact sheet each one should produce, and run it after
 every prompt change — that file is the evidence that nothing is invented.")

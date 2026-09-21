@@ -53,6 +53,21 @@ class Settings(BaseSettings):
         "gemini-3.1-flash-lite",
     ]
 
+    # Where buyers reach this server, e.g. "https://api.kirtikar.me". A
+    # published listing's share page and the ONDC catalog's image links are
+    # built on it. Left unset they are root-relative, which the app resolves
+    # against its own API address.
+    PUBLIC_BASE_URL: Union[str, None] = None
+
+    # ONDC catalog publishing. "mock" pushes to MockOndcAdapter; "real" selects
+    # RealOndcAdapter, which needs seller-app registration before it works.
+    ONDC_ADAPTER: str = "mock"
+    ONDC_API_BASE_URL: Union[str, None] = None
+    ONDC_API_KEY: Union[str, None] = None
+    # Spreadsheet backup of every item pushed to ONDC. Defaults to
+    # exports/ondc_listings.csv inside MEDIA_STORAGE_DIR.
+    ONDC_EXPORT_CSV: Union[str, None] = None
+
     # CORS origins
     CORS_ORIGINS: Union[List[str], str] = ["*"]
 

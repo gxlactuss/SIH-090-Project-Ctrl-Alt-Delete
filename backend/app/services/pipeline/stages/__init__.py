@@ -1,5 +1,6 @@
 """Package exporting deterministic stages."""
 from app.services.pipeline.stages.confidence import ConfidenceStage
+from app.services.pipeline.stages.description import DescriptionStage
 from app.services.pipeline.stages.fact_sheet import FactSheetStage
 from app.services.pipeline.stages.image import ImageStage
 from app.services.pipeline.stages.price import PriceStage
@@ -9,6 +10,7 @@ __all__ = [
     "ImageStage",
     "SpeechStage",
     "FactSheetStage",
+    "DescriptionStage",
     "PriceStage",
     "ConfidenceStage",
 ]

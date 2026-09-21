@@ -1,3 +1,4 @@
+import logging
 from typing import Any, Dict, Optional
 
 from fastapi import APIRouter, Body, Depends, File, Form, HTTPException, Response, UploadFile, status
@@ -29,7 +30,13 @@ from app.services.listing_fields import (
     result_for,
     settle_suggestion_for_field,
 )
-from app.services.listing_view import listing_image_urls, to_listing_response
+from app.services.listing_view import (
+    listing_description,
+    listing_image_urls,
+    preview_url_for,
+    to_listing_response,
+)
+from app.services.ondc.catalog import sync_listing
 from app.services.media_storage import save_media_upload
 from app.schemas.enums import MediaType
 from app.models.media import Media
@@ -43,6 +50,24 @@ from app.services.listing import (
 )
 
 router = APIRouter(prefix="/listings", tags=["Listings"])
+
+logger = logging.getLogger("app.api.routes.listings")
+
+
+def _sync_ondc(db: Session, listing) -> None:
+    """Bring a published listing's ONDC catalog entry up to date.
+
+    The artisan's action has already succeeded by the time this runs. Whatever
+    the ONDC side does is recorded on the listing, never raised to the app.
+    """
+    if listing.state != ListingState.published:
+        return
+    try:
+        sync_listing(db, listing)
+    except Exception:
+        db.rollback()
+        logger.exception("Listing %s -> ONDC sync failed", listing.id)
+    db.refresh(listing)
 
 
 @router.post(
@@ -144,6 +169,7 @@ def patch_listing(
 
     db.commit()
     db.refresh(listing)
+    _sync_ondc(db, listing)
     return to_listing_response(listing)
 
 
@@ -197,6 +223,7 @@ async def answer_listing_question(
 
     db.commit()
     db.refresh(listing)
+    _sync_ondc(db, listing)
     return to_listing_response(listing)
 
 
@@ -265,7 +292,7 @@ def get_listing_readback(
         listing_id=str(listing.id),
         language=result.language or current_seller.language or "hi",
         title=result.title or "",
-        description=result.description or "",
+        description=listing_description(listing) or "",
         price=round(price / 100, 2) if price is not None else None,
         audio_url=None,
     )
@@ -392,10 +419,11 @@ def publish_listing(
 ) -> ListingPublishResponse:
     listing = get_listing_for_seller(db=db, listing_id=listing_id, seller_id=current_seller.id)
     listing = transition_listing(db=db, listing=listing, new_state=ListingState.published)
+    _sync_ondc(db, listing)
     return ListingPublishResponse(
         listing_id=str(listing.id),
         state=listing.state,
-        preview_url=None,
+        preview_url=preview_url_for(listing),
     )
 
 
@@ -420,7 +448,7 @@ def get_listing_preview(
     return ListingPreviewResponse(
         listing_id=str(listing.id),
         title=(result.title if result else None) or "",
-        description=(result.description if result else None) or "",
+        description=listing_description(listing) or "",
         price=price,
         image_urls=listing_image_urls(listing),
     )

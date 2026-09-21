@@ -12,6 +12,7 @@ from sqlalchemy.orm import Session
 from app.models.listing import Listing
 from app.models.listing_result import ListingResult
 from app.models.suggestion import Suggestion
+from app.services.listing_view import ADDITION_PREFIX
 from app.services.pipeline.context import PipelineContext
 
 logger = logging.getLogger("app.services.pipeline.persist")
@@ -53,7 +54,9 @@ def save_pipeline_result(db: Session, listing: Listing, context: PipelineContext
 
     if facts is not None:
         result.title = facts.title
-        result.description = facts.story_summary
+        # The language layer's writer uses only stated facts; the summary is
+        # the fallback when it did not run.
+        result.description = attributes.get("long_description") or facts.story_summary
         result.material = facts.material
         result.craft_type = facts.craft_type
         result.technique = facts.craft_type
@@ -61,6 +64,12 @@ def save_pipeline_result(db: Session, listing: Listing, context: PipelineContext
         result.size = _first_text(attributes.get("dimensions"))
         result.colour = _first_text(attributes.get("primary_colors"))
         result.price_in_paise = _to_paise(attributes.get("stated_price"))
+        if attributes.get("hours_spent") is not None:
+            result.hours_to_make = float(attributes["hours_spent"])
+        if attributes.get("cost_of_materials") is not None:
+            result.material_cost_in_paise = _to_paise(attributes["cost_of_materials"])
+        if attributes.get("stock_count"):
+            result.quantity = int(attributes["stock_count"])
 
     if price is not None:
         result.suggested_price_in_paise = _to_paise(price.recommended_price)
@@ -115,6 +124,24 @@ def _replace_suggestions(db: Session, listing: Listing, attributes: Dict[str, An
                 field=field,
                 value=prompt["value"],
                 reason=prompt["reason"],
+                approved=None,
+            )
+        )
+
+    # Optional additions the language layer offered. Each is a yes/no question;
+    # the sentence joins the description only once the artisan says yes.
+    for addition in attributes.get("suggested_additions") or []:
+        sentence = str(addition.get("sentence") or "").strip()
+        question = str(addition.get("spoken_prompt") or "").strip()
+        if not sentence or not question:
+            continue
+        target = str(addition.get("field") or "").strip()
+        db.add(
+            Suggestion(
+                listing_id=listing.id,
+                field=f"{ADDITION_PREFIX}:{target}"[:255] if target else ADDITION_PREFIX,
+                value=sentence,
+                reason=question,
                 approved=None,
             )
         )

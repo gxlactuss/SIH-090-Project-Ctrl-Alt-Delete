@@ -3,7 +3,7 @@ import re
 import uuid
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, Optional, Set
+from typing import Dict, Optional, Set, Tuple
 
 from fastapi import HTTPException, UploadFile, status
 
@@ -228,3 +228,35 @@ async def save_media_upload(
         mime_type=mime_type,
         file_size_bytes=total_bytes,
     )
+
+
+def stored_media_file(media) -> Optional[Tuple[Path, bool]]:
+    """The file on disk to serve for `media`, and whether it is the processed one.
+
+    Prefer the Vision Station's studio image. The media URL is the only one the
+    app ever sees - it is what the review screen, the preview and the published
+    listing all render - so serving the raw camera frame there meant the
+    grading, cutout and compositing never reached the buyer. The original is
+    still on disk and still what a re-run reads, and it is served as the
+    fallback whenever a run has not produced a composite or the composite has
+    gone missing.
+    """
+    # Resolve inside the media root: a stored path must never be able to reach
+    # an arbitrary file on the host.
+    base_dir = Path(settings.MEDIA_STORAGE_DIR).resolve()
+
+    for candidate, is_processed in (
+        (media.processed_path, True),
+        (media.storage_path, False),
+    ):
+        if not candidate:
+            continue
+        try:
+            resolved = (base_dir / candidate).resolve()
+            if not resolved.is_relative_to(base_dir):
+                raise ValueError("outside media root")
+        except (OSError, ValueError):
+            continue
+        if resolved.is_file():
+            return resolved, is_processed
+    return None

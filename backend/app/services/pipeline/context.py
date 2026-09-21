@@ -37,11 +37,14 @@ class FactSheetOutput:
 
 @dataclass
 class PriceStageOutput:
-    """Structured output from price recommendation station."""
+    """Structured output from price recommendation station.
+
+    The prices are None when nothing the artisan said supports one.
+    """
     currency: str
-    min_price: float
-    max_price: float
-    recommended_price: float
+    min_price: Optional[float] = None
+    max_price: Optional[float] = None
+    recommended_price: Optional[float] = None
     confidence: float = 0.90
 
 

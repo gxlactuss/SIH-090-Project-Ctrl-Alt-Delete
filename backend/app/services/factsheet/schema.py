@@ -1,5 +1,5 @@
 """
-factsheet_schema.py — The strict fact sheet schema
+schema.py — The strict fact sheet schema
 Language layer (temporarily built by Shivam, on behalf of Ayush Shivdikar's role)
 
 Core rule from the project doc: "the strict fact sheet where every
@@ -10,7 +10,34 @@ modules line up without translation.
 """
 
 from pydantic import BaseModel, Field, ConfigDict
-from typing import Optional
+from typing import Any, Optional
+
+
+# The product categories extraction may choose from. These are exactly the
+# keys of the ONDC mapper's CATEGORY_MAP, so any category extraction fills in
+# can be published without translation.
+CATEGORIES = (
+    "saree",
+    "kurta",
+    "scarf",
+    "fabric",
+    "jewellery",
+    "apparel",
+    "pottery",
+    "woodwork",
+    "basket",
+    "textile",
+)
+
+
+def normalize_category(value: Any) -> Optional[str]:
+    """A known category in its canonical spelling, or None for anything else."""
+    if not isinstance(value, str):
+        return None
+    text = value.strip().lower()
+    if text == "jewelry":
+        text = "jewellery"
+    return text if text in CATEGORIES else None
 
 
 class FactSheet(BaseModel):
@@ -32,6 +59,8 @@ class FactSheet(BaseModel):
     materials: Optional[str] = None
     dimensions: Optional[str] = None
     color: Optional[str] = None
+    technique: Optional[str] = None
+    origin: Optional[str] = None
 
     # --- Cost & pricing inputs (used by price_advisor, not the final price) ---
     cost_of_materials: Optional[float] = None

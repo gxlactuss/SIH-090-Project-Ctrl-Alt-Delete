@@ -210,7 +210,9 @@ def test_unusable_photo_still_yields_the_spoken_facts(test_db: Session, seeded_s
     assert stored is not None
     assert stored.title
     assert stored.transcript
-    assert stored.suggested_price_in_paise is not None
+    # Nothing in the note supports a price, so none is invented; it is asked.
+    assert stored.suggested_price_in_paise is None
+    assert any(s.field == "price" for s in listing.suggestions)
     assert "move closer" in stored.follow_up_question
 
 
@@ -265,9 +267,12 @@ def test_stage_outputs_flow_through_context(test_db: Session, seeded_seller_and_
     assert captured_ctx.fact_sheet_output is not None
     assert captured_ctx.fact_sheet_output.craft_type == "Madhubani Art"
     assert captured_ctx.price_output is not None
-    assert captured_ctx.price_output.recommended_price == 1500.0
+    # The canned facts carry no category, cost or hours, so no price is invented.
+    assert captured_ctx.price_output.recommended_price is None
     assert captured_ctx.confidence_output is not None
-    assert captured_ctx.confidence_output.overall_score >= 0.70
+    # Name and stock are filled; category and price are not.
+    assert captured_ctx.confidence_output.overall_score == 0.5
+    assert captured_ctx.fact_sheet_output.attributes["required_missing"] == ["category", "price_final"]
 
 
 def test_missing_image_media_halts_pipeline_with_needs_attention(test_db: Session):
@@ -886,8 +891,37 @@ def test_price_stage_adopts_stated_price():
     assert res.metadata.get("stated_by_artisan") is True
 
 
-def test_price_stage_generates_ai_bounds_when_price_not_stated():
-    """Verify PriceStage estimates fair price bounds when price was not mentioned."""
+def test_price_stage_advises_from_cost_hours_and_category_when_price_not_stated():
+    """Verify PriceStage builds a floor from stated cost and hours, inside the category band."""
+    from app.services.pipeline.context import FactSheetOutput
+
+    ctx = PipelineContext(listing_id=uuid.uuid4())
+    ctx.fact_sheet_output = FactSheetOutput(
+        title="Handmade Jute Bag",
+        craft_type="Jute Craft",
+        material="Jute fiber",
+        story_summary="Handwoven bag",
+        attributes={
+            "stated_price": None,
+            "category": "textile",
+            "cost_of_materials": 200.0,
+            "hours_spent": 4.0,
+        },
+    )
+
+    stage = PriceStage()
+    res = stage.run(ctx)
+
+    assert res.status == StageStatus.success
+    # (200 + 4h x 50) x 1.3 = 520, inside the textile band of 300 to 1500.
+    assert ctx.price_output.recommended_price == 520.0
+    assert ctx.price_output.min_price == 520.0
+    assert ctx.price_output.max_price == 1500.0
+    assert res.metadata.get("stated_by_artisan") is False
+
+
+def test_price_stage_invents_no_price_without_a_basis():
+    """With no stated price, cost, hours or known category there is nothing to price from."""
     from app.services.pipeline.context import FactSheetOutput
 
     ctx = PipelineContext(listing_id=uuid.uuid4())
@@ -899,10 +933,9 @@ def test_price_stage_generates_ai_bounds_when_price_not_stated():
         attributes={"stated_price": None},
     )
 
-    stage = PriceStage()
-    res = stage.run(ctx)
+    res = PriceStage().run(ctx)
 
     assert res.status == StageStatus.success
-    assert ctx.price_output is not None
-    assert ctx.price_output.recommended_price == 1500.0
+    assert ctx.price_output.recommended_price is None
+    assert ctx.price_output.min_price is None
     assert res.metadata.get("stated_by_artisan") is False

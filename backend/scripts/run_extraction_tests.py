@@ -3,7 +3,7 @@ run_extraction_tests.py — Runs extraction against all 15 test transcripts
 and checks the output against expected values.
 
 Per the project doc's rule: run this after every prompt change to
-`extract.py`. This is the evidence that extraction isn't inventing values.
+`app/services/factsheet/extract.py`. This is the evidence that extraction isn't inventing values.
 
 NOTE: this DOES call the Gemini API (one call per test case = 15 calls).
 Don't run this while your daily quota is exhausted — wait for reset,
@@ -12,8 +12,12 @@ or run just a few cases at a time using the --limit option described below.
 
 import sys
 import time
-from extract import extract_fact_sheet
-from test_transcripts import TEST_CASES
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from app.services.factsheet.extract import extract_fact_sheet  # noqa: E402
+from extraction_cases import TEST_CASES  # noqa: E402
 
 SECONDS_BETWEEN_CASES = 13  # keeps us under the 5-requests-per-minute free tier limit
 
@@ -100,7 +104,7 @@ def run_all(limit: int | None = None):
 
 
 if __name__ == "__main__":
-    # Usage: python run_extraction_tests.py         -> runs all 15
-    #        python run_extraction_tests.py 3        -> runs only first 3 (saves quota)
+    # Usage: python scripts/run_extraction_tests.py    -> runs all 15
+    #        python scripts/run_extraction_tests.py 3  -> runs only first 3 (saves quota)
     limit = int(sys.argv[1]) if len(sys.argv) > 1 else None
     run_all(limit=limit)

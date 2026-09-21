@@ -103,15 +103,19 @@
         <div class="content">
             <h1>{{ item.descriptor.name }}</h1>
 
+            {% if item.price.value %}
             <div class="price-row">
                 <span class="price">₹{{ item.price.value }}</span>
                 {% if item.price.maximum_value and item.price.maximum_value != item.price.value %}
                 <span class="mrp">₹{{ item.price.maximum_value }}</span>
                 {% endif %}
             </div>
+            {% endif %}
 
             <div class="short-desc">{{ item.descriptor.short_desc }}</div>
             <div class="long-desc">{{ item.descriptor.long_desc }}</div>
+            {% if short_desc_hi %}<div class="short-desc" lang="hi">{{ short_desc_hi }}</div>{% endif %}
+            {% if long_desc_hi %}<div class="long-desc" lang="hi">{{ long_desc_hi }}</div>{% endif %}
 
             <div class="stock {% if item.quantity.available.count|int < 5 %}low{% endif %}">
                 {{ item.quantity.available.count }} in stock
@@ -133,7 +137,7 @@
             </div>
 
             <div class="meta">
-                Category: {{ item.category_id }} &middot; Item ID: {{ item.id }}
+                {% if item.category_id %}Category: {{ item.category_id }} &middot; {% endif %}Item ID: {{ item.id }}
                 {% if generated_at %}<br>Preview generated: {{ generated_at }}{% endif %}
             </div>
         </div>

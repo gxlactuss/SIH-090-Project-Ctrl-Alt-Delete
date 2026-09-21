@@ -1,5 +1,4 @@
 import uuid
-from pathlib import Path
 from typing import Optional
 
 from fastapi import (
@@ -15,7 +14,6 @@ from fastapi import (
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 
-from app.core.config import settings
 from app.core.security import get_current_seller
 from app.db.session import get_db
 from app.models.listing import Listing
@@ -23,7 +21,7 @@ from app.models.media import Media
 from app.models.seller import Seller
 from app.schemas.enums import ListingState, MediaType
 from app.schemas.media import MediaUploadResponse
-from app.services.media_storage import delete_stored_file, save_media_upload
+from app.services.media_storage import delete_stored_file, save_media_upload, stored_media_file
 from app.workers.listing_pipeline import process_listing
 
 router = APIRouter(prefix="/listings", tags=["Media"])
@@ -184,40 +182,12 @@ def get_listing_media(
             status_code=status.HTTP_404_NOT_FOUND, detail="Media not found."
         )
 
-    # Resolve inside the media root: a stored path must never be able to reach
-    # an arbitrary file on the host.
-    base_dir = Path(settings.MEDIA_STORAGE_DIR).resolve()
-
-    # Prefer the Vision Station's studio image. This URL is the only one the app
-    # ever sees - it is what the review screen, the preview and the published
-    # listing all render - so serving the raw camera frame here meant the
-    # grading, cutout and compositing never reached the buyer. The original is
-    # still on disk and still what a re-run reads, and it is served here as the
-    # fallback whenever a run has not produced a composite or the composite has
-    # gone missing.
-    path: Optional[Path] = None
-    served_processed = False
-    for candidate, is_processed in (
-        (media.processed_path, True),
-        (media.storage_path, False),
-    ):
-        if not candidate:
-            continue
-        try:
-            resolved = (base_dir / candidate).resolve()
-            if not resolved.is_relative_to(base_dir):
-                raise ValueError("outside media root")
-        except (OSError, ValueError):
-            continue
-        if resolved.is_file():
-            path = resolved
-            served_processed = is_processed
-            break
-
-    if path is None:
+    found = stored_media_file(media)
+    if found is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Media file is missing."
         )
+    path, served_processed = found
 
     return FileResponse(
         path,

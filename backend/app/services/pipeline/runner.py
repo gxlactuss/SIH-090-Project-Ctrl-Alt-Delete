@@ -20,6 +20,7 @@ from app.services.pipeline.persist import save_pipeline_result, save_attention_r
 from app.services.pipeline.result import PipelineResult, StageResult, StageStatus
 from app.services.pipeline.stage import PipelineStage
 from app.services.pipeline.stages.confidence import ConfidenceStage
+from app.services.pipeline.stages.description import DescriptionStage
 from app.services.pipeline.stages.fact_sheet import FactSheetStage
 from app.services.pipeline.stages.image import ImageStage
 from app.services.pipeline.stages.price import PriceStage
@@ -34,13 +35,14 @@ def get_default_stages() -> List[PipelineStage]:
         ImageStage(),
         SpeechStage(),
         FactSheetStage(),
+        DescriptionStage(),
         PriceStage(),
         ConfidenceStage(),
     ]
 
 
 class PipelineRunner:
-    """Orchestrator for executing the 5-stage listing cataloging pipeline with controlled retries."""
+    """Orchestrator for executing the listing cataloging pipeline stages with controlled retries."""
 
     def __init__(
         self,

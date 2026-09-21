@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.routes.health import router as health_router
+from app.api.routes.public import router as public_router
 from app.api.v1 import api_v1_router
 from app.core.config import settings
 
@@ -24,4 +25,5 @@ if settings.CORS_ORIGINS:
     )
 
 app.include_router(health_router)
+app.include_router(public_router)
 app.include_router(api_v1_router)

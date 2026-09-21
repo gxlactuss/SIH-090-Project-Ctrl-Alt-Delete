@@ -68,7 +68,7 @@ class RealOndcAdapter(OndcAdapter):
 
 # ---- quick manual test ----
 if __name__ == "__main__":
-    from mapper import map_to_ondc_item, validate_item
+    from app.services.ondc.mapper import map_to_ondc_item, validate_item
 
     test_fact_sheet = {
         "item_id": "test-1",

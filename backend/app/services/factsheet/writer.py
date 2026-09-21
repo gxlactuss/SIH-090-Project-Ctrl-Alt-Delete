@@ -7,27 +7,29 @@ sheet. No inventing materials, no assuming a story, no adding claims the
 artisan never made (e.g. "eco-friendly", "premium quality") unless those
 exact facts are present on the sheet. This keeps the listing honest and
 keeps liability for false claims out of the pipeline.
-
-Requires: pip install google-genai pydantic
-Requires GEMINI_API_KEY environment variable.
 """
 
-import os
-from google import genai
-from pydantic import BaseModel
-from factsheet_schema import FactSheet
-from gemini_utils import generate_content_with_retry
+from typing import Optional
 
-client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
-
-MODEL = "gemini-3.5-flash-lite"  # matching extract.py — more stable than 3.6-flash
+from app.services.factsheet.schema import FactSheet
+from app.services.llm.gemini import GeminiExtractor
 
 
-class GeneratedDescriptions(BaseModel):
-    short_description: str      # English
-    long_description: str       # English
-    short_description_hi: str   # Hindi
-    long_description_hi: str    # Hindi
+GENERATED_DESCRIPTIONS_SCHEMA = {
+    "type": "OBJECT",
+    "properties": {
+        "short_description": {"type": "STRING"},      # English
+        "long_description": {"type": "STRING"},       # English
+        "short_description_hi": {"type": "STRING"},   # Hindi
+        "long_description_hi": {"type": "STRING"},    # Hindi
+    },
+    "required": [
+        "short_description",
+        "long_description",
+        "short_description_hi",
+        "long_description_hi",
+    ],
+}
 
 
 WRITER_SYSTEM_PROMPT = """You write product listing descriptions for handmade artisan \
@@ -65,6 +67,10 @@ def _fact_sheet_to_prompt_facts(sheet: FactSheet) -> str:
         facts.append(f"Category: {sheet.category}")
     if sheet.materials:
         facts.append(f"Materials: {sheet.materials}")
+    if sheet.technique:
+        facts.append(f"Craft technique: {sheet.technique}")
+    if sheet.origin:
+        facts.append(f"Made in: {sheet.origin}")
     if sheet.dimensions:
         facts.append(f"Dimensions: {sheet.dimensions}")
     if sheet.color:
@@ -74,42 +80,39 @@ def _fact_sheet_to_prompt_facts(sheet: FactSheet) -> str:
     return "\n".join(facts) if facts else "(no facts available)"
 
 
-def write_descriptions(sheet: FactSheet) -> FactSheet:
+def write_descriptions(sheet: FactSheet, extractor: Optional[GeminiExtractor] = None) -> FactSheet:
     """
-    Generates short_description and long_description for the given fact
-    sheet, using only its filled fields. Returns an updated copy of the
-    sheet with those two fields set.
+    Generates the English and Hindi short and long descriptions for the
+    given fact sheet, using only its filled fields. Returns an updated copy
+    of the sheet with those four fields set.
     """
+    extractor = extractor or GeminiExtractor()
     facts_block = _fact_sheet_to_prompt_facts(sheet)
 
     prompt = f"Fact sheet:\n{facts_block}\n\nWrite the short and long description."
 
-    response = generate_content_with_retry(
-        client,
-        model=MODEL,
-        contents=prompt,
-        config={
-            "system_instruction": WRITER_SYSTEM_PROMPT,
-            "response_mime_type": "application/json",
-            "response_schema": GeneratedDescriptions,
-        },
+    generated = extractor.generate_json(
+        system_instruction=WRITER_SYSTEM_PROMPT,
+        prompt=prompt,
+        response_schema=GENERATED_DESCRIPTIONS_SCHEMA,
     )
 
-    generated: GeneratedDescriptions = response.parsed
+    def _clean(key: str) -> Optional[str]:
+        value = generated.get(key)
+        return value.strip() or None if isinstance(value, str) else None
 
-    updated = sheet.model_copy(
+    return sheet.model_copy(
         update={
-            "short_description": generated.short_description,
-            "long_description": generated.long_description,
-            "short_description_hi": generated.short_description_hi,
-            "long_description_hi": generated.long_description_hi,
+            "short_description": _clean("short_description"),
+            "long_description": _clean("long_description"),
+            "short_description_hi": _clean("short_description_hi"),
+            "long_description_hi": _clean("long_description_hi"),
         }
     )
-    return updated
 
 
 if __name__ == "__main__":
-    from extract import extract_fact_sheet
+    from app.services.factsheet.extract import extract_fact_sheet
 
     test_transcript = (
         "This is a clay pot, handmade. I used red clay from the local river. "

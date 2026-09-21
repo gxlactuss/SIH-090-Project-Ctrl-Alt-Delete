@@ -12,6 +12,7 @@ from app.services.pipeline.runner import PipelineRunner, run_listing_pipeline
 from app.services.pipeline.stage import PipelineStage
 from app.services.pipeline.stages import (
     ConfidenceStage,
+    DescriptionStage,
     FactSheetStage,
     ImageStage,
     PriceStage,
@@ -21,6 +22,7 @@ from app.services.pipeline.stages import (
 __all__ = [
     "ConfidenceStage",
     "ConfidenceStageOutput",
+    "DescriptionStage",
     "FactSheetStage",
     "FactSheetOutput",
     "ImageStage",

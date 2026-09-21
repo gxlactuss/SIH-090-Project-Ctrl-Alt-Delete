@@ -7,22 +7,30 @@ can open, check, and forward on WhatsApp. Uses Jinja2 + a template file
 (templates/preview_template.html) so styling stays out of the Python code.
 
 Folder layout expected:
-  try/
+  app/services/ondc/
     preview.py
     mapper.py
     ondc_schema.json
     templates/
       preview_template.html
+
+The backend serves this page at /p/{listing_id} for every published listing;
+that URL is the preview_url the app shares on WhatsApp and shows as a QR code.
 """
 
 import os
 from datetime import datetime, timezone
-from jinja2 import Environment, FileSystemLoader
+from typing import Optional
+from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 TEMPLATE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "templates")
 
 
-def render_preview_html(item: dict) -> str:
+def render_preview_html(
+    item: dict,
+    short_desc_hi: Optional[str] = None,
+    long_desc_hi: Optional[str] = None,
+) -> str:
     """
     Renders the given ONDC item into an HTML string and returns it directly
     — no file written. This is what a FastAPI route should call, e.g.:
@@ -38,11 +46,18 @@ def render_preview_html(item: dict) -> str:
     That gives a real URL (e.g. https://yourapi.com/preview/test-1) that
     Mohit's app can open in a WebView, or that gets shared on WhatsApp.
     """
-    env = Environment(loader=FileSystemLoader(TEMPLATE_DIR))
+    # Autoescaped: the page is public and every text on it came from a model
+    # or from the artisan, so none of it may be read as markup.
+    env = Environment(
+        loader=FileSystemLoader(TEMPLATE_DIR),
+        autoescape=select_autoescape(["html"]),
+    )
     template = env.get_template("preview_template.html")
 
     return template.render(
         item=item,
+        short_desc_hi=short_desc_hi,
+        long_desc_hi=long_desc_hi,
         generated_at=datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
     )
 
@@ -62,7 +77,7 @@ def generate_preview_page(item: dict, output_path: str = "preview.html") -> str:
 
 
 if __name__ == "__main__":
-    from mapper import map_to_ondc_item, validate_item
+    from app.services.ondc.mapper import map_to_ondc_item, validate_item
 
     test_fact_sheet = {
         "item_id": "test-1",

@@ -39,6 +39,8 @@ def stub_stations():
         material="River clay",
         story_summary="Thrown on a traditional wheel.",
         stated_price=250.0,
+        attributes={"stated_price": 250.0, "category": "pottery", "missing_fields": []},
+        category="pottery",
         used_live_api=True,
     )
     with patch(

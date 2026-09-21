@@ -1,5 +1,5 @@
 """
-listing_lifecycle.py — Decides WHEN to publish, republish, or delist
+lifecycle.py — Decides WHEN to publish, republish, or delist
 Publishing to ONDC module (Shivam)
 
 adapter.py has the HOW (mock/real push to ONDC). This file has the WHEN —
@@ -78,8 +78,8 @@ def apply_lifecycle_action(adapter, action: str, item: dict) -> dict | None:
 
 
 if __name__ == "__main__":
-    from mapper import map_to_ondc_item
-    from adapter import MockOndcAdapter
+    from app.services.ondc.mapper import map_to_ondc_item
+    from app.services.ondc.adapter import MockOndcAdapter
 
     base_fact_sheet = {
         "item_id": "test-1",

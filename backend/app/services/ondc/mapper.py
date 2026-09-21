@@ -9,10 +9,11 @@ Ayush Shivdikar's fact-sheet module is available.
 
 import json
 import uuid
+from pathlib import Path
 from jsonschema import Draft7Validator, RefResolver
 
 # ---- Load ONDC schema once ----
-with open("ondc_schema.json") as f:
+with open(Path(__file__).with_name("ondc_schema.json"), encoding="utf-8") as f:
     ONDC_SCHEMA = json.load(f)
 
 # NOTE: this schema file's Category.id enum is overly narrow — it only lists

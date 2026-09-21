@@ -115,6 +115,8 @@ All business endpoints live under `/api/v1` and currently return deterministic c
 | `POST` | `/api/v1/listings/{listing_id}/consent` | Record consent for publishing artisan photo & story |
 | `POST` | `/api/v1/listings/{listing_id}/publish` | Trigger listing publication |
 | `GET` | `/api/v1/listings/{listing_id}/preview` | Fetch read-only listing preview |
+| `GET` | `/p/{listing_id}` | Public share page for a published listing (the app's `preview_url`) |
+| `GET` | `/p/{listing_id}/images/{media_id}` | Public photo of a published listing, for the share page and ONDC |
 | `POST` | `/api/v1/voice/demo` | Interactive Voice-to-Catalog multimodal demonstration endpoint |
 
 ### Key Contract Enums
@@ -239,14 +241,29 @@ Tests run independently without requiring a running PostgreSQL instance or live 
   1. Grammar-constrained JSON decoding via native `response_schema` and `response_mime_type: "application/json"`.
   2. Extracts high-converting title, craft category, authentic materials, cultural backstory, and dominant colors.
   3. Identifies missing commercial fields (`missing_fields: ['dimensions', 'price']`) without hallucinating values.
-  4. Transient error resilience with automated backoff retry on HTTP 503/429 spikes.
+  4. Also extracts the language layer's fields when the artisan states them: `category`, `cost_of_materials`, `hours_spent`, `stock_count`, `returnable`.
+  5. Transient error resilience with automated backoff retry on HTTP 503/429 spikes.
 
-### 4. Fair Pricing Advisor (`app/services/pipeline/stages/price.py`)
+### 4. Language Layer (`app/services/factsheet/`)
+- **Schema** (`schema.py`): the strict `FactSheet`, where every unknown stays empty, and the category list shared with the ONDC mapper.
+- **Writer** (`writer.py`, `DescriptionStage`): English and Hindi short and long descriptions from stated facts only. Becomes the listing description when the extraction was live.
+- **Suggested additions** (`confidence.py`, `DescriptionStage`): up to three optional yes/no additions. Each is a suggestion with field `addition`; its sentence joins the description only after the artisan approves it.
+- **Confidence check** (`confidence.py`, `ConfidenceStage`): scores how many required fields (name, category, price, stock) are filled and records the one question that would close the first gap.
+- **Extraction test set** (`scripts/extraction_cases.py`, `scripts/run_extraction_tests.py`): 15 transcripts checked against live Gemini after every prompt change.
+
+### 5. Fair Pricing Advisor (`app/services/factsheet/price_advisor.py`, `PriceStage`)
 - Automatically adopts stated price if the artisan explicitly mentioned it in the voice note.
-- If price is omitted, generates market benchmark bounds (`recommended_price`, `min_price`, `max_price`).
-- Flags missing values to generate suggestion DB records for artisan review.
+- Otherwise suggests a price from a floor built on the stated material cost and hours, nudged into a market band for the category.
+- With neither, no price is invented: the price stays empty and becomes a suggestion for the artisan to answer.
 
-### 5. Multi-Channel Syndication Adapters (`app/services/publishing/`)
+### 6. ONDC Catalog (`app/services/ondc/`)
+- `POST /listings/{id}/publish` maps the listing to an ONDC `Item` (`mapper.py`), validates it against `ondc_schema.json`, pushes it through the adapter (`adapter.py`, mock until seller-app registration) and appends it to a CSV backup (`csv_export.py`).
+- Edits to a published listing run through `lifecycle.py`: a changed price or description republishes, zero stock delists, restocking publishes again.
+- The outcome is stored on the listing result under `attributes["ondc"]`. A listing ONDC cannot take yet (no category, say) still publishes in the app.
+- `preview.py` renders the public share page at `/p/{listing_id}`.
+- Settings: `PUBLIC_BASE_URL`, `ONDC_ADAPTER`, `ONDC_API_BASE_URL`, `ONDC_API_KEY`, `ONDC_EXPORT_CSV`.
+
+### 7. Multi-Channel Syndication Adapters (`app/services/publishing/`)
 All adapters implement the `PublishingAdapter` protocol with validation and publication contracts:
 - **ONDC Adapter** (`app/services/publishing/ondc.py`): Formats canonical listing into Beckn protocol catalog items (`bpp_id`, `item_id`).
 - **Meta Commerce Adapter** (`app/services/publishing/meta.py`): Formats canonical listing for WhatsApp Business Catalog and Facebook Shops.
