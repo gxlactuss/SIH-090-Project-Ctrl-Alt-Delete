@@ -1,83 +1,283 @@
-Fact Sheet / Language Layer
+🛍️ Kirtikar — Fact Sheet / Language Layer (SIH-090)
 
-Language layer for the Kirtikar — AI-Powered Artisan Publishing Platform (SIH-090).
+Problem Statement: Smart Cataloging and Multimodal Market Linkage for Marginalized Indian Artisans
+Module: Fact Sheet, Language Processing, Confidence & Price Advisor
+Owner: Shivam Singh
 
-This module turns an artisan's voice-note transcript into a strict, fact-grounded product listing and provides a deterministic price recommendation.
-
-What this module does
-
-Extraction — transcript → structured FactSheet
-
-Description writing — FactSheet → English + Hindi descriptions
-
-Confidence check — detects missing required fields and asks one question at a time
-
-Suggested additions — optional details, applied only after explicit approval
-
-Price Advisor — source-backed cost floor + observed market reference
+This module is the language and catalog-intelligence layer of Kirtikar. It takes an artisan's voice-note transcript, extracts only the facts that were actually stated, generates bilingual listing descriptions, checks whether required information is complete, and produces a deterministic price recommendation before ONDC publishing.
 
 Core rule: if the artisan did not state a value, the system does not invent it.
 
-Price Advisor — revised methodology
+🏛️ Module Architecture
 
-The earlier prototype used:
+factsheet/
+├── factsheet_schema.py        # Shared Pydantic FactSheet contract
+├── extract.py                 # Transcript → structured FactSheet
+├── writer.py                  # FactSheet → English + Hindi descriptions
+├── confidence.py              # Missing-field detection + suggestion approval
+├── price_advisor.py           # Deterministic pricing engine
+├── test_price_advisor.py      # Offline price-engine tests
+├── gemini_utils.py            # Gemini retry/backoff wrapper
+├── test_transcripts.py        # 15 extraction test transcripts
+├── run_extraction_tests.py    # Extraction test runner
+├── run_pipeline.py            # End-to-end language → ONDC demo
+├── mapper.py                  # FactSheet → ONDC Item
+├── ondc_schema.json           # ONDC schema validation
+├── README.md                  # This document
+└── .gitignore
 
-Labour = hours × ₹50/hour
-Price floor = (materials + labour) × 1.30
+🔄 Language & Catalog Pipeline
 
-Those two constants were demo assumptions, not authoritative Indian artisan pricing rules.
+Artisan Voice Transcript
+          │
+          ▼
+   ┌───────────────┐
+   │  Extraction   │  Gemini structured output
+   └───────┬───────┘
+           ▼
+       FactSheet
+           │
+           ├───────────────┐
+           ▼               ▼
+      Description      Confidence
+        Writer            Check
+      EN + Hindi            │
+           │                ▼
+           │        Missing field?
+           │          ┌─────┴─────┐
+           │          │           │
+           │         YES          NO
+           │          │           │
+           │          ▼           ▼
+           │       Ask one      Continue
+           │       question        │
+           │                      ▼
+           │                Price Advisor
+           │                      │
+           │                      ▼
+           │               Suggested Price
+           │                      │
+           │              Artisan approval
+           │                      │
+           │                      ▼
+           └──────────────► ONDC Mapper
+                                  │
+                                  ▼
+                           ONDC Validation
 
-The revised engine removes the blanket 30% margin and makes the labour benchmark explicitly configurable.
+The architecture places the Price Advisor after the Fact Sheet/Writer stage and before publishing, using a cost/hours floor plus a market reference band.
 
-1. Cost floor
+📋 FactSheet
 
-Labour Cost = Hours Spent × Hourly Rate
+factsheet_schema.py defines the shared data contract used by the language layer and ONDC mapper.
 
-Cost Floor = Material Cost + Labour Cost
+Main fields
 
-The demo default is ₹90/hour.
+Group
 
-This is a deliberately documented proxy, not a claim that every Indian artisan should earn ₹90/hour. It is derived from a Maharashtra Government skilled-wage notification for silver article/ornament manufacturing dated 30 August 2024. The notification sets a Zone-I skilled basic monthly wage of ₹16,570 and states that the hourly rate for part-time work is derived from the daily rate with a 15% increase. That produces approximately ₹91.61/hour, rounded to ₹90 for the demo. urlMaharashtra Government wage notificationhttps://mahakamgar.maharashtra.gov.in/Upload/PDF/Employment%20in%20any%20manufactory%20of%20silver%20article%20or%20ornament.pdf
+Fields
 
-For production, the correct implementation is to make the rate depend on the seller's state, craft and skill level, because artisan work is not governed by one universal national hourly rate. Government sources also show that some traditional sectors such as Khadi use piece-rate systems instead of ordinary time-rate wages. urlPIB — Wages of Khadi Artisanshttps://www.pib.gov.in/PressReleaseIframePage.aspx?PRID=1983542&lang=2&reg=48
+Identity
 
-2. No arbitrary 30% margin
+item_id, product_name
 
-The engine no longer adds:
+Description
 
-+ 30%
-
-to every product.
-
-There is no single authoritative national "30% artisan margin" that applies across pottery, textiles, baskets, jewellery and woodcraft.
-
-Instead, the engine builds the cost floor from actual inputs and uses observed market prices to position the recommendation.
-
-3. Market reference corpus
-
-The revised engine stores observed product prices rather than hand-entered low/median/high guesses.
-
-The main source is IndiaHandmade, a Government of India / Ministry of Textiles digital marketplace connecting buyers with verified artisans, weavers, societies and producer companies. citeturn170036search6turn170036search10
-
-For each supported category, the engine calculates:
-
-Market Low    = 25th percentile (P25)
-Market Median = 50th percentile (P50)
-Market High   = 75th percentile (P75)
-
-This is an observed reference band, not a claim about every product in India.
-
-Current source-backed observations are:
+short_description, long_description, short_description_hi, long_description_hi
 
 Category
 
-Observed sample count
+category
 
-Derived P25
+Attributes
+
+materials, dimensions, color
+
+Pricing
+
+cost_of_materials, hours_spent, price_final, price_mrp
+
+Stock
+
+stock_count, stock_max
+
+Seller policy
+
+returnable, return_window
+
+Pipeline state
+
+missing_fields, ready_to_publish
+
+Required publication fields currently include:
+
+product_name
+category
+price_final
+stock_count
+
+Missing required values remain empty until obtained from the artisan.
+
+🧠 Extraction
+
+extract.py converts an already-transcribed English voice note into structured JSON using Gemini structured output.
+
+Extraction guarantees
+
+Only facts actually stated by the artisan are recorded.
+
+Missing fields remain None.
+
+No free-form guessing.
+
+Category normalization uses the project's standard internal categories.
+
+Structured Pydantic output keeps the response in the expected schema.
+
+Example:
+
+"This is a clay pot, handmade. I used red clay from the local river.
+It took me about three hours. I have five of these ready."
+
+becomes approximately:
+
+{
+  "product_name": "clay pot",
+  "category": "pottery",
+  "materials": "red clay from the local river",
+  "hours_spent": 3,
+  "stock_count": 5
+}
+
+Cost remains unknown because the artisan did not state it.
+
+✍️ Description Writer
+
+writer.py generates:
+
+English short description
+English long description
+Hindi short description
+Hindi long description
+
+The writer receives only the filled fact-sheet information.
+
+It does not add unsupported claims such as:
+
+"premium"
+"eco-friendly"
+"sustainable"
+"authentic"
+"high quality"
+
+unless such a claim is explicitly supported by the FactSheet.
+
+✅ Confidence Check
+
+confidence.py verifies the required fields before publishing.
+
+FactSheet
+   ↓
+find_missing_required()
+   ↓
+Missing fields?
+   ├── Yes → ask ONE spoken question
+   └── No  → ready_to_publish = True
+
+The system deliberately asks one question at a time rather than guessing missing information.
+
+Suggested additions
+
+Optional details are generated as suggestions only.
+
+A suggestion is applied only after:
+
+approved = True
+
+Skipping a suggestion leaves the FactSheet unchanged.
+
+💰 Price Advisor
+
+price_advisor.py is a deterministic pricing engine.
+
+It does not call Gemini or any other LLM/API.
+
+The pricing flow is:
+
+Material Cost + Labour Cost
+              │
+              ▼
+          Cost Floor
+              │
+              ├───────────────┐
+              │               │
+              ▼               ▼
+      Market Reference    Category Band
+              │               │
+              └───────┬───────┘
+                      ▼
+              Suggested Price
+
+1. Labour Cost
+
+Labour Cost = Hours Spent × Hourly Rate
+
+The current demo uses:
+
+Hourly Rate = ₹90/hour
+
+This is a configurable benchmark proxy, not a universal Indian artisan wage. Production deployment should select a rate appropriate to the seller's state, craft and skill level.
+
+2. Cost Floor
+
+Unlike the earlier prototype, the current engine does not apply an arbitrary blanket 30% margin.
+
+The current formula is:
+
+Cost Floor
+= Material Cost + Labour Cost
+
+= Material Cost + (Hours × Hourly Rate)
+
+Example
+
+Material Cost = ₹200
+Hours         = 4
+Hourly Rate   = ₹90/hour
+
+Therefore:
+
+Labour Cost
+= 4 × 90
+= ₹360
+
+Cost Floor
+= 200 + 360
+= ₹560
+
+3. Market Reference
+
+The current reference corpus uses observed IndiaHandmade product listings.
+
+Instead of manually defining a "low / median / high" price, the engine calculates:
+
+Market Low    = P25
+Market Median = P50
+Market High   = P75
+
+from the stored observations.
+
+Current observed categories
+
+Category
+
+Sample size
+
+P25
 
 Median
 
-Derived P75
+P75
 
 Pottery
 
@@ -109,205 +309,295 @@ Kurta
 
 ₹1500
 
-These observations come from current IndiaHandmade product/category pages. For example, current pottery listings include ₹150, ₹450, ₹1,200, ₹1,700 and ₹1,950; the bamboo-basket category page contains multiple products from ₹250 through ₹3,500; and IndiaHandmade's kurta catalogue includes examples such as ₹499, ₹720, ₹799, ₹1,500, ₹1,799 and ₹2,500. citeturn170036search8turn170036search3turn170036search0turn170036search1turn170036search5turn182177search2turn182177search5
+These are source-backed observations, not a claim that every product in a category should sell at those values. The current corpus is intentionally small and should be expanded with more comparable products before being treated as a broader market index.
 
-4. Recommendation logic
+4. Suggested Price Logic
 
-If both cost floor and market band exist:
+Cost below market P25
 
 Cost Floor < P25
-    → Suggested Price = P25
+→ Suggested Price = P25
 
-P25 ≤ Cost Floor ≤ P75
-    → Suggested Price = Cost Floor
-
-Cost Floor > P75
-    → Suggested Price = Cost Floor
-    → Flag market mismatch
-
-The engine therefore never recommends a price below the calculated cost floor.
-
-Example
-
-Suppose:
-
-Material cost = ₹200
-Hours          = 4
-Hourly rate    = ₹90
-
-Then:
-
-Labour = 4 × ₹90
-       = ₹360
-
-Cost Floor
-= ₹200 + ₹360
-= ₹560
-
-For pottery, the current observed P25 is ₹450 and P75 is ₹1,700.
-
-Because:
-
-₹450 ≤ ₹560 ≤ ₹1,700
-
-the recommended price remains:
-
-₹560
-
-This is different from the old prototype, which added a blanket 30% margin.
-
-Example: very low floor
+Example:
 
 Pottery
-Hours = 3
-Material cost = not stated
-Hourly rate = ₹90
+Cost Floor = ₹270
+P25         = ₹450
 
-Cost Floor = 3 × ₹90 = ₹270
-Observed P25 = ₹450
+Suggested   = ₹450
 
-Suggested = ₹450
+Cost inside the observed band
 
-Example: cost above observed market band
+P25 ≤ Cost Floor ≤ P75
+→ Suggested Price = Cost Floor
 
-Material cost = ₹2,000
-Hours = 5
+Example:
 
-Cost Floor = ₹2,000 + (5 × ₹90)
-           = ₹2,450
+Cost Floor = ₹560
+Pottery P25–P75 = ₹450–₹1700
 
-Pottery P75 is ₹1,700, so the engine returns ₹2,450 and flags the fact that the cost floor is above the observed reference band.
+Suggested = ₹560
 
-It does not force the seller below cost.
+Cost above P75
 
-Important limitations
+Cost Floor > P75
+→ Suggested Price = Cost Floor
+→ Market mismatch is flagged
 
-The market reference is not yet a statistically representative national market index.
+The engine does not force the artisan below their calculated cost floor.
 
-Product price depends heavily on:
+Market-only case
 
-size and dimensions
+When cost/hours are unavailable but sufficient market observations exist:
 
-material and quality
+Suggested Price = Market Median
+Confidence = low
 
-design complexity
+Insufficient information
 
-craftsmanship
+When neither cost information nor sufficient market observations exist:
 
-brand/reputation
+Suggested Price = None
+Confidence = insufficient_data
 
-geography
+No value is fabricated.
 
-discounts
+🔎 Price Engine Output
 
-whether the listing is retail or wholesale
+Example:
 
-shipping/tax treatment
+{
+  "floor": 270.0,
+  "market_band": {
+    "low": 450.0,
+    "median": 1200.0,
+    "high": 1700.0,
+    "sample_size": 5,
+    "source": "IndiaHandmade (Government of India, Ministry of Textiles)",
+    "observed_on": "2026-09-21"
+  },
+  "suggested_price": 450.0,
+  "confidence": "medium",
+  "explanation": "Cost floor is below the observed P25 market reference..."
+}
 
-For example, a small terracotta item and a large decorative terracotta piece should not be treated as economically identical merely because both are "pottery".
+price_advisor.py returns the recommendation but does not modify:
 
-The next improvement is therefore to expand the corpus with more comparable products and eventually include dimensions/material/subcategory filters.
+FactSheet.price_final
 
-The engine intentionally returns no market band when there are too few observations.
+Production flow should read the recommendation back to the artisan and wait for approval/correction.
 
-Files
+🔗 ONDC Integration
 
-File
+mapper.py converts the completed FactSheet into an ONDC Item.
 
-Purpose
+FactSheet
+   ↓
+ONDC Mapper
+   ↓
+Item JSON
+   ↓
+ONDC Schema Validation
 
-factsheet_schema.py
+The mapper expects, among other required values:
 
-Shared Pydantic FactSheet model
+price_final
+stock_count
+product_name
+category
+descriptions
+images
 
-extract.py
+The final demo pipeline successfully produces a valid ONDC item after the Price Advisor stage.
 
-Gemini structured extraction
+🧪 Testing
 
-writer.py
+Price Engine
 
-English/Hindi description generation
-
-confidence.py
-
-Missing-field and approval logic
-
-price_advisor.py
-
-Deterministic source-backed price engine
-
-test_price_advisor.py
-
-Offline price-engine tests
-
-gemini_utils.py
-
-Gemini retry/backoff
-
-test_transcripts.py
-
-Extraction test cases
-
-run_extraction_tests.py
-
-Extraction test runner
-
-run_pipeline.py
-
-End-to-end pipeline
-
-mapper.py
-
-FactSheet → ONDC item
-
-ondc_schema.json
-
-ONDC validation schema
-
-Running the price tests
+Run the offline tests:
 
 python -m pytest test_price_advisor.py -q
 
-Expected:
+Current suite:
 
-14 passed
+14 tests
 
-Running the full pipeline
+The tests cover:
+
+material + labour calculation
+
+hours-only calculation
+
+missing inputs
+
+negative-value validation
+
+case-insensitive category lookup
+
+market-band calculation
+
+unknown category
+
+below-P25 recommendation
+
+inside-band recommendation
+
+above-P75 handling
+
+market-only pricing
+
+price-engine immutability
+
+Extraction Tests
+
+The project contains 15 realistic transcript cases.
+
+Run:
+
+python run_extraction_tests.py
+
+The test runner also checks for unexpected fields being filled, helping detect possible hallucinated values.
+
+End-to-End Test
+
+Run:
 
 python run_pipeline.py
 
-The demo pipeline should reach:
+Expected flow:
 
+STEP 1: Extraction
+STEP 2: Description writer
+STEP 3: Confidence check
 STEP 4: Price advisor
+STEP 5: Convert to dict and map to ONDC item
 
-and then:
+A successful final stage prints:
 
 Valid ONDC item produced!
 
-The current run_pipeline.py still auto-accepts the recommended price for demonstration purposes. In production, the artisan should hear the recommendation and explicitly approve or correct it before price_final is written.
+⚙️ Setup
 
-Design principles
+Install dependencies:
 
-Deterministic
+pip install pydantic google-genai pandas jsonschema pytest
 
-No LLM call is needed for pricing.
+Set your Gemini API key in PowerShell:
 
-Traceable
+$env:GEMINI_API_KEY = "your-key-here"
 
-Every output number comes from:
+The Price Advisor itself does not require the Gemini API key.
 
-the artisan's stated cost/hours, or
+▶️ Quick Start
 
-a stored reference observation.
+# 1. Clone the repository
+git clone https://github.com/gxlactuss/SIH-090-Project-Ctrl-Alt-Delete.git
 
-Seller-controlled
+# 2. Switch to the factsheet branch
+git switch factsheet-shivam
 
-price_advisor.py does not mutate price_final.
+# 3. Enter the module
+cd factsheet
 
-Conservative with unknowns
+# 4. Install dependencies
+pip install pydantic google-genai pandas jsonschema pytest
 
-Insufficient market observations do not produce a fake market band.
+# 5. Test the price engine
+python -m pytest test_price_advisor.py -q
 
-Extensible
+# 6. Run the price engine examples
+python price_advisor.py
 
-The reference corpus can be replaced by a database or CSV without changing the price calculation interface
+# 7. Run the complete demo
+python run_pipeline.py
+
+📊 Module Status
+
+Component
+
+Status
+
+Notes
+
+FactSheet schema
+
+✅
+
+Shared Pydantic contract
+
+Extraction
+
+✅
+
+Gemini structured output
+
+Description Writer
+
+✅
+
+English + Hindi
+
+Confidence Check
+
+✅
+
+One-question missing-field flow
+
+Suggested Additions
+
+✅
+
+Explicit approval required
+
+Price Advisor
+
+✅
+
+Deterministic, source-backed
+
+Price Tests
+
+✅
+
+14 offline tests
+
+ONDC Mapper
+
+✅
+
+Produces validated Item
+
+End-to-End Pipeline
+
+✅
+
+Extraction → ONDC validation
+
+⚠️ Known Limitations
+
+The current market corpus is small and should be expanded.
+
+Market references should eventually be filtered by more comparable attributes such as product type, size, material and design complexity.
+
+The ₹90/hour labour figure is a configurable benchmark proxy, not a universal artisan wage.
+
+Production should use craft/state/skill-specific labour-rate rules where possible.
+
+The demo pipeline auto-accepts the suggested price; production must require explicit artisan approval.
+
+mapper.py and ondc_schema.json are duplicated copies in this module and should remain synchronized with the publishing module.
+
+👤 Ownership
+
+Shivam Singh — Language Layer
+
+Responsible for:
+
+FactSheet
+Extraction
+Description Writer
+Confidence & Suggestions
+Price Advisor
+Pricing Reference Corpus
+
+The module is designed so that every automated transformation remains traceable and the artisan retains control over the final published listing.
