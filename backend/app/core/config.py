@@ -56,6 +56,21 @@ class Settings(BaseSettings):
     # CORS origins
     CORS_ORIGINS: Union[List[str], str] = ["*"]
 
+    # Public demo deployment.
+    #
+    # The try-it website (kirtikar.me) has no sign-up: a judge opens it and
+    # runs the pipeline straight away. When DEMO_MODE is on, a request that
+    # arrives with no bearer token is served as one shared demo seller
+    # instead of being refused. A request that DOES carry a token is still
+    # verified normally, so the phone app's refresh path is never masked.
+    #
+    # Off by default. The real deployment never sets it.
+    DEMO_MODE: bool = False
+    # Fixed rather than looked up by name, so the row is deterministic across
+    # restarts and "create if missing" is trivially idempotent.
+    DEMO_SELLER_ID: str = "00000000-0000-4000-8000-000000000001"
+    DEMO_SELLER_NAME: str = "Demo Artisan"
+
     @property
     def gemini_fallback_models(self) -> List[str]:
         """The fallback chain as a list, however it was configured."""
