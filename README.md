@@ -588,3 +588,46 @@ Pricing Reference Corpus
 ```
 
 The module is designed so that every automated transformation remains traceable and the artisan retains control over the final published listing.
+
+
+# ⚠️ Important: `mapper.py` and `ondc_schema.json` are duplicated across branches
+
+`mapper.py` and `ondc_schema.json` in the `factsheet-shivam` branch are copies of the corresponding files maintained in the **ONDC module / ONDC branch**.
+
+These files are intentionally duplicated so the factsheet pipeline can run without cross-folder or cross-branch imports.
+
+### Synchronization rule
+
+**Any change made to either `mapper.py` or `ondc_schema.json` must be manually applied to the corresponding file in BOTH locations:**
+
+```text
+ONDC branch / folder
+        │
+        ├── mapper.py
+        └── ondc_schema.json
+                │
+                │  keep synchronized
+                ▼
+factsheet-shivam branch / folder
+        │
+        ├── mapper.py
+        └── ondc_schema.json
+```
+
+For example:
+
+```text
+Change mapper.py in ONDC branch
+        ↓
+Copy the same change to factsheet-shivam/mapper.py
+
+Change ondc_schema.json in ONDC branch
+        ↓
+Copy the same change to factsheet-shivam/ondc_schema.json
+```
+
+The same applies in the opposite direction: **if a change is made in the factsheet copy, update the ONDC copy as well.**
+
+Before a demo, merge, or release, verify that the two copies match.
+
+> **Do not treat these as independent files. They are two synchronized copies of the same ONDC mapping/schema implementation.**
