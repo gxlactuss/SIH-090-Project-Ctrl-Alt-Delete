@@ -34,7 +34,7 @@ class _AboutScreenState extends State<AboutScreen> {
         setState(() => _version = '${info.version} (${info.buildNumber})');
       }
     } catch (_) {
-      if (mounted) setState(() => _version = '—');
+      if (mounted) setState(() => _version = '-');
     }
   }
 

@@ -182,8 +182,8 @@ class _ChangePhoneScreenState extends State<ChangePhoneScreen> {
           ),
           child: WholeWordText(
             onNumber
-                ? (_digits.isEmpty ? '—' : _digits)
-                : (_code.isEmpty ? '—' : _code),
+                ? (_digits.isEmpty ? '-' : _digits)
+                : (_code.isEmpty ? '-' : _code),
             style: const TextStyle(
               fontSize: 34,
               letterSpacing: 4,

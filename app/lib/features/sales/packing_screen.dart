@@ -75,7 +75,7 @@ class _PackingScreenState extends State<PackingScreen> {
               _Step(
                 number: i + 1,
                 text: i == 2 && sale != null
-                    ? '${steps[i]} — ${l10n.salesQuantity(sale.quantity)}'
+                    ? '${steps[i]}, ${l10n.salesQuantity(sale.quantity)}'
                     : steps[i],
                 done: _done.contains(i),
                 onTap: () => setState(() {

@@ -413,7 +413,7 @@ class _Fallback extends StatelessWidget {
           ),
           child: WholeWordText(
             typed.isEmpty
-                ? '—'
+                ? '-'
                 : (field == ListingField.price ? '₹$typed' : typed),
             style: const TextStyle(
               fontSize: 34,
