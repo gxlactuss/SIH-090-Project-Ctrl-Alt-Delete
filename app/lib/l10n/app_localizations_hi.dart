@@ -52,7 +52,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get welcomeCard2Body =>
-      'यह क्या है, किस चीज़ का बना है, कितना दाम है — बस बोल दीजिए। लिखने की ज़रूरत नहीं।';
+      'यह क्या है, किस चीज़ का बना है, कितना दाम है, बस बोल दीजिए। लिखने की ज़रूरत नहीं।';
 
   @override
   String get welcomeCard3Title => 'यह बिकने चला जाता है';
@@ -135,7 +135,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String otpResendIn(int seconds) {
-    return 'दोबारा भेजें — $seconds सेकंड बाद';
+    return 'दोबारा भेजें, $seconds सेकंड बाद';
   }
 
   @override
@@ -1038,7 +1038,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get publishFailed =>
-      'यह नहीं लग सका। कुछ खोया नहीं है — आप फिर कोशिश कर सकते हैं।';
+      'यह नहीं लग सका। कुछ खोया नहीं है, आप फिर कोशिश कर सकते हैं।';
 
   @override
   String get publishRetry => 'फिर कोशिश कीजिए';
@@ -1826,7 +1826,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get aboutWhat =>
-      'कीर्तिकर हाथ से बने सामान को ONDC पर पहुँचाता है — भारत का खुला ख़रीद-बिक्री नेटवर्क — और इसके लिए बनाने वाले को लिखना नहीं, बोलना होता है। आपकी भाषा में कुछ फ़ोटो और एक बात से ऐसी लिस्टिंग बनती है जो देश भर के ख़रीदार देख सकते हैं।';
+      'कीर्तिकर हाथ से बने सामान को ONDC पर पहुँचाता है, भारत का खुला ख़रीद-बिक्री नेटवर्क, और इसके लिए बनाने वाले को लिखना नहीं, बोलना होता है। आपकी भाषा में कुछ फ़ोटो और एक बात से ऐसी लिस्टिंग बनती है जो देश भर के ख़रीदार देख सकते हैं।';
 
   @override
   String get aboutWhyTitle => 'हमने यह क्यों बनाया';
@@ -2062,24 +2062,14 @@ class AppLocalizationsHi extends AppLocalizations {
   String get voiceGuideTitle => 'आप इन बातों के बारे में बता सकते हैं';
 
   @override
-  String get voiceGuideWhat => 'चीज़ क्या है — मटका, शॉल, हार';
+  String get voiceGuideWhat => 'चीज़ का नाम';
 
   @override
-  String get voiceGuideMaterial =>
-      'किस चीज़ का बना है — मिट्टी, चाँदी, सूत, लकड़ी';
+  String get voiceGuideSize => 'ऊँचाई';
 
   @override
-  String get voiceGuideSize => 'कितना बड़ा है — इंच या सेंटीमीटर में';
+  String get voiceGuideColour => 'रंग';
 
   @override
-  String get voiceGuideColour => 'इसका रंग और बनावट';
-
-  @override
-  String get voiceGuideTime => 'बनाने में कितना समय लगा';
-
-  @override
-  String get voiceGuideCraft => 'यह कौन सी कला है, और आपको किसने सिखाई';
-
-  @override
-  String get voiceGuidePrice => 'आप इसका कितना दाम चाहते हैं';
+  String get voiceGuideTime => 'बनाने में लगा समय';
 }

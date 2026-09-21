@@ -52,7 +52,7 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get welcomeCard2Body =>
-      'ഇത് എന്താണ്, എന്തുകൊണ്ട് ഉണ്ടാക്കി, വില എത്ര — വെറുതെ പറഞ്ഞാൽ മതി. എഴുതേണ്ട.';
+      'ഇത് എന്താണ്, എന്തുകൊണ്ട് ഉണ്ടാക്കി, വില എത്ര, വെറുതെ പറഞ്ഞാൽ മതി. എഴുതേണ്ട.';
 
   @override
   String get welcomeCard3Title => 'ഇത് വിൽപ്പനയ്ക്ക് പോകുന്നു';
@@ -1046,7 +1046,7 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get publishFailed =>
-      'ഇത് വയ്ക്കാനായില്ല. ഒന്നും നഷ്ടപ്പെട്ടിട്ടില്ല — നിങ്ങൾക്ക് വീണ്ടും ശ്രമിക്കാം.';
+      'ഇത് വയ്ക്കാനായില്ല. ഒന്നും നഷ്ടപ്പെട്ടിട്ടില്ല, നിങ്ങൾക്ക് വീണ്ടും ശ്രമിക്കാം.';
 
   @override
   String get publishRetry => 'വീണ്ടും ശ്രമിക്കുക';
@@ -1840,7 +1840,7 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get aboutWhat =>
-      'കീർത്തികർ കൈകൊണ്ട് ഉണ്ടാക്കിയ സാധനങ്ങൾ ONDC-യിൽ — ഇന്ത്യയുടെ തുറന്ന വാങ്ങൽ-വിൽപ്പന ശൃംഖലയിൽ — എത്തിക്കുന്നു, അതിന് ഉണ്ടാക്കുന്നയാൾ ടൈപ്പ് ചെയ്യേണ്ട, സംസാരിച്ചാൽ മതി. നിങ്ങളുടെ സ്വന്തം ഭാഷയിലുള്ള ഫോട്ടോകളും ഒരു ശബ്ദസന്ദേശവും രാജ്യമെമ്പാടുമുള്ള വാങ്ങുന്നവർക്ക് കണ്ടെത്താവുന്ന ഒരു ലിസ്റ്റിംഗ് ആകുന്നു.';
+      'കീർത്തികർ കൈകൊണ്ട് ഉണ്ടാക്കിയ സാധനങ്ങൾ ONDC-യിൽ, ഇന്ത്യയുടെ തുറന്ന വാങ്ങൽ-വിൽപ്പന ശൃംഖലയിൽ, എത്തിക്കുന്നു, അതിന് ഉണ്ടാക്കുന്നയാൾ ടൈപ്പ് ചെയ്യേണ്ട, സംസാരിച്ചാൽ മതി. നിങ്ങളുടെ സ്വന്തം ഭാഷയിലുള്ള ഫോട്ടോകളും ഒരു ശബ്ദസന്ദേശവും രാജ്യമെമ്പാടുമുള്ള വാങ്ങുന്നവർക്ക് കണ്ടെത്താവുന്ന ഒരു ലിസ്റ്റിംഗ് ആകുന്നു.';
 
   @override
   String get aboutWhyTitle => 'ഞങ്ങൾ ഇത് എന്തിന് ഉണ്ടാക്കി';
@@ -2080,24 +2080,14 @@ class AppLocalizationsMl extends AppLocalizations {
   String get voiceGuideTitle => 'ഇവയെക്കുറിച്ച് പറയാം';
 
   @override
-  String get voiceGuideWhat => 'സാധനം എന്താണ് — കലം, ഷാൾ, മാല';
+  String get voiceGuideWhat => 'സാധനത്തിന്റെ പേര്';
 
   @override
-  String get voiceGuideMaterial =>
-      'എന്തുകൊണ്ട് ഊണ്ടാക്കി — കളിമണ്ണ്, വെള്ളി, പരുത്തി, മരം';
+  String get voiceGuideSize => 'ഉയരം';
 
   @override
-  String get voiceGuideSize => 'എത്ര വലുതാണ് — ഇഞ്ചിലോ സെന്റിമീറ്ററിലോ';
+  String get voiceGuideColour => 'നിറം';
 
   @override
-  String get voiceGuideColour => 'ഇതിന്റെ നിറവും പണിയും';
-
-  @override
-  String get voiceGuideTime => 'ഊണ്ടാക്കാൻ എത്ര സമയമെടുത്തു';
-
-  @override
-  String get voiceGuideCraft => 'ഇത് ഏത് കലയാണ്, ആരാണ് നിങ്ങളെ പടിപ്പിച്ചത്';
-
-  @override
-  String get voiceGuidePrice => 'നിങ്ങൾ എത്ര വില ചോദിക്കുന്നു';
+  String get voiceGuideTime => 'ഉണ്ടാക്കാൻ എടുത്ത സമയം';
 }

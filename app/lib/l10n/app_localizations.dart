@@ -1264,17 +1264,11 @@ abstract class AppLocalizations {
 
   String get voiceGuideWhat;
 
-  String get voiceGuideMaterial;
-
   String get voiceGuideSize;
 
   String get voiceGuideColour;
 
   String get voiceGuideTime;
-
-  String get voiceGuideCraft;
-
-  String get voiceGuidePrice;
 }
 
 class _AppLocalizationsDelegate

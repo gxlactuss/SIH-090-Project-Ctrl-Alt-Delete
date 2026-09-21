@@ -14,7 +14,7 @@
   "welcomeCard1Title": "Take three photos",
   "welcomeCard1Body": "Take three photos of what you made. The app shows you how.",
   "welcomeCard2Title": "Say what it is",
-  "welcomeCard2Body": "What it is, what it is made of, what it costs — just say it out loud. No writing.",
+  "welcomeCard2Body": "What it is, what it is made of, what it costs. Just say it out loud. No writing.",
   "welcomeCard3Title": "It goes on sale",
   "welcomeCard3Body": "We read it back to you first. Nothing goes online until you say yes.",
   "welcomeStart": "Get started",
@@ -610,11 +610,8 @@
   "errorConflict": "This was changed somewhere else. Please open it again and try once more.",
   "errorInvalid": "Some details were not accepted. Please check them and try again.",
   "voiceGuideTitle": "Things you can talk about",
-  "voiceGuideWhat": "What the item is — a pot, a shawl, a necklace",
-  "voiceGuideMaterial": "What it is made of — clay, silver, cotton, wood",
-  "voiceGuideSize": "How big it is — in inches or centimetres",
-  "voiceGuideColour": "Its colour and pattern",
-  "voiceGuideTime": "How long it took you to make",
-  "voiceGuideCraft": "Which craft it belongs to, and who taught you",
-  "voiceGuidePrice": "The price you want for it"
+  "voiceGuideWhat": "Name of the item",
+  "voiceGuideSize": "Height",
+  "voiceGuideColour": "Colour",
+  "voiceGuideTime": "Time taken to make it"
 }

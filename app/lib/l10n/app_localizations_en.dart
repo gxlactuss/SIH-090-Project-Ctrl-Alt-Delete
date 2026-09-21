@@ -52,7 +52,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get welcomeCard2Body =>
-      'What it is, what it is made of, what it costs — just say it out loud. No writing.';
+      'What it is, what it is made of, what it costs. Just say it out loud. No writing.';
 
   @override
   String get welcomeCard3Title => 'It goes on sale';
@@ -2075,24 +2075,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get voiceGuideTitle => 'Things you can talk about';
 
   @override
-  String get voiceGuideWhat => 'What the item is — a pot, a shawl, a necklace';
+  String get voiceGuideWhat => 'Name of the item';
 
   @override
-  String get voiceGuideMaterial =>
-      'What it is made of — clay, silver, cotton, wood';
+  String get voiceGuideSize => 'Height';
 
   @override
-  String get voiceGuideSize => 'How big it is — in inches or centimetres';
+  String get voiceGuideColour => 'Colour';
 
   @override
-  String get voiceGuideColour => 'Its colour and pattern';
-
-  @override
-  String get voiceGuideTime => 'How long it took you to make';
-
-  @override
-  String get voiceGuideCraft => 'Which craft it belongs to, and who taught you';
-
-  @override
-  String get voiceGuidePrice => 'The price you want for it';
+  String get voiceGuideTime => 'Time taken to make it';
 }

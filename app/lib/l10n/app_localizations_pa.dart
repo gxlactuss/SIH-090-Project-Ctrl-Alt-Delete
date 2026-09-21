@@ -52,7 +52,7 @@ class AppLocalizationsPa extends AppLocalizations {
 
   @override
   String get welcomeCard2Body =>
-      'ਇਹ ਕੀ ਹੈ, ਕਿਸ ਚੀਜ਼ ਦੀ ਬਣੀ ਹੈ, ਕੀਮਤ ਕਿੰਨੀ ਹੈ — ਬੱਸ ਬੋਲ ਦਿਓ। ਲਿਖਣ ਦੀ ਲੋੜ ਨਹੀਂ।';
+      'ਇਹ ਕੀ ਹੈ, ਕਿਸ ਚੀਜ਼ ਦੀ ਬਣੀ ਹੈ, ਕੀਮਤ ਕਿੰਨੀ ਹੈ, ਬੱਸ ਬੋਲ ਦਿਓ। ਲਿਖਣ ਦੀ ਲੋੜ ਨਹੀਂ।';
 
   @override
   String get welcomeCard3Title => 'ਇਹ ਵਿਕਰੀ \'ਤੇ ਜਾਂਦੀ ਹੈ';
@@ -1039,7 +1039,7 @@ class AppLocalizationsPa extends AppLocalizations {
 
   @override
   String get publishFailed =>
-      'ਇਹ ਰੱਖੀ ਨਹੀਂ ਜਾ ਸਕੀ। ਕੁਝ ਵੀ ਗੁਆਚਿਆ ਨਹੀਂ — ਤੁਸੀਂ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰ ਸਕਦੇ ਹੋ।';
+      'ਇਹ ਰੱਖੀ ਨਹੀਂ ਜਾ ਸਕੀ। ਕੁਝ ਵੀ ਗੁਆਚਿਆ ਨਹੀਂ, ਤੁਸੀਂ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰ ਸਕਦੇ ਹੋ।';
 
   @override
   String get publishRetry => 'ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ';
@@ -1829,7 +1829,7 @@ class AppLocalizationsPa extends AppLocalizations {
 
   @override
   String get aboutWhat =>
-      'ਕੀਰਤੀਕਰ ਹੱਥ ਨਾਲ ਬਣੀਆਂ ਚੀਜ਼ਾਂ ਨੂੰ ONDC \'ਤੇ — ਭਾਰਤ ਦੇ ਖੁੱਲ੍ਹੇ ਖਰੀਦ-ਵੇਚ ਜਾਲ \'ਤੇ — ਪਹੁੰਚਾਉਂਦਾ ਹੈ, ਅਤੇ ਇਸ ਲਈ ਬਣਾਉਣ ਵਾਲੇ ਨੂੰ ਲਿਖਣਾ ਨਹੀਂ ਪੈਂਦਾ, ਬੋਲਣਾ ਪੈਂਦਾ ਹੈ। ਤੁਹਾਡੀ ਆਪਣੀ ਭਾਸ਼ਾ ਵਿੱਚ ਕੁਝ ਫੋਟੋਆਂ ਅਤੇ ਇੱਕ ਆਵਾਜ਼ ਸੁਨੇਹੇ ਤੋਂ ਅਜਿਹੀ ਸੂਚੀ ਬਣਦੀ ਹੈ ਜੋ ਦੇਸ਼ ਭਰ ਦੇ ਖਰੀਦਦਾਰ ਲੱਭ ਸਕਦੇ ਹਨ।';
+      'ਕੀਰਤੀਕਰ ਹੱਥ ਨਾਲ ਬਣੀਆਂ ਚੀਜ਼ਾਂ ਨੂੰ ONDC \'ਤੇ, ਭਾਰਤ ਦੇ ਖੁੱਲ੍ਹੇ ਖਰੀਦ-ਵੇਚ ਜਾਲ \'ਤੇ, ਪਹੁੰਚਾਉਂਦਾ ਹੈ, ਅਤੇ ਇਸ ਲਈ ਬਣਾਉਣ ਵਾਲੇ ਨੂੰ ਲਿਖਣਾ ਨਹੀਂ ਪੈਂਦਾ, ਬੋਲਣਾ ਪੈਂਦਾ ਹੈ। ਤੁਹਾਡੀ ਆਪਣੀ ਭਾਸ਼ਾ ਵਿੱਚ ਕੁਝ ਫੋਟੋਆਂ ਅਤੇ ਇੱਕ ਆਵਾਜ਼ ਸੁਨੇਹੇ ਤੋਂ ਅਜਿਹੀ ਸੂਚੀ ਬਣਦੀ ਹੈ ਜੋ ਦੇਸ਼ ਭਰ ਦੇ ਖਰੀਦਦਾਰ ਲੱਭ ਸਕਦੇ ਹਨ।';
 
   @override
   String get aboutWhyTitle => 'ਅਸੀਂ ਇਹ ਕਿਉਂ ਬਣਾਇਆ';
@@ -2065,24 +2065,14 @@ class AppLocalizationsPa extends AppLocalizations {
   String get voiceGuideTitle => 'ਤੁਸੀਂ ਇਹਨਾਂ ਬਾਰੇ ਦੱਸ ਸਕਦੇ ਹੋ';
 
   @override
-  String get voiceGuideWhat => 'ਚੀਜ਼ ਕੀ ਹੈ — ਘੜਾ, ਸ਼ਾਲ, ਹਾਰ';
+  String get voiceGuideWhat => 'ਚੀਜ਼ ਦਾ ਨਾਮ';
 
   @override
-  String get voiceGuideMaterial =>
-      'ਕਿਸ ਚੀਜ਼ ਦੀ ਬਣੀ ਹੈ — ਮਿੱਟੀ, ਚਾਂਦੀ, ਸੂਤ, ਲੱਕੜ';
+  String get voiceGuideSize => 'ਉਚਾਈ';
 
   @override
-  String get voiceGuideSize => 'ਕਿੰਨੀ ਵੱਡੀ ਹੈ — ਇੰਚ ਜਾਂ ਸੈਂਟੀਮੀਟਰ ਵਿੱਚ';
+  String get voiceGuideColour => 'ਰੰਗ';
 
   @override
-  String get voiceGuideColour => 'ਇਸ ਦਾ ਰੰਗ ਅਤੇ ਨਮੂਨਾ';
-
-  @override
-  String get voiceGuideTime => 'ਬਣਾਉਣ ਵਿੱਚ ਕਿੰਨਾ ਸਮਾਂ ਲੱਗਿਆ';
-
-  @override
-  String get voiceGuideCraft => 'ਇਹ ਕਿਹੜੀ ਕਲਾ ਹੈ, ਅਤੇ ਤੁਹਾਨੂੰ ਕਿਸ ਨੇ ਸਿਖਾਈ';
-
-  @override
-  String get voiceGuidePrice => 'ਤੁਸੀਂ ਕਿੰਨੀ ਕੀਮਤ ਚਾਹੁੰਦੇ ਹੋ';
+  String get voiceGuideTime => 'ਬਣਾਉਣ ਵਿੱਚ ਲੱਗਿਆ ਸਮਾਂ';
 }

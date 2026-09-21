@@ -52,7 +52,7 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get welcomeCard2Body =>
-      'এটা কী, কী দিয়ে তৈরি, দাম কত — শুধু মুখে বলুন। লেখার দরকার নেই।';
+      'এটা কী, কী দিয়ে তৈরি, দাম কত, শুধু মুখে বলুন। লেখার দরকার নেই।';
 
   @override
   String get welcomeCard3Title => 'এটা বিক্রিতে চলে যায়';
@@ -1031,7 +1031,7 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get publishFailed =>
-      'এটা তোলা যায়নি। কিছুই হারায়নি — আপনি আবার চেষ্টা করতে পারেন।';
+      'এটা তোলা যায়নি। কিছুই হারায়নি, আপনি আবার চেষ্টা করতে পারেন।';
 
   @override
   String get publishRetry => 'আবার চেষ্টা করুন';
@@ -1818,7 +1818,7 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get aboutWhat =>
-      'কীর্তিকর হাতে বানানো জিনিস ONDC-তে পৌঁছে দেয় — ভারতের কেনাবেচার খোলা নেটওয়ার্ক — আর তার জন্য কারিগরকে লিখতে হয় না, শুধু বলতে হয়। আপনার নিজের ভাষায় কয়েকটা ছবি আর একটা ভয়েস নোট থেকে এমন তালিকা তৈরি হয় যা দেশজুড়ে ক্রেতারা খুঁজে পান।';
+      'কীর্তিকর হাতে বানানো জিনিস ONDC-তে পৌঁছে দেয়, ভারতের কেনাবেচার খোলা নেটওয়ার্ক, আর তার জন্য কারিগরকে লিখতে হয় না, শুধু বলতে হয়। আপনার নিজের ভাষায় কয়েকটা ছবি আর একটা ভয়েস নোট থেকে এমন তালিকা তৈরি হয় যা দেশজুড়ে ক্রেতারা খুঁজে পান।';
 
   @override
   String get aboutWhyTitle => 'আমরা কেন এটা বানিয়েছি';
@@ -2053,23 +2053,14 @@ class AppLocalizationsBn extends AppLocalizations {
   String get voiceGuideTitle => 'আপনি এগুলো নিয়ে বলতে পারেন';
 
   @override
-  String get voiceGuideWhat => 'জিনিসটা কী — কলসি, শাল, হার';
+  String get voiceGuideWhat => 'জিনিসের নাম';
 
   @override
-  String get voiceGuideMaterial => 'কী দিয়ে তৈরি — মাটি, রুপো, সুতো, কাঠ';
+  String get voiceGuideSize => 'উচ্চতা';
 
   @override
-  String get voiceGuideSize => 'কত বড় — ইঞ্চি বা সেন্টিমিটারে';
+  String get voiceGuideColour => 'রং';
 
   @override
-  String get voiceGuideColour => 'এর রং আর কাজ';
-
-  @override
-  String get voiceGuideTime => 'বানাতে কত সময় লেগেছে';
-
-  @override
-  String get voiceGuideCraft => 'এটা কোন শিল্প, আর কে আপনাকে শিখিয়েছেন';
-
-  @override
-  String get voiceGuidePrice => 'আপনি কত দাম চান';
+  String get voiceGuideTime => 'বানাতে কত সময় লেগেছে';
 }

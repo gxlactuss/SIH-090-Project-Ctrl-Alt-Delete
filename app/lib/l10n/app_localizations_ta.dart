@@ -52,7 +52,7 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get welcomeCard2Body =>
-      'இது என்ன, எதனால் செய்தது, விலை என்ன — சொன்னால் போதும். எழுதத் தேவையில்லை.';
+      'இது என்ன, எதனால் செய்தது, விலை என்ன, சொன்னால் போதும். எழுதத் தேவையில்லை.';
 
   @override
   String get welcomeCard3Title => 'இது விற்பனைக்குப் போகிறது';
@@ -1046,7 +1046,7 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get publishFailed =>
-      'இதை வைக்க முடியவில்லை. எதுவும் இழக்கப்படவில்லை — மீண்டும் முயலலாம்.';
+      'இதை வைக்க முடியவில்லை. எதுவும் இழக்கப்படவில்லை, மீண்டும் முயலலாம்.';
 
   @override
   String get publishRetry => 'மீண்டும் முயலுங்கள்';
@@ -1843,7 +1843,7 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get aboutWhat =>
-      'கீர்த்திகர் கையால் செய்த பொருட்களை ONDC-க்கு — இந்தியாவின் திறந்த வாங்கல்-விற்றல் வலைப்பின்னலுக்கு — கொண்டு சேர்க்கிறது, அதற்குச் செய்பவர் தட்டச்சு செய்யத் தேவையில்லை, பேசினால் போதும். உங்கள் சொந்த மொழியில் சில படங்களும் ஒரு குரல் பதிவும், நாடு முழுவதும் உள்ள வாங்குபவர்கள் கண்டுபிடிக்கக்கூடிய பட்டியலாக மாறுகின்றன.';
+      'கீர்த்திகர் கையால் செய்த பொருட்களை ONDC-க்கு, இந்தியாவின் திறந்த வாங்கல்-விற்றல் வலைப்பின்னலுக்கு, கொண்டு சேர்க்கிறது, அதற்குச் செய்பவர் தட்டச்சு செய்யத் தேவையில்லை, பேசினால் போதும். உங்கள் சொந்த மொழியில் சில படங்களும் ஒரு குரல் பதிவும், நாடு முழுவதும் உள்ள வாங்குபவர்கள் கண்டுபிடிக்கக்கூடிய பட்டியலாக மாறுகின்றன.';
 
   @override
   String get aboutWhyTitle => 'நாங்கள் ஏன் இதை உருவாக்கினோம்';
@@ -2084,25 +2084,14 @@ class AppLocalizationsTa extends AppLocalizations {
   String get voiceGuideTitle => 'இவற்றைப் பற்றி சொல்லலாம்';
 
   @override
-  String get voiceGuideWhat => 'பொருள் எந்த — பானை, சால்வை, மாலை';
+  String get voiceGuideWhat => 'பொருளின் பெயர்';
 
   @override
-  String get voiceGuideMaterial =>
-      'எதனால் செய்தது — களிமண், வெள்ளி, பருத்தி, மரம்';
+  String get voiceGuideSize => 'உயரம்';
 
   @override
-  String get voiceGuideSize =>
-      'எவ்வளவு பெரியது — அங்குலம் அல்லது சென்டிமீட்டரில்';
+  String get voiceGuideColour => 'நிறம்';
 
   @override
-  String get voiceGuideColour => 'இதன் நிறமும் வேலைப்பாடும்';
-
-  @override
-  String get voiceGuideTime => 'செய்ய எவ்வளவு நேரம் ஆனது';
-
-  @override
-  String get voiceGuideCraft => 'இது எந்தக் கலை, உங்களுக்கு யார் கற்பித்தார்';
-
-  @override
-  String get voiceGuidePrice => 'நீங்கள் எவ்வளவு விலை கேட்கிறீர்கள்';
+  String get voiceGuideTime => 'செய்ய ஆன நேரம்';
 }
