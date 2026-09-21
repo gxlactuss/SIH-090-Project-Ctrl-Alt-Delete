@@ -2,11 +2,7 @@
 ﻿# Fact Sheet / Language Layer
 
 Language layer for the AI-Driven Market Linkage and Smart Cataloging app
-(marginalized artisans hackathon project). Originally Ayush Shivdikar's
-module; built out by Shivam while Ayush was tied up on the team
-presentation — Ayush is welcome to resume ownership of this module at
-any point, the fact sheet format is stable either way.
-
+(marginalized artisans hackathon project). 
 Takes an artisan's voice-note transcript (already translated to English
 by the speech station) and turns it into a strict, fact-grounded product
 listing — extraction, bilingual description writing, confidence
