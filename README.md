@@ -1,0 +1,317 @@
+<<<<<<< HEAD
+﻿# Fact Sheet / Language Layer
+
+Language layer for the AI-Driven Market Linkage and Smart Cataloging app
+(marginalized artisans hackathon project). Originally Ayush Shivdikar's
+module; built out by Shivam while Ayush was tied up on the team
+presentation — Ayush is welcome to resume ownership of this module at
+any point, the fact sheet format is stable either way.
+
+Takes an artisan's voice-note transcript (already translated to English
+by the speech station) and turns it into a strict, fact-grounded product
+listing — extraction, bilingual description writing, confidence
+checking, and price suggestions. No field is ever guessed: if the
+artisan didn't say it, it stays empty.
+
+## What this module does
+
+1. Extraction — transcript to structured fields (product name,
+   category, materials, cost, hours, stock, etc.)
+2. Description writing — fields to English AND Hindi listing
+   descriptions, using only stated facts (no invented claims)
+3. Confidence check — decides if a listing is ready to publish, or
+   what single question to ask the artisan next
+4. Suggested additions — optional extra details offered one at a
+   time; never added unless explicitly approved
+5. Price advisor — cost-based floor + market-band suggestion (no
+   LLM, plain arithmetic + a small reference table)
+
+## Files
+
+| File | Purpose |
+|---|---|
+| factsheet_schema.py | The FactSheet Pydantic model, the shared data contract every other file here uses. Field names deliberately match what mapper.py (ONDC side) expects. |
+| extract.py | Transcript to filled FactSheet, via Gemini structured output. Never invents a value for anything not stated. |
+| writer.py | FactSheet to short_description / long_description in both English and Hindi, fact-grounded only. |
+| confidence.py | Missing-field detection, one-question-at-a-time logic, and the suggested-additions approve/skip flow. |
+| price_advisor.py | Cost-plus floor + market-band price suggestion. No API calls, pure Python + pandas. |
+| gemini_utils.py | Shared retry-with-backoff wrapper for Gemini calls (handles transient 503/429 errors). |
+| test_transcripts.py | 15 realistic test transcripts + expected extraction results. |
+| run_extraction_tests.py | Runs extraction against all 15 test cases and flags mismatches or unexpected (possibly hallucinated) fills. |
+| run_pipeline.py | Chains the full pipeline together: transcript to extraction to description to confidence check to price to ONDC item (calls into mapper.py). |
+| mapper.py, ondc_schema.json | Copied from the ONDC module/repo, see note below. |
+
+## Important: mapper.py / ondc_schema.json are duplicated, not shared
+
+These two files are copies of the ones in the separate ONDC module
+(different branch/folder, see that module's own README). They are
+duplicated here on purpose, to keep run_pipeline.py simple for the
+hackathon timeline, rather than dealing with cross-repo/cross-folder
+Python imports.
+
+This means: if mapper.py or ondc_schema.json changes in the ONDC
+module, someone needs to manually re-copy the updated file here too,
+git will not do this automatically. Before relying on run_pipeline.py
+for a demo, double check these two files match the latest version in
+the ONDC module.
+
+If this project continues past the hackathon, worth restructuring into
+one shared package instead of copy-paste, flagging that as a known
+tradeoff, not an oversight.
+
+## Setup
+
+pip install pydantic anthropic google-genai pandas jsonschema
+
+Requires a GEMINI_API_KEY environment variable (free tier, get one at
+https://aistudio.google.com/apikey, no card needed):
+
+$env:GEMINI_API_KEY = "your-key-here"
+
+Free tier limits to know: 5 requests/minute, and a daily cap. Both
+files that call Gemini (extract.py, writer.py, confidence.py) use
+gemini_utils.py's retry wrapper to handle transient rate limiting, and
+run_extraction_tests.py paces itself with a 13-second delay between
+test cases to stay under the per-minute limit.
+
+## Quick test — run each piece standalone
+
+python factsheet_schema.py
+python extract.py
+python writer.py
+python confidence.py
+python price_advisor.py
+python run_extraction_tests.py
+python run_pipeline.py
+
+## Key design decisions
+
+"Never invent a value" is enforced structurally, not just by
+instruction. Every field in FactSheet defaults to None, extraction
+uses forced structured output (Gemini's response_schema) so the model
+can't return free-text it wasn't asked for, and writer.py only
+receives the fields that are actually filled.
+
+Suggested additions are never auto-applied. confidence.py's
+apply_suggestion() takes an explicit approved boolean, skipping or
+ignoring a suggestion leaves the fact sheet completely untouched.
+
+Bilingual output is one Gemini call, not two. writer.py generates
+English and Hindi together in a single structured response.
+
+Category taxonomy matches the real ONDC taxonomy (confirmed with
+the team, Sept 2026), see the ONDC module's README for the full
+taxonomy source links and reasoning.
+
+## Known open items
+
+- Jewellery-specific ONDC category still unconfirmed (falls back to
+  "Ethnic Wear" on the mapping side)
+- Whether Hindi descriptions get pushed to ONDC directly, shown only
+  in-app, or handled as a separate listing/variant is not yet decided
+- mapper.py/ondc_schema.json sync (see warning above)
+- Only 1 real-world transcript tested end-to-end so far in
+  run_pipeline.py
+=======
+# 🛍️ Kirtikar — AI-Powered Artisan Publishing Platform (SIH-090)
+
+**Problem Statement**: Smart Cataloging and Multimodal Market Linkage for Marginalized Indian Artisans  
+**Repository**: Project Ctrl-Alt-Delete  
+
+---
+
+## 🏛️ Repository Architecture
+
+This mono-repo powers the end-to-end publishing pipeline connecting rural Indian artisans to e-commerce marketplaces (ONDC, Amazon Karigar, Etsy) by speaking regional dialects and photographing handmade crafts on their phones.
+
+```
+SIH-090-Project-Ctrl-Alt-Delete/
+├── app/                  # Mobile Client: Kirtikar (Flutter 3.47, Android)
+│   ├── lib/
+│   │   ├── main.dart, app.dart   # Entry point, Firebase init, theme per language, routes
+│   │   ├── core/         # Config (build defines), theme, routing & deep links, constants, utils
+│   │   │                 # (image quality gate, on-device framing, photo edits, money in paise)
+│   │   ├── data/
+│   │   │   ├── models/   # Listing, FactSheet, Suggestion, Sale, SellerProfile, CaptureItem
+│   │   │   ├── local/    # sqflite database: capture queue + offline listing cache
+│   │   │   ├── remote/   # ApiClient (HttpApi / MockApi / HybridApi), backend session (JWT),
+│   │   │   │             # route table, snake/camel JSON mapping, error mapping, voice/ (Sarvam)
+│   │   │   └── repositories/ # Auth (Firebase OTP), seller, listings (cache-first), sales, ONDC
+│   │   ├── services/     # Camera, recorder, player, speech (TTS), dictation, upload queue,
+│   │   │                 # background upload (WorkManager), notifications, connectivity, updates
+│   │   ├── state/        # ChangeNotifier controllers (Provider) + providers.dart wiring
+│   │   ├── features/     # Screens, one folder per flow (see "Mobile App" below)
+│   │   ├── widgets/      # Shared, voice-first UI components
+│   │   └── l10n/         # 11 languages (ARB + generated localizations)
+│   ├── assets/           # Noto Sans fonts for 9 scripts, craft images, practice photos, mock data
+│   ├── android/          # Android project (minSdk 24), release signing, R8 rules, launcher icons
+│   ├── test/             # Unit, widget and API-contract tests (+ JSON fixtures)
+│   ├── tool/             # Launcher icon generator, fresh emulator run script
+│   ├── config/           # secrets.example.json (copy to secrets.json, never committed)
+│   └── pubspec.yaml      # Mobile dependencies
+│
+├── backend/              # Publishing Factory Backend (FastAPI + PostgreSQL + SQLAlchemy)
+│   ├── app/
+│   │   ├── api/          # RESTful v1 endpoints (/listings, /media, /seller, /publish, /voice)
+│   │   ├── core/         # Config, Security, Phone validation, Firebase Auth
+│   │   ├── db/           # SQLAlchemy session & Base
+│   │   ├── models/       # Domain models (sellers, listings, media, suggestions, consents)
+│   │   ├── schemas/      # Pydantic schemas & state enums
+│   │   └── services/
+│   │       ├── pipeline/ # 5-Stage Deterministic Cataloging Pipeline
+│   │       │   ├── stages/
+│   │       │   │   ├── image.py       # [LIVE] ImageStation: Quality check, Cutout, Studio Framing
+│   │       │   │   ├── speech.py      # [LIVE] SpeechStage: Sarvam AI Indic STT translation
+│   │       │   │   ├── fact_sheet.py  # [LIVE] FactSheetStage: Gemini Flash structured extraction
+│   │       │   │   ├── price.py       # [LIVE] PriceStage: Fair market pricing engine
+│   │       │   │   └── confidence.py  # Confidence score evaluator
+│   │       │   └── runner.py          # Sequential orchestrator with isolated retries
+│   │       ├── vision/   # Image Processing Subsystem (IS-Net ONNX)
+│   │       ├── voice/    # Voice Station Subsystem (Sarvam AI saaras:v3)
+│   │       ├── llm/      # LLM Extraction Subsystem (Gemini 3.5 Flash)
+│   │       └── publishing/ # Multi-Channel Adapters (ONDC, Meta WhatsApp, Google Merchant)
+│   ├── alembic/          # Database migrations
+│   ├── tests/            # Automated test suite (160/160 passing - 100%)
+│   ├── test_voice_cli.py # Interactive CLI tool for voice testing & JSON generation
+│   ├── requirements.txt  # Python backend, vision & AI dependencies
+│   ├── README.md         # Backend setup and API documentation
+│   └── BACKEND_STUDY_GUIDE.md # Exhaustive technical architecture study guide
+```
+
+---
+
+## 📱 Mobile App (`app/`)
+
+Kirtikar is built for an artisan who may not read or type comfortably, on a cheap Android phone with a weak connection. Every screen can be read aloud, every important input can be spoken, and nothing is lost when the network drops.
+
+### Design principles
+- **Voice first**: every screen has a speak button and can read itself aloud; names, answers and edits can be spoken instead of typed.
+- **Offline first**: captures are saved to a local database and uploaded by a queue whenever a network appears, including in the background with the app closed.
+- **11 languages**: Hindi, English, Bengali, Gujarati, Kannada, Malayalam, Marathi, Odia, Punjabi, Tamil and Telugu, with bundled Noto Sans fonts so text never breaks mid-word on small screens.
+- **Big targets, few words**: large buttons, icons with labels, one decision per screen, and spoken confirmation before anything destructive.
+- **Seller stays in control**: nothing is published without an explicit read-back, price check and separate consent for the photo and the craft story, and consent can be withdrawn later.
+
+### User flows
+| # | Flow | What the seller does |
+|---|---|---|
+| 1 | **Onboarding** | Choose language → welcome → terms (spoken summary) → phone number + OTP (Firebase) → permissions → profile (name, village, craft) |
+| 2 | **Home** | See what needs attention, start a new product, check uploads and sales |
+| 3 | **Guided capture** | Take up to 3 photos with live framing help → automatic quality check (blur, light, product in frame) with retake advice → crop/rotate → record a voice note describing the product (or type it) → saved to the queue |
+| 4 | **Upload queue** | Watch uploads progress; failed items explain why and retry automatically when a network returns |
+| 5 | **Review & publish** | Answer one follow-up question by voice → listen to the generated title and description → accept or reject suggested additions → confirm price and stock → reorder photos → give photo and story consent → publish |
+| 6 | **Listings / Products** | Drafts, live and sold sections; edit, update stock, share a preview link, unpublish and relist |
+| 7 | **Sales** | Sale details, pack-by reminders, a spoken packing checklist, and weekly / monthly / total earnings |
+| 8 | **Profile & settings** | Edit profile and craft story, change phone, link the ONDC selling account, voice speed and auto-read, notifications, privacy & consent centre, storage, sign out / delete account |
+| 9 | **Help** | Spoken help topics, FAQ, about, call or WhatsApp support, terms and privacy |
+| 10 | **System states** | Offline banner, server errors, permission recovery, forced update |
+
+### Architecture
+```
+Screens (features/)  ──►  Controllers (state/, ChangeNotifier via Provider)
+                                  │
+                                  ▼
+                         Repositories (data/repositories/)
+                         ┌────────┴─────────┐
+                         ▼                  ▼
+              Local sqflite cache      ApiClient (data/remote/)
+              + capture queue          ├─ HttpApi   → FastAPI backend (/api/v1)
+                                       ├─ MockApi   → on-device simulation for demos
+                                       └─ HybridApi → per-call switch between the two
+```
+- **Authentication**: Firebase phone OTP on the device; the Firebase ID token is exchanged at `POST /api/v1/auth/firebase` for the backend's JWT, which is stored, refreshed and retried once on `401`.
+- **Uploads**: `POST /listings` with the phone's capture id as `client_item_id`, then one `POST /listings/{id}/media` per photo and voice note, with progress. The phone keeps using its own capture id and maps it to the server's listing id.
+- **Moving to the real backend one call at a time**: `API_REAL_CALLS` chooses which calls go to the server. By default these are profile, upload and reading listings; the rest stay simulated until the backend supports them.
+- **Status updates**: listings still being processed are refreshed on a backoff while the app is open, on resume, and on pull-to-refresh.
+- **Voice**: Sarvam AI for speech-to-text (`saaras:v3`), text-to-speech (`bulbul:v3`) and translation (`mayura:v1`), with generated speech cached on the phone; falls back to the device's own TTS and speech recognition when no key is set.
+- **On-device vision**: Google ML Kit object detection for framing guidance, plus a local blur/exposure quality gate before anything is uploaded.
+- **ONDC**: the seller links a selling account (email + seller ID). Linking is simulated until ONDC network approval; real linking will run through the backend.
+- **Errors**: every failure is mapped to one reason (offline, server, not allowed, not found, conflict, invalid) and shown as a spoken, translated message.
+
+### Quick Start (Mobile App)
+```bash
+cd app
+flutter pub get
+
+# Optional keys and server settings (never committed)
+cp config/secrets.example.json config/secrets.json
+
+# Run on a device or emulator (fully simulated backend if API_BASE_URL is empty)
+flutter run --dart-define-from-file=config/secrets.json
+
+# Tests and static analysis
+flutter test
+flutter analyze
+```
+
+| Setting (`config/secrets.json`) | Purpose |
+|---|---|
+| `API_BASE_URL` | Backend base including `/api/v1`, e.g. `http://10.0.2.2:8000/api/v1` for an emulator. Empty = simulated backend |
+| `API_REAL_CALLS` | Empty = calls the backend supports today; `all`; `none`; or a comma list such as `listings,uploadCapture` |
+| `SARVAM_API_KEY` | Cloud voice; without it the device's own speech engines are used |
+| `SUPPORT_PHONE` | Number shown on the support screen |
+| `ONDC_DEMO_LINKING` | Simulated ONDC linking (default on until ONDC approval) |
+
+Debug-only flags: `--dart-define=fresh=true` (start from a clean install), `failUploads=true` (show the retry path), `logHttp=false` (quieter logs). `tool/fresh_run.sh` boots the emulator, clears app data and starts from the first screen.
+
+A release APK needs `android/key.properties` (upload keystore, never committed) and the signing SHA-1/SHA-256 registered in Firebase for phone login:
+```bash
+flutter build apk --release --split-per-abi --dart-define-from-file=config/secrets.json
+```
+
+---
+
+## 🚀 Quick Start (Backend)
+
+```bash
+cd backend
+
+# 1. Setup Python Virtual Environment
+python3 -m venv .venv
+source .venv/bin/activate
+
+# 2. Install Dependencies
+pip install -r requirements.txt
+
+# 3. Run Automated Tests (100% Offline with Synthetic Fallbacks)
+pytest -v
+
+# 4. Start Development Server
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+```
+
+Interactive API documentation will be available at:
+- **Swagger UI**: [http://localhost:8000/docs](http://localhost:8000/docs)
+- **ReDoc**: [http://localhost:8000/redoc](http://localhost:8000/redoc)
+
+---
+
+## 🎙️ Testing the Voice-to-Catalog Pipeline
+
+You can test the complete multimodal cataloging pipeline directly using the CLI tool:
+
+```bash
+cd backend
+
+# Test with an audio file and craft image to export structured catalog JSON:
+python3 test_voice_cli.py --file /path/to/voice_note.wav --image /path/to/craft.jpg --output listing.json
+
+# Or speak live into your microphone (counts down 10 seconds):
+python3 test_voice_cli.py --record --seconds 10 --image /path/to/craft.jpg
+```
+
+---
+
+## 🎨 Subsystem Status
+
+> 📖 **Engineering Handover**: For a detailed technical walkthrough of the Vision & Voice pipelines (IS-Net ONNX, Sarvam AI, multimodal Gemini Flash, and Mermaid architecture flowcharts), refer to [**`backend/HANDOVER_VISION_VOICE.md`**](backend/HANDOVER_VISION_VOICE.md).
+
+| Subsystem | Lead | Status | Highlights |
+|---|---|:---:|---|
+| **Mobile App (`app/`)** | Mohit | ✅ Functional | 10 flows / 55+ screens and steps, 11 languages, voice-first UI, offline queue + background upload, Firebase OTP, backend-ready API layer (370 tests) |
+| **Backend Core (`backend/`)** | Ayush | ✅ Functional | FastAPI, Alembic migrations, in-memory SQLite test harness |
+| **Vision Station (`backend/app/services/vision/`)** | Kaustubh | ✅ Integrated | 80% studio white framing, IS-Net ONNX, Laplacian/ROI quality gate |
+| **Voice Station (`backend/app/services/voice/`)** | Kaustubh | ✅ Integrated | Sarvam AI (`saaras:v3`) Indic STT translation (Hindi, Marathi, Bengali, etc.) |
+| **LLM Fact Sheet Extraction (`backend/app/services/llm/`)** | Kaustubh | ✅ Integrated | Gemini Flash (`gemini-3.5-flash`) strict Pydantic JSON schema |
+| **Price Advisor (`backend/app/services/pipeline/stages/price.py`)** | Kaustubh | ✅ Integrated | Stated price adoption & fair market benchmark recommendations |
+| **Multi-Channel Syndication (`backend/app/services/publishing/`)** | Team | ✅ Integrated | ONDC (Beckn), Meta (WhatsApp Business Catalog), Google Merchant Center |
+>>>>>>> cbdb6c6ef18979532be76573702ea9edc7a48d24
