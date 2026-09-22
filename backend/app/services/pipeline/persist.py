@@ -54,13 +54,12 @@ def save_pipeline_result(db: Session, listing: Listing, context: PipelineContext
 
     if facts is not None:
         result.title = facts.title
-        # The language layer's writer uses only stated facts; the summary is
-        # the fallback when it did not run.
-        result.description = attributes.get("long_description") or facts.story_summary
+        # The language layer's writer uses only stated facts; the artisan's own
+        # words are the fallback when it did not run.
+        result.description = attributes.get("long_description") or (
+            speech.transcript if speech is not None else None
+        )
         result.material = facts.material
-        result.craft_type = facts.craft_type
-        result.technique = facts.craft_type
-        result.story_summary = facts.story_summary
         result.size = _first_text(attributes.get("dimensions"))
         result.colour = _first_text(attributes.get("primary_colors"))
         result.price_in_paise = _to_paise(attributes.get("stated_price"))
@@ -160,10 +159,6 @@ _PROMPTS = {
         "value": "colour",
         "reason": "The voice note did not mention the colour.",
     },
-    "origin": {
-        "value": "origin",
-        "reason": "The voice note did not mention where it was made.",
-    },
 }
 
 
@@ -185,10 +180,7 @@ def save_attention_reason(
     facts = context.fact_sheet_output
     if facts is not None:
         result.title = result.title or facts.title
-        result.description = result.description or facts.story_summary
         result.material = result.material or facts.material
-        result.craft_type = result.craft_type or facts.craft_type
-        result.technique = result.technique or facts.craft_type
 
     if context.speech_output is not None:
         result.language = context.speech_output.language

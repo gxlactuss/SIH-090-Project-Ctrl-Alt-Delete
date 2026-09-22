@@ -608,7 +608,7 @@ def test_unauthenticated_delete_rejected(client: TestClient, sellers_and_auth):
 
 
 def _ready_listing(client: TestClient, test_db: Session, headers, client_item_id: str):
-    """A listing with a result row and one open suggestion about its origin."""
+    """A listing with a result row and one open suggestion about its colour."""
     from app.models.listing_result import ListingResult
     from app.models.suggestion import Suggestion as SuggestionModel
 
@@ -620,9 +620,9 @@ def _ready_listing(client: TestClient, test_db: Session, headers, client_item_id
     test_db.add(ListingResult(listing_id=uuid.UUID(listing_id), title="Clay pot"))
     suggestion = SuggestionModel(
         listing_id=uuid.UUID(listing_id),
-        field="origin",
-        value="origin",
-        reason="The voice note did not mention where it was made.",
+        field="colour",
+        value="colour",
+        reason="The voice note did not mention the colour.",
         approved=None,
     )
     test_db.add(suggestion)
@@ -638,23 +638,23 @@ def test_suggestion_names_the_field_it_is_about(client: TestClient, test_db: Ses
 
     body = client.get(f"/api/v1/listings/{listing_id}", headers=headers_a).json()
 
-    assert body["suggestions"][0]["field"] == "origin"
+    assert body["suggestions"][0]["field"] == "colour"
 
 
 def test_patch_writes_a_correction_onto_the_fact_sheet(client: TestClient, test_db: Session, sellers_and_auth):
     """A corrected field is stored and comes back in the fact sheet."""
     (_, headers_a), _ = sellers_and_auth
-    listing_id, _ = _ready_listing(client, test_db, headers_a, "patch-origin")
+    listing_id, _ = _ready_listing(client, test_db, headers_a, "patch-colour")
 
     response = client.patch(
-        f"/api/v1/listings/{listing_id}", json={"origin": "Jaipur"}, headers=headers_a
+        f"/api/v1/listings/{listing_id}", json={"colour": "Blue"}, headers=headers_a
     )
 
     assert response.status_code == 200
-    assert response.json()["fact_sheet"]["origin"] == "Jaipur"
+    assert response.json()["fact_sheet"]["colour"] == "Blue"
 
     fetched = client.get(f"/api/v1/listings/{listing_id}", headers=headers_a)
-    assert fetched.json()["fact_sheet"]["origin"] == "Jaipur"
+    assert fetched.json()["fact_sheet"]["colour"] == "Blue"
 
 
 def test_patch_settles_the_suggestion_it_answers(client: TestClient, test_db: Session, sellers_and_auth):
@@ -663,7 +663,7 @@ def test_patch_settles_the_suggestion_it_answers(client: TestClient, test_db: Se
     listing_id, _ = _ready_listing(client, test_db, headers_a, "patch-settles")
 
     client.patch(
-        f"/api/v1/listings/{listing_id}", json={"origin": "Jaipur"}, headers=headers_a
+        f"/api/v1/listings/{listing_id}", json={"colour": "Blue"}, headers=headers_a
     )
 
     body = client.get(f"/api/v1/listings/{listing_id}", headers=headers_a).json()
@@ -702,17 +702,17 @@ def test_answer_stores_the_spoken_value_and_the_recording(client: TestClient, te
     from app.models.media import Media
 
     (_, headers_a), _ = sellers_and_auth
-    listing_id, _ = _ready_listing(client, test_db, headers_a, "answer-origin")
+    listing_id, _ = _ready_listing(client, test_db, headers_a, "answer-colour")
 
     response = client.post(
         f"/api/v1/listings/{listing_id}/answer",
         files={"voiceReply": ("reply.m4a", b"fake audio bytes", "audio/mp4")},
-        data={"field": "origin", "transcript": "Jaipur"},
+        data={"field": "colour", "transcript": "Blue"},
         headers=headers_a,
     )
 
     assert response.status_code == 200, response.text
-    assert response.json()["fact_sheet"]["origin"] == "Jaipur"
+    assert response.json()["fact_sheet"]["colour"] == "Blue"
 
     kept = test_db.query(Media).filter(Media.listing_id == uuid.UUID(listing_id)).all()
     assert len(kept) == 1
@@ -726,7 +726,7 @@ def test_answer_settles_the_suggestion(client: TestClient, test_db: Session, sel
     client.post(
         f"/api/v1/listings/{listing_id}/answer",
         files={"voiceReply": ("reply.m4a", b"fake audio bytes", "audio/mp4")},
-        data={"field": "origin", "transcript": "Jaipur"},
+        data={"field": "colour", "transcript": "Blue"},
         headers=headers_a,
     )
 
@@ -756,8 +756,8 @@ def test_another_seller_cannot_correct_your_listing(client: TestClient, test_db:
     listing_id, _ = _ready_listing(client, test_db, headers_a, "owned")
 
     assert client.patch(
-        f"/api/v1/listings/{listing_id}", json={"origin": "Nowhere"}, headers=headers_b
+        f"/api/v1/listings/{listing_id}", json={"colour": "Green"}, headers=headers_b
     ).status_code == 404
 
     body = client.get(f"/api/v1/listings/{listing_id}", headers=headers_a).json()
-    assert body["fact_sheet"]["origin"] is None
+    assert body["fact_sheet"]["colour"] is None

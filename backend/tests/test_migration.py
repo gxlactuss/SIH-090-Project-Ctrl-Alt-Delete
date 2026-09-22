@@ -15,10 +15,10 @@ def test_migration_file_exists_and_discoverable():
     script = ScriptDirectory.from_config(config)
     head_revision = script.get_current_head()
 
-    assert head_revision == "0007_listing_origin"
+    assert head_revision == "0008_drop_craft_story_fields"
 
     rev_head = script.get_revision(head_revision)
-    assert rev_head.down_revision == "0006_expected_photo_count"
+    assert rev_head.down_revision == "0007_listing_origin"
 
     # Verify 0001_domain_tables
     rev_0001 = script.get_revision("0001_domain_tables")

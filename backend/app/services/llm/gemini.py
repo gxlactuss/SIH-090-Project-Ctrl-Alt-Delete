@@ -54,12 +54,9 @@ def image_mime_type(path: str) -> str:
 @dataclass(frozen=True)
 class GeminiExtractionResult:
     title: str
-    craft_type: str
     material: str
-    story_summary: str
     stated_price: Optional[float] = None
     dimensions: Optional[str] = None
-    origin: Optional[str] = None
     colors: List[str] = field(default_factory=list)
     missing_fields: List[str] = field(default_factory=list)
     attributes: Dict[str, Any] = field(default_factory=dict)
@@ -82,17 +79,9 @@ EXTRACTION_SCHEMA = {
             "type": "STRING",
             "description": "Descriptive, high-converting English product title",
         },
-        "craft_type": {
-            "type": "STRING",
-            "description": "Traditional Indian craft form (e.g. Madhubani Art, Terracotta Pottery, Dhokra, Chanderi)",
-        },
         "material": {
             "type": "STRING",
             "description": "Primary authentic raw materials mentioned (e.g. Natural river clay, handmade paper)",
-        },
-        "story_summary": {
-            "type": "STRING",
-            "description": "Artisan personal backstory, tradition, cultural significance, and making technique",
         },
         "stated_price": {
             "type": "NUMBER",
@@ -101,10 +90,6 @@ EXTRACTION_SCHEMA = {
         "dimensions": {
             "type": "STRING",
             "description": "Product dimensions or size if mentioned. Null if not mentioned.",
-        },
-        "origin": {
-            "type": "STRING",
-            "description": "Geographical region or craft cluster of origin if mentioned.",
         },
         "colors": {
             "type": "ARRAY",
@@ -142,39 +127,24 @@ EXTRACTION_SCHEMA = {
             "description": "Whether the artisan accepts returns, only if stated. Null otherwise.",
         },
     },
-    "required": ["title", "craft_type", "material", "story_summary"],
+    "required": ["title", "material"],
 }
 
 SYSTEM_INSTRUCTION = """You are an expert Indian Handicrafts Cataloging Assistant for Kirtikar (SIH-090).
 Your job is to take an artisan's spoken voice note (translated to English) and optional product photograph to extract structured product metadata for e-commerce publishing.
 
 RULES:
-1. Extract authentic craft facts directly from the transcript and visual cues from the attached photograph.
+1. Extract product facts directly from the transcript and visual cues from the attached photograph.
 2. NEVER hallucinate or invent a price or dimensions if the artisan did not explicitly state them.
 3. If price is not mentioned, set `stated_price` to null and add 'price' to `missing_fields`.
 4. If dimensions/size are not mentioned, set `dimensions` to null and add 'dimensions' to `missing_fields`.
-5. Preserve authentic Indian craft terminology (e.g., Madhubani, Warli, Terracotta Pottery, Zari, Pattachitra, Blue Pottery).
-6. Craft a compelling artisan story summary highlighting their traditional heritage, craft technique, and craftsmanship.
-7. If an image is provided, examine it closely to confirm craft form, natural colors, visible textures, and authentic material composition.
-8. `cost_of_materials`, `hours_spent`, `stock_count` and `returnable` come only from what the artisan said. If a value was not mentioned, set it to null. Never guess, infer or estimate a "reasonable" value. Do not round or convert units unless the artisan's own words make the value unambiguous ("two hours" -> 2, "about 300 rupees" -> 300). A price the artisan asks for is `stated_price`, never `cost_of_materials`.
+5. If an image is provided, examine it closely to confirm natural colors, visible textures, and authentic material composition.
+6. `cost_of_materials`, `hours_spent`, `stock_count` and `returnable` come only from what the artisan said. If a value was not mentioned, set it to null. Never guess, infer or estimate a "reasonable" value. Do not round or convert units unless the artisan's own words make the value unambiguous ("two hours" -> 2, "about 300 rupees" -> 300). A price the artisan asks for is `stated_price`, never `cost_of_materials`.
 
 CATEGORY:
 Use the MOST SPECIFIC matching value from: {categories}.
 "saree" for sarees specifically; "kurta" for kurtas and tunics; "scarf" for dupattas, shawls and scarves; "fabric" for unstitched or raw fabric; "basket" for woven baskets and kitchen storage; "textile" only as a fallback when the piece is clearly fabric-based but matches nothing more specific. Terracotta, clay and ceramic pieces are "pottery" even if the artisan never says the word. If nothing matches clearly, set category to null rather than guessing.
 
-ABOUT THE ARTISAN'S OWN STORY:
-If the artisan's profile story is supplied, it is background about the maker, not
-about this particular piece. Use it for at most ONE short clause in
-`story_summary` - the kind of detail a buyer remembers, such as how long they
-have practised, who taught them, or where they work. Rules:
-- Never retell the story or quote it at length. One clause, woven into a
-  sentence about the product. The piece stays the subject.
-- Only use it when it genuinely fits this craft. If the story is about weaving
-  and this is a clay pot, leave it out entirely.
-- Never turn it into a fact about the product. It must not change craft_type,
-  material, dimensions, price, colors or origin, all of which come only from the
-  voice note and the photograph.
-- Never invent detail that is not in the story.
 """.replace("{categories}", ", ".join(CATEGORIES))
 
 T = TypeVar("T")
@@ -215,16 +185,9 @@ class GeminiExtractor:
         transcript: str,
         detected_language: str = "hi",
         image_path: Optional[str] = None,
-        seller_story: Optional[str] = None,
         allow_synthetic_fallback: bool = True,
     ) -> GeminiExtractionResult:
-        """Extract structured catalog attributes from transcript and optional craft photo.
-
-        `seller_story` is the artisan's own profile story, written once and reused
-        across their listings. It is background colour for the description only:
-        the prompt allows a single clause from it and forbids it from touching any
-        product fact.
-        """
+        """Extract structured catalog attributes from transcript and optional craft photo."""
         if not transcript or not transcript.strip():
             raise ValueError("Cannot extract from empty transcript")
 
@@ -235,7 +198,6 @@ class GeminiExtractor:
                         transcript,
                         detected_language,
                         image_path=image_path,
-                        seller_story=seller_story,
                         model_name=model_name,
                     )
                 )
@@ -374,7 +336,6 @@ class GeminiExtractor:
         transcript: str,
         detected_language: str,
         image_path: Optional[str] = None,
-        seller_story: Optional[str] = None,
         model_name: Optional[str] = None,
     ) -> GeminiExtractionResult:
         # The key travels in a header, never in the query string: httpx logs the
@@ -399,21 +360,7 @@ class GeminiExtractor:
 
         prompt_text = f"Artisan Voice Note Transcript (detected language: {detected_language}):\n\n\"{transcript}\""
         if image_path and os.path.exists(image_path):
-            prompt_text += "\n\nNote: The artisan also provided the attached craft photograph. Combine visual evidence from the image (craft style, colors, visible texture, materials, shape) with the artisan's voice note to construct the most accurate, compelling fact sheet."
-
-        story = (seller_story or "").strip()
-        if story:
-            # Capped so a long profile story cannot crowd out the voice note, which
-            # is the only source of truth about this particular piece.
-            if len(story) > 600:
-                story = story[:600].rsplit(" ", 1)[0] + "…"
-            prompt_text += (
-                "\n\nThe artisan's profile story (background about the maker, not "
-                f"about this piece):\n\"{story}\"\n"
-                "Follow the system instruction: at most one short clause from this "
-                "may appear in story_summary, and only if it genuinely fits this "
-                "craft. It must not change any product fact."
-            )
+            prompt_text += "\n\nNote: The artisan also provided the attached craft photograph. Combine visual evidence from the image (colors, visible texture, materials, shape) with the artisan's voice note to construct the most accurate, compelling fact sheet."
 
         parts.append({"text": prompt_text})
 
@@ -461,10 +408,6 @@ class GeminiExtractor:
         if isinstance(dimensions, str) and dimensions.strip().lower() in ("null", "none", "n/a", "not specified", "not mentioned", "unknown"):
             dimensions = None
 
-        origin = parsed.get("origin")
-        if isinstance(origin, str) and origin.strip().lower() in ("null", "none", "n/a", "not specified", "not mentioned", "unknown"):
-            origin = None
-
         colors = parsed.get("colors") or []
         missing_fields = parsed.get("missing_fields") or []
 
@@ -483,7 +426,6 @@ class GeminiExtractor:
             returnable = None
 
         attributes = {
-            "origin": origin,
             "dimensions": dimensions,
             "primary_colors": colors,
             "stated_price": stated_price,
@@ -497,12 +439,9 @@ class GeminiExtractor:
 
         return GeminiExtractionResult(
             title=parsed.get("title", "Handcrafted Artisan Product"),
-            craft_type=parsed.get("craft_type", "Traditional Handicraft"),
             material=parsed.get("material", "Natural indigenous materials"),
-            story_summary=parsed.get("story_summary", transcript),
             stated_price=stated_price,
             dimensions=dimensions,
-            origin=origin,
             colors=colors,
             missing_fields=missing_fields,
             attributes=attributes,
@@ -519,7 +458,6 @@ class GeminiExtractor:
         if is_pottery:
             attributes = {
                 "dimensions": "8x6 inches",
-                "origin": "Khurja / Dharavi Pottery Cluster",
                 "primary_colors": ["terracotta", "earthy red", "natural clay"],
                 "stated_price": None,
                 "missing_fields": ["price"],
@@ -527,12 +465,9 @@ class GeminiExtractor:
             }
             return GeminiExtractionResult(
                 title="Handcrafted Terracotta Clay Water Pot",
-                craft_type="Terracotta Pottery",
                 material="Natural kiln-fired clay",
-                story_summary=transcript,
                 stated_price=None,
                 dimensions="8x6 inches",
-                origin="Khurja / Dharavi Pottery Cluster",
                 colors=["terracotta", "earthy red", "natural clay"],
                 missing_fields=["price"],
                 attributes=attributes,
@@ -541,19 +476,15 @@ class GeminiExtractor:
 
         attributes = {
             "dimensions": "1024x768",
-            "origin": "Mithila region",
             "primary_colors": ["ochre", "indigo", "lampblack"],
             "stated_price": None,
             "missing_fields": ["price"],
         }
         return GeminiExtractionResult(
             title="Handcrafted Madhubani Folk Painting",
-            craft_type="Madhubani Art",
             material="Natural pigments on handmade paper",
-            story_summary=transcript,
             stated_price=None,
             dimensions="1024x768",
-            origin="Mithila region",
             colors=["ochre", "indigo", "lampblack"],
             missing_fields=["price"],
             attributes=attributes,

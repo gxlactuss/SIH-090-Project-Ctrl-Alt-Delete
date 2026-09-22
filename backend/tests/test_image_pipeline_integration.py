@@ -82,7 +82,6 @@ class _RecordingExtractor:
         transcript,
         detected_language="hi",
         image_path=None,
-        seller_story=None,
         allow_synthetic_fallback=True,
     ):
         from app.services.llm.gemini import GeminiExtractionResult
@@ -90,9 +89,7 @@ class _RecordingExtractor:
         self.calls.append({"transcript": transcript, "image_path": image_path})
         return GeminiExtractionResult(
             title="Handmade Silver Necklace",
-            craft_type="Silver Filigree",
             material="Silver",
-            story_summary="A necklace.",
             used_live_api=True,
         )
 
@@ -308,8 +305,7 @@ def _capture_request(extractor, **kwargs):
                         "content": {
                             "parts": [
                                 {
-                                    "text": '{"title":"T","craft_type":"C",'
-                                    '"material":"M","story_summary":"S"}'
+                                    "text": '{"title":"T","material":"M"}'
                                 }
                             ]
                         }
@@ -425,8 +421,7 @@ def _extractor_with_responses(statuses, monkeypatch):
                         "content": {
                             "parts": [
                                 {
-                                    "text": '{"title":"T","craft_type":"C",'
-                                    '"material":"M","story_summary":"S"}'
+                                    "text": '{"title":"T","material":"M"}'
                                 }
                             ]
                         }

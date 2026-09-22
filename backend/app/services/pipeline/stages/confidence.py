@@ -34,7 +34,7 @@ class ConfidenceStage:
 
         facts = context.fact_sheet_output
         attributes = facts.attributes
-        sheet = fact_sheet_from_attributes(facts.title, facts.material, facts.craft_type, attributes)
+        sheet = fact_sheet_from_attributes(facts.title, facts.material, attributes)
         stated = attributes.get("stated_price")
         sheet = sheet.model_copy(
             update={

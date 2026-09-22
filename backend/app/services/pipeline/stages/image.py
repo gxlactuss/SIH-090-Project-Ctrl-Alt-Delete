@@ -115,17 +115,13 @@ class ImageStage:
                 quality = result.get("quality", {})
                 quality_reports.append(quality)
 
-                # A photo the artisan can retake is not a reason to abandon the
-                # run. Stopping here left the voice note untranscribed and the
-                # listing blank, so the artisan was shown nothing they had said
-                # alongside a complaint about a photo. Note the problem, keep the
-                # raw frame in place of a composite, and carry on; the runner
-                # finishes in needs_attention and asks for the retake, but with
-                # everything the voice note yielded already saved.
+                # A photo that fails the quality gate is not a reason to stop the
+                # run or to ask the artisan for a retake. Note the problem, keep
+                # the raw frame in place of a composite, and carry on.
                 if not quality.get("passed", False):
                     warnings = "; ".join(quality.get("warnings", ["Quality check failed"]))
                     context.photo_warnings.append(
-                        f"Photo {position}: {warnings}. Please retake it in better light."
+                        f"Photo {position}: {warnings}."
                     )
                     processed_paths.append(raw_relative)
                     dimensions.append(_read_dimensions(raw_path))

@@ -452,8 +452,8 @@ def test_in_memory_crud_and_defaults(in_memory_session: Session):
     # 5. Add suggestion
     suggestion = Suggestion(
         listing_id=listing.id,
-        field="technique",
-        value="Terracotta Wheel Handcrafting",
+        field="colour",
+        value="Terracotta red",
         reason="Detected from voice note description",
     )
     in_memory_session.add(suggestion)

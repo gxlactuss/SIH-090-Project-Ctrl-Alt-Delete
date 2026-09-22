@@ -35,9 +35,7 @@ def stub_stations():
     )
     extraction = GeminiExtractionResult(
         title="Handcrafted Terracotta Water Pot",
-        craft_type="Terracotta Pottery",
         material="River clay",
-        story_summary="Thrown on a traditional wheel.",
         stated_price=250.0,
         attributes={"stated_price": 250.0, "category": "pottery", "missing_fields": []},
         category="pottery",
@@ -121,7 +119,7 @@ def test_live_api_flags_report_actual_usage_not_key_presence(client):
     ), patch(
         "app.api.routes.voice_test.GeminiExtractor.extract_fact_sheet",
         return_value=GeminiExtractionResult(
-            title="t", craft_type="c", material="m", story_summary="s", used_live_api=False
+            title="t", material="m", used_live_api=False
         ),
     ):
         response = client.post(

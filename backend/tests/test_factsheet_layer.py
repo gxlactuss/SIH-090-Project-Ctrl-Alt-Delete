@@ -65,9 +65,7 @@ def _facts(**attributes) -> FactSheetOutput:
     base.update(attributes)
     return FactSheetOutput(
         title="Clay Pot",
-        craft_type="Terracotta Pottery",
         material="Red river clay",
-        story_summary="A pot from the river bank.",
         attributes=base,
     )
 
@@ -97,7 +95,6 @@ def test_a_fact_sheet_holds_only_what_extraction_found():
     sheet = fact_sheet_from_attributes(
         "Clay Pot",
         "Red clay",
-        "Terracotta",
         {"category": "Pottery", "primary_colors": ["red", "brown"], "stock_count": 5},
     )
     assert sheet.category == "pottery"
@@ -110,7 +107,7 @@ def test_a_fact_sheet_holds_only_what_extraction_found():
 
 def test_extraction_reads_the_new_fields_and_drops_non_answers(monkeypatch):
     body = (
-        '{"title":"Clay Pot","craft_type":"Terracotta","material":"Clay","story_summary":"S",'
+        '{"title":"Clay Pot","material":"Clay",'
         '"category":"Pottery","cost_of_materials":120,"hours_spent":3,"stock_count":5,"returnable":"yes"}'
     )
 
@@ -207,7 +204,7 @@ def test_generate_json_needs_a_key(monkeypatch):
 
 def test_the_writer_sees_only_filled_facts():
     model = FakeModel(descriptions=DESCRIPTIONS)
-    sheet = FactSheet(product_name="Clay Pot", materials="Red clay", origin="Khurja")
+    sheet = FactSheet(product_name="Clay Pot", materials="Red clay", color="Red")
 
     written = write_descriptions(sheet, model)
 
@@ -215,9 +212,9 @@ def test_the_writer_sees_only_filled_facts():
     assert written.long_description_hi == DESCRIPTIONS["long_description_hi"]
     prompt = model.prompts[0]
     assert "Materials: Red clay" in prompt
-    assert "Made in: Khurja" in prompt
+    assert "Color: Red" in prompt
     assert "Dimensions" not in prompt
-    assert "Color" not in prompt
+    assert "Made in" not in prompt
 
 
 def test_suggestions_are_capped_and_incomplete_ones_dropped():

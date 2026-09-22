@@ -197,9 +197,9 @@ def test_unusable_photo_still_yields_the_spoken_facts(test_db: Session, seeded_s
     runner = PipelineRunner(stages=stages)
     result = runner.run(listing_id=listing.id, db=test_db, seller_id=seller.id)
 
-    # The photo is still a problem, so the listing waits rather than going out.
-    assert result.final_state == ListingState.needs_attention
-    assert "move closer" in result.reason
+    # The artisan is never asked to retake it: the raw photo goes out.
+    assert result.final_state == ListingState.ready
+    assert result.success
 
     # Every stage after the image ran, and what they understood was saved.
     for stage_name in ("speech", "fact_sheet", "price", "confidence"):
@@ -213,7 +213,7 @@ def test_unusable_photo_still_yields_the_spoken_facts(test_db: Session, seeded_s
     # Nothing in the note supports a price, so none is invented; it is asked.
     assert stored.suggested_price_in_paise is None
     assert any(s.field == "price" for s in listing.suggestions)
-    assert "move closer" in stored.follow_up_question
+    assert stored.follow_up_question is None
 
 
 def test_stages_execute_in_strict_authoritative_order(test_db: Session, seeded_seller_and_listing):
@@ -265,7 +265,7 @@ def test_stage_outputs_flow_through_context(test_db: Session, seeded_seller_and_
     assert captured_ctx.speech_output is not None
     assert "handmade" in captured_ctx.speech_output.transcript.lower()
     assert captured_ctx.fact_sheet_output is not None
-    assert captured_ctx.fact_sheet_output.craft_type == "Madhubani Art"
+    assert captured_ctx.fact_sheet_output.material
     assert captured_ctx.price_output is not None
     # The canned facts carry no category, cost or hours, so no price is invented.
     assert captured_ctx.price_output.recommended_price is None
@@ -716,7 +716,7 @@ def test_image_stage_live_path_success(tmp_path, monkeypatch):
 
 
 def test_image_stage_live_path_quality_failure(tmp_path, monkeypatch):
-    """A photo that fails the quality gate is noted for retake, not fatal to the run."""
+    """A photo that fails the quality gate is noted, not fatal to the run."""
     storage_dir = tmp_path / "media"
     storage_dir.mkdir(parents=True, exist_ok=True)
     monkeypatch.setattr("app.core.config.settings.MEDIA_STORAGE_DIR", str(storage_dir))
@@ -744,8 +744,7 @@ def test_image_stage_live_path_quality_failure(tmp_path, monkeypatch):
     res = stage.run(ctx)
 
     # The run continues so the voice note is still transcribed and understood;
-    # the blurry frame is carried through raw and the retake is asked for at the
-    # end of the run instead.
+    # the blurry frame is carried through raw.
     assert res.status == StageStatus.success
     assert ctx.photo_warnings
     assert "blurry" in ctx.photo_warnings[0].lower()
@@ -834,21 +833,17 @@ def test_fact_sheet_stage_with_gemini_mock(monkeypatch):
     )
 
     class MockGeminiExtractor:
-        def extract_fact_sheet(self, transcript, detected_language="hi", image_path=None, seller_story=None, allow_synthetic_fallback=True):
+        def extract_fact_sheet(self, transcript, detected_language="hi", image_path=None, allow_synthetic_fallback=True):
             return GeminiExtractionResult(
                 title="Handcrafted Terracotta Clay Pot",
-                craft_type="Terracotta Pottery",
                 material="River clay, natural red soil",
-                story_summary="Crafted using riverbed soil on a traditional potter wheel.",
                 stated_price=450.0,
                 dimensions="15x15 cm",
-                origin="Gorakhpur, Uttar Pradesh",
                 colors=["terracotta", "red ochre"],
                 missing_fields=[],
                 attributes={
                     "stated_price": 450.0,
                     "dimensions": "15x15 cm",
-                    "origin": "Gorakhpur, Uttar Pradesh",
                     "primary_colors": ["terracotta", "red ochre"],
                     "missing_fields": [],
                 },
@@ -862,7 +857,6 @@ def test_fact_sheet_stage_with_gemini_mock(monkeypatch):
     assert res.status == StageStatus.success
     assert ctx.fact_sheet_output is not None
     assert ctx.fact_sheet_output.title == "Handcrafted Terracotta Clay Pot"
-    assert ctx.fact_sheet_output.craft_type == "Terracotta Pottery"
     assert ctx.fact_sheet_output.attributes["stated_price"] == 450.0
     assert ctx.fact_sheet_output.attributes["image_count"] == 2
 
@@ -874,9 +868,7 @@ def test_price_stage_adopts_stated_price():
     ctx = PipelineContext(listing_id=uuid.uuid4())
     ctx.fact_sheet_output = FactSheetOutput(
         title="Terracotta Handi",
-        craft_type="Pottery",
         material="Clay",
-        story_summary="Handmade pot",
         attributes={"stated_price": 600.0},
     )
 
@@ -898,9 +890,7 @@ def test_price_stage_advises_from_cost_hours_and_category_when_price_not_stated(
     ctx = PipelineContext(listing_id=uuid.uuid4())
     ctx.fact_sheet_output = FactSheetOutput(
         title="Handloom Cotton Kurta",
-        craft_type="Handloom",
         material="Cotton",
-        story_summary="Handwoven kurta",
         attributes={
             "stated_price": None,
             "category": "kurta",
@@ -927,9 +917,7 @@ def test_price_stage_invents_no_price_without_a_basis():
     ctx = PipelineContext(listing_id=uuid.uuid4())
     ctx.fact_sheet_output = FactSheetOutput(
         title="Handmade Coaster",
-        craft_type="Jute Craft",
         material="Jute fiber",
-        story_summary="Handwoven coasters",
         attributes={"stated_price": None},
     )
 

@@ -150,12 +150,9 @@ def run_pipeline(
         allow_synthetic_fallback=True,
     )
     print(f"   • Title      : {extraction.title}")
-    print(f"   • Craft Type : {extraction.craft_type}")
     print(f"   • Material   : {extraction.material}")
     print(f"   • Dimensions : {extraction.dimensions or 'Not specified'}")
-    print(f"   • Origin     : {extraction.origin or 'India'}")
     print(f"   • Colors     : {', '.join(extraction.colors) if extraction.colors else 'None'}")
-    print(f"   • Story      : \"{extraction.story_summary}\"")
     if extraction.missing_fields:
         print(f"   ⚠️ Missing in Speech: {', '.join(extraction.missing_fields)}")
 
@@ -164,9 +161,7 @@ def run_pipeline(
     ctx = PipelineContext(listing_id=listing_uuid)
     ctx.fact_sheet_output = FactSheetOutput(
         title=extraction.title,
-        craft_type=extraction.craft_type,
         material=extraction.material,
-        story_summary=extraction.story_summary,
         attributes=extraction.attributes,
     )
     PriceStage().run(ctx)
@@ -180,10 +175,10 @@ def run_pipeline(
     canonical = CanonicalListing(
         id=str(ctx.listing_id),
         title=extraction.title,
-        description=extraction.story_summary,
+        description=voice_res.transcript,
         price=pr.recommended_price,
         currency=pr.currency,
-        category=extraction.craft_type,
+        category=extraction.category or "handicraft",
         materials=[extraction.material],
         dimensions=extraction.dimensions,
         media_urls=[media_url],
@@ -235,7 +230,7 @@ def run_pipeline(
         "id": str(ctx.listing_id),
         "status": app_status,
         "title": extraction.title,
-        "description": extraction.story_summary,
+        "description": voice_res.transcript,
         "imageUrls": [media_url],
         "suggestedPriceInPaise": suggested_price_in_paise,
         "priceFloorInPaise": price_floor_in_paise,
@@ -249,7 +244,6 @@ def run_pipeline(
             "material": extraction.material,
             "size": clean_dimensions or "Medium (8x6 inches)",
             "colour": ", ".join(extraction.colors) if extraction.colors else "Terracotta / Earthy Red",
-            "technique": extraction.craft_type,
             "quantity": 1,
             "priceInPaise": price_in_paise,
             "hoursToMake": 4.0,
@@ -276,12 +270,9 @@ def run_pipeline(
         "image_station": image_station_output,
         "modular_sheet": {
             "title": extraction.title,
-            "craft_type": extraction.craft_type,
             "material": extraction.material,
             "dimensions": extraction.dimensions,
-            "origin": extraction.origin,
             "colors": extraction.colors,
-            "story_summary": extraction.story_summary,
             "stated_price": extraction.stated_price,
             "missing_fields": extraction.missing_fields,
             "attributes": extraction.attributes,

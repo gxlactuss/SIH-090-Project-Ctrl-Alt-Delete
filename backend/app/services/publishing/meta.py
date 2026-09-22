@@ -59,7 +59,7 @@ class MetaPublishingAdapter:
             "availability": "in stock",
             "condition": "new",
             "image_url": listing.media_urls[0] if listing.media_urls else None,
-            "brand": listing.attributes.get("craft_type", "Artisan Handmade"),
+            "brand": "Artisan Handmade",
             "origin_country": "IN",
         }
 

@@ -150,8 +150,6 @@ def to_listing_response(listing: Listing) -> ListingResponse:
             material=result.material,
             size=result.size,
             colour=result.colour,
-            technique=result.technique,
-            origin=result.origin,
             quantity=result.quantity,
             price_in_paise=result.price_in_paise,
             hours_to_make=result.hours_to_make,

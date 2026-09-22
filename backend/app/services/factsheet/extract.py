@@ -33,7 +33,6 @@ def _text(value: Any) -> Optional[str]:
 def fact_sheet_from_attributes(
     title: Optional[str],
     material: Optional[str],
-    craft_type: Optional[str],
     attributes: Mapping[str, Any],
 ) -> FactSheet:
     """A FactSheet holding only what the extraction actually found."""
@@ -44,8 +43,6 @@ def fact_sheet_from_attributes(
         materials=_text(material),
         dimensions=_text(attributes.get("dimensions")),
         color=_text(attributes.get("primary_colors")),
-        technique=_text(craft_type),
-        origin=_text(attributes.get("origin")),
         cost_of_materials=attributes.get("cost_of_materials"),
         hours_spent=attributes.get("hours_spent"),
         stock_count=int(stock) if stock is not None else None,
@@ -57,7 +54,6 @@ def fact_sheet_from_extraction(extraction: GeminiExtractionResult) -> FactSheet:
     return fact_sheet_from_attributes(
         extraction.title,
         extraction.material,
-        extraction.craft_type,
         extraction.attributes,
     )
 

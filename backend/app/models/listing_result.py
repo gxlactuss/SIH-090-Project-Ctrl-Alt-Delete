@@ -40,9 +40,6 @@ class ListingResult(Base):
     material: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     size: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     colour: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
-    technique: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
-    # Where the artisan made it: their village, town or cluster.
-    origin: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     quantity: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     hours_to_make: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
     material_cost_in_paise: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
@@ -61,8 +58,6 @@ class ListingResult(Base):
 
     language: Mapped[Optional[str]] = mapped_column(String(16), nullable=True)
     transcript: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
-    craft_type: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
-    story_summary: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
 
     # Whether the facts came from a real model call or a synthetic fallback,
     # so a demo that silently degraded can be told from one that worked.

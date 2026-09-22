@@ -3,8 +3,8 @@
 Runs after the fact sheet. The writer turns only the facts the artisan gave
 into English and Hindi short and long descriptions, and the suggestion step
 offers up to three optional additions the artisan can say yes or no to. Both
-are extra polish: if either call fails the listing keeps the fact sheet's own
-summary and simply has no additions, so this stage never stops a run.
+are extra polish: if either call fails the listing falls back to the
+transcript and simply has no additions, so this stage never stops a run.
 """
 import logging
 from concurrent.futures import ThreadPoolExecutor
@@ -50,7 +50,7 @@ class DescriptionStage:
             summary = {"written": False, "suggestions": 0}
             return StageResult.ok(output=summary, metadata=summary)
 
-        sheet = fact_sheet_from_attributes(facts.title, facts.material, facts.craft_type, attributes)
+        sheet = fact_sheet_from_attributes(facts.title, facts.material, attributes)
         extractor = self._extractor or _get_gemini_extractor()
 
         # Independent calls on a slow model, so they run side by side.

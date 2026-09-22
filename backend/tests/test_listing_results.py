@@ -84,9 +84,7 @@ def _context(listing: Listing, **overrides) -> PipelineContext:
     )
     context.fact_sheet_output = FactSheetOutput(
         title="Handmade Silver Necklace",
-        craft_type="Silver Filigree",
         material="Silver",
-        story_summary="A necklace shaped by hand.",
         attributes={
             "dimensions": "40 cm",
             "primary_colors": ["Silver", "White"],
@@ -117,7 +115,6 @@ def test_the_fact_sheet_is_written_to_the_listing(db: Session, listing: Listing)
     assert stored.title == "Handmade Silver Necklace"
     assert stored.material == "Silver"
     assert stored.size == "40 cm"
-    assert stored.technique == "Silver Filigree"
     # Not a Madhubani painting, which is what every listing used to read back.
     assert "Madhubani" not in (stored.title or "")
 
@@ -303,7 +300,6 @@ def test_the_response_keys_are_the_ones_the_app_reads(db: Session, listing: List
         "material",
         "size",
         "colour",
-        "technique",
         "quantity",
         "price_in_paise",
         "hours_to_make",
@@ -334,7 +330,7 @@ def test_synthetic_facts_are_flagged_as_not_live(db: Session, listing: Listing):
 def test_an_unstated_size_is_not_filled_with_an_image_resolution(db: Session, listing: Listing):
     """"1024x768" was being shown to the artisan as the item's physical size.
 
-    The fact sheet stage defaulted unstated dimensions, origin and colours to a
+    The fact sheet stage defaulted unstated dimensions and colours to a
     sample painting's values, so a response could claim a size and list
     dimensions as missing at the same time.
     """
@@ -345,12 +341,9 @@ def test_an_unstated_size_is_not_filled_with_an_image_resolution(db: Session, li
         def extract_fact_sheet(self, **kwargs):
             return GeminiExtractionResult(
                 title="Handmade Clay Pot",
-                craft_type="Terracotta Pottery",
                 material="Clay",
-                story_summary="A pot.",
                 stated_price=None,
                 dimensions=None,
-                origin=None,
                 colors=[],
                 missing_fields=["price"],
                 attributes={"stated_price": None, "missing_fields": ["price"]},
@@ -372,7 +365,6 @@ def test_an_unstated_size_is_not_filled_with_an_image_resolution(db: Session, li
 
     attributes = context.fact_sheet_output.attributes
     assert attributes.get("dimensions") in (None, "", [])
-    assert attributes.get("origin") in (None, "", [])
     assert not attributes.get("primary_colors")
     assert "1024x768" not in str(attributes)
     assert "Mithila" not in str(attributes)

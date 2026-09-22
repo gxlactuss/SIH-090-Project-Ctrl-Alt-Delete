@@ -70,8 +70,8 @@ class FactSheetStage:
         # The photograph is half the evidence. The image stage has already
         # graded, cut out and composited it, so hand that studio image to the
         # model rather than the raw camera frame: the clutter the artisan was
-        # standing in is gone, which is exactly what made craft form, colour and
-        # material hard to read. Without this the extraction was transcript-only
+        # standing in is gone, which is exactly what made colour and material
+        # hard to read. Without this the extraction was transcript-only
         # and the whole vision stage informed nothing downstream.
         image_path = _primary_image_path(context, storage_base)
 
@@ -85,7 +85,6 @@ class FactSheetStage:
                     transcript=transcript,
                     detected_language=detected_language,
                     image_path=image_path,
-                    seller_story=context.seller_story,
                     allow_synthetic_fallback=True,
                 )
             except Exception as e:
@@ -107,7 +106,6 @@ class FactSheetStage:
         for key, found in (
             ("primary_colors", extraction.colors),
             ("dimensions", extraction.dimensions),
-            ("origin", extraction.origin),
         ):
             if not attributes.get(key) and found:
                 attributes[key] = found
@@ -121,9 +119,7 @@ class FactSheetStage:
 
         output = FactSheetOutput(
             title=extraction.title,
-            craft_type=extraction.craft_type,
             material=extraction.material,
-            story_summary=extraction.story_summary,
             attributes=attributes,
         )
         context.fact_sheet_output = output

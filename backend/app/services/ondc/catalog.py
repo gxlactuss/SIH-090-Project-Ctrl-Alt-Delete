@@ -61,8 +61,6 @@ def fact_sheet_for_listing(listing: Listing) -> FactSheet:
         materials=result.material,
         dimensions=result.size,
         color=result.colour,
-        technique=result.technique,
-        origin=result.origin,
         cost_of_materials=_rupees(result.material_cost_in_paise),
         hours_spent=result.hours_to_make,
         price_final=_rupees(price),

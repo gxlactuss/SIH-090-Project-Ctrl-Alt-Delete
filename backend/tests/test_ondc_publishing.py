@@ -116,7 +116,6 @@ def _ready_listing(factory, media_root: Path, **result_fields) -> str:
         title="Terracotta Water Pot",
         description="A water pot shaped by hand from river clay.",
         material="River clay",
-        technique="Terracotta Pottery",
         quantity=4,
         price_in_paise=45000,
         attributes={"category": "pottery", "short_description": "A handmade clay pot."},

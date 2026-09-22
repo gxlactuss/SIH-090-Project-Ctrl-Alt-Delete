@@ -29,9 +29,7 @@ class SpeechStageOutput:
 class FactSheetOutput:
     """Structured output from fact sheet synthesis and copywriting station."""
     title: str
-    craft_type: str
     material: str
-    story_summary: str
     attributes: Dict[str, Any] = field(default_factory=dict)
 
 
@@ -61,9 +59,6 @@ class PipelineContext:
     """Evolving runtime context passed through the listing pipeline stages."""
     listing_id: uuid.UUID
     seller_id: Optional[uuid.UUID] = None
-    # The artisan's own profile story. Background for the description only; the
-    # fact sheet stage must not let it decide any product fact.
-    seller_story: Optional[str] = None
     # Set when the artisan typed the description instead of recording it.
     typed_description: Optional[str] = None
     seller_language: Optional[str] = None

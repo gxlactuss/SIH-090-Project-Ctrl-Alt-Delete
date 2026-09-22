@@ -69,7 +69,7 @@ class GoogleMerchantPublishingAdapter:
             },
             # Explicit exemption for handcrafted artisan goods without barcode/GTIN
             "identifier_exists": False,
-            "brand": listing.attributes.get("craft_type", "Artisan Handmade"),
+            "brand": "Artisan Handmade",
         }
 
         return PublicationResult(

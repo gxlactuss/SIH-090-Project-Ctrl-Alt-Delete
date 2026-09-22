@@ -52,8 +52,6 @@ FIELD_COLUMNS: Dict[str, Tuple[str, Callable[[Any], Any]]] = {
     "material": ("material", _as_text),
     "size": ("size", _as_text),
     "colour": ("colour", _as_text),
-    "technique": ("technique", _as_text),
-    "origin": ("origin", _as_text),
     "quantity": ("quantity", _as_int),
     # The app sends money in paise, never rupees, so it never rides on a float.
     "price": ("price_in_paise", _as_int),

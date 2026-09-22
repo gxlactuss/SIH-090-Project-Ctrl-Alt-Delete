@@ -59,8 +59,6 @@ class FactSheet(BaseModel):
     materials: Optional[str] = None
     dimensions: Optional[str] = None
     color: Optional[str] = None
-    technique: Optional[str] = None
-    origin: Optional[str] = None
 
     # --- Cost & pricing inputs (used by price_advisor, not the final price) ---
     cost_of_materials: Optional[float] = None

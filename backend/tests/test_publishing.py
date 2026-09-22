@@ -99,7 +99,7 @@ def test_meta_adapter_publish_success() -> None:
         currency="INR",
         materials=["Clay"],
         media_urls=["https://example.com/cups.jpg"],
-        attributes={"craft_type": "Terracotta"},
+        attributes={},
     )
 
     validation = adapter.validate(listing)
@@ -156,7 +156,7 @@ def test_google_merchant_adapter_publish_success() -> None:
         price=850.0,
         currency="INR",
         media_urls=["https://example.com/plate.jpg"],
-        attributes={"craft_type": "Jaipur Blue Pottery"},
+        attributes={},
     )
 
     validation = adapter.validate(listing)

@@ -67,10 +67,6 @@ def _fact_sheet_to_prompt_facts(sheet: FactSheet) -> str:
         facts.append(f"Category: {sheet.category}")
     if sheet.materials:
         facts.append(f"Materials: {sheet.materials}")
-    if sheet.technique:
-        facts.append(f"Craft technique: {sheet.technique}")
-    if sheet.origin:
-        facts.append(f"Made in: {sheet.origin}")
     if sheet.dimensions:
         facts.append(f"Dimensions: {sheet.dimensions}")
     if sheet.color:

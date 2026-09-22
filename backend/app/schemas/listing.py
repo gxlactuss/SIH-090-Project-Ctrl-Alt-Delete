@@ -22,8 +22,6 @@ class FactSheetResponse(BaseModel):
     material: Optional[str] = None
     size: Optional[str] = None
     colour: Optional[str] = None
-    technique: Optional[str] = None
-    origin: Optional[str] = None
     quantity: Optional[int] = None
     price_in_paise: Optional[int] = None
     hours_to_make: Optional[float] = None

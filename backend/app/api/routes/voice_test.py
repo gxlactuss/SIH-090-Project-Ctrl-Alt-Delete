@@ -34,7 +34,6 @@ router = APIRouter(prefix="/voice", tags=["Voice Demo"])
 async def voice_to_catalog_demo(
     file: UploadFile = File(...),
     image: Optional[UploadFile] = File(None),
-    seller_story: Optional[str] = Form(None),
     sarvam_key: Optional[str] = Form(None),
     gemini_key: Optional[str] = Form(None),
     model_name: Optional[str] = Form(None),
@@ -89,7 +88,7 @@ async def voice_to_catalog_demo(
                     "outputs": vision_result.get("outputs", {}),
                 }
                 # A rejected photo produces no cutout, so fall back to the original
-                # upload: the artisan still gets a fact sheet plus the retake advice.
+                # upload: the artisan still gets a fact sheet.
                 gemini_image_path = Path(clean_image) if clean_image else image_path
             except Exception as exc:  # noqa: BLE001 - demo endpoint stays responsive
                 vision_report = {"quality_passed": False, "error": str(exc)}
@@ -105,7 +104,6 @@ async def voice_to_catalog_demo(
             transcript=voice_res.transcript,
             detected_language=voice_res.language_code,
             image_path=str(gemini_image_path) if gemini_image_path else None,
-            seller_story=seller_story,
             allow_synthetic_fallback=True,
         )
 
@@ -114,7 +112,7 @@ async def voice_to_catalog_demo(
         context.image_output = ImageStageOutput(
             image_count=1 if gemini_image_path else 0,
             image_paths=[str(gemini_image_path)] if gemini_image_path else [],
-            detected_labels=[extraction.craft_type],
+            detected_labels=[extraction.category] if extraction.category else [],
             dimensions=[{"width": 1024, "height": 1024}] if gemini_image_path else [],
         )
         context.speech_output = SpeechStageOutput(
@@ -125,9 +123,7 @@ async def voice_to_catalog_demo(
         )
         context.fact_sheet_output = FactSheetOutput(
             title=extraction.title,
-            craft_type=extraction.craft_type,
             material=extraction.material,
-            story_summary=extraction.story_summary,
             attributes=extraction.attributes,
         )
 
@@ -139,10 +135,10 @@ async def voice_to_catalog_demo(
         canonical = CanonicalListing(
             id=str(context.listing_id),
             title=extraction.title,
-            description=extraction.story_summary,
+            description=voice_res.transcript,
             price=price_output.recommended_price,
             currency=price_output.currency,
-            category=extraction.craft_type,
+            category=extraction.category or "handicraft",
             materials=[extraction.material],
             dimensions=extraction.dimensions,
             media_urls=[str(gemini_image_path)] if gemini_image_path else [],
@@ -164,17 +160,13 @@ async def voice_to_catalog_demo(
             "vision_station": vision_report,
             "fact_sheet": {
                 "title": extraction.title,
-                "craft_type": extraction.craft_type,
                 "material": extraction.material,
-                "story_summary": extraction.story_summary,
                 "stated_price": extraction.stated_price,
                 "dimensions": extraction.dimensions,
-                "origin": extraction.origin,
                 "colors": extraction.colors,
                 "missing_fields": extraction.missing_fields,
                 "live_api_used": extraction.used_live_api,
                 "image_used": gemini_image_path is not None,
-                "seller_story_used": bool((seller_story or "").strip()),
                 "model": effective_model,
             },
             "pricing": {
