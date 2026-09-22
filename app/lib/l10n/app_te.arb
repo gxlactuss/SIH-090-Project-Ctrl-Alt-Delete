@@ -613,5 +613,6 @@
   "voiceGuideWhat": "వస్తువు పేరు",
   "voiceGuideSize": "ఎత్తు",
   "voiceGuideColour": "రంగు",
-  "voiceGuideTime": "చేయడానికి పట్టిన సమయం"
+  "voiceGuideTime": "చేయడానికి పట్టిన సమయం",
+  "voiceGuideCost": "సామగ్రి ఖర్చు"
 }

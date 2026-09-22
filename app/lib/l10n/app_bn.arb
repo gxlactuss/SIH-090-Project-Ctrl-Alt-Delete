@@ -613,5 +613,6 @@
   "voiceGuideWhat": "জিনিসের নাম",
   "voiceGuideSize": "উচ্চতা",
   "voiceGuideColour": "রং",
-  "voiceGuideTime": "বানাতে কত সময় লেগেছে"
+  "voiceGuideTime": "বানাতে কত সময় লেগেছে",
+  "voiceGuideCost": "উপকরণের খরচ"
 }

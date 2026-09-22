@@ -2075,4 +2075,7 @@ class AppLocalizationsPa extends AppLocalizations {
 
   @override
   String get voiceGuideTime => 'ਬਣਾਉਣ ਵਿੱਚ ਲੱਗਿਆ ਸਮਾਂ';
+
+  @override
+  String get voiceGuideCost => 'ਸਮਾਨ ਦੀ ਲਾਗਤ';
 }

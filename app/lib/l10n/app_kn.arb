@@ -613,5 +613,6 @@
   "voiceGuideWhat": "ವಸ್ತುವಿನ ಹೆಸರು",
   "voiceGuideSize": "ಎತ್ತರ",
   "voiceGuideColour": "ಬಣ್ಣ",
-  "voiceGuideTime": "ಮಾಡಲು ಹಿಡಿದ ಸಮಯ"
+  "voiceGuideTime": "ಮಾಡಲು ಹಿಡಿದ ಸಮಯ",
+  "voiceGuideCost": "ಸಾಮಗ್ರಿಗಳ ಖರ್ಚು"
 }

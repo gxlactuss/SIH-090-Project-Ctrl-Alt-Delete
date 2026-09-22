@@ -30,6 +30,7 @@ List<String> _guidePoints(AppLocalizations l10n) => [
   l10n.voiceGuideColour,
   l10n.voiceGuideSize,
   l10n.voiceGuideTime,
+  l10n.voiceGuideCost,
 ];
 
 class _VoiceRecordStageState extends State<VoiceRecordStage> {

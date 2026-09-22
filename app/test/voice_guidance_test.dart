@@ -404,6 +404,7 @@ void main() {
             l10n.voiceGuideColour,
             l10n.voiceGuideSize,
             l10n.voiceGuideTime,
+            l10n.voiceGuideCost,
           ]) {
             final finder = find.text(prompt);
             expect(

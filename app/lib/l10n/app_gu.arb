@@ -613,5 +613,6 @@
   "voiceGuideWhat": "વસ્તુનું નામ",
   "voiceGuideSize": "ઊંચાઈ",
   "voiceGuideColour": "રંગ",
-  "voiceGuideTime": "બનાવવામાં લાગેલો સમય"
+  "voiceGuideTime": "બનાવવામાં લાગેલો સમય",
+  "voiceGuideCost": "સામગ્રીનો ખર્ચ"
 }

@@ -2073,4 +2073,7 @@ class AppLocalizationsTe extends AppLocalizations {
 
   @override
   String get voiceGuideTime => 'చేయడానికి పట్టిన సమయం';
+
+  @override
+  String get voiceGuideCost => 'సామగ్రి ఖర్చు';
 }

@@ -613,5 +613,6 @@
   "voiceGuideWhat": "ਚੀਜ਼ ਦਾ ਨਾਮ",
   "voiceGuideSize": "ਉਚਾਈ",
   "voiceGuideColour": "ਰੰਗ",
-  "voiceGuideTime": "ਬਣਾਉਣ ਵਿੱਚ ਲੱਗਿਆ ਸਮਾਂ"
+  "voiceGuideTime": "ਬਣਾਉਣ ਵਿੱਚ ਲੱਗਿਆ ਸਮਾਂ",
+  "voiceGuideCost": "ਸਮਾਨ ਦੀ ਲਾਗਤ"
 }

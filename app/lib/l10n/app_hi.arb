@@ -848,5 +848,6 @@
   "voiceGuideWhat": "चीज़ का नाम",
   "voiceGuideSize": "ऊँचाई",
   "voiceGuideColour": "रंग",
-  "voiceGuideTime": "बनाने में लगा समय"
+  "voiceGuideTime": "बनाने में लगा समय",
+  "voiceGuideCost": "सामान की लागत"
 }

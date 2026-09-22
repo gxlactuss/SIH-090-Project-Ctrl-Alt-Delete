@@ -1269,6 +1269,8 @@ abstract class AppLocalizations {
   String get voiceGuideColour;
 
   String get voiceGuideTime;
+
+  String get voiceGuideCost;
 }
 
 class _AppLocalizationsDelegate

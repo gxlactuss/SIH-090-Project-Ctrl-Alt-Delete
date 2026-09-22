@@ -613,5 +613,6 @@
   "voiceGuideWhat": "സാധനത്തിന്റെ പേര്",
   "voiceGuideSize": "ഉയരം",
   "voiceGuideColour": "നിറം",
-  "voiceGuideTime": "ഉണ്ടാക്കാൻ എടുത്ത സമയം"
+  "voiceGuideTime": "ഉണ്ടാക്കാൻ എടുത്ത സമയം",
+  "voiceGuideCost": "സാമഗ്രികളുടെ ചെലവ്"
 }

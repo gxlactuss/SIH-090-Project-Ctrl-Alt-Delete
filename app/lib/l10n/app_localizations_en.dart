@@ -2085,4 +2085,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get voiceGuideTime => 'Time taken to make it';
+
+  @override
+  String get voiceGuideCost => 'What the materials cost';
 }

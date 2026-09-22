@@ -613,5 +613,6 @@
   "voiceGuideWhat": "Name of the item",
   "voiceGuideSize": "Height",
   "voiceGuideColour": "Colour",
-  "voiceGuideTime": "Time taken to make it"
+  "voiceGuideTime": "Time taken to make it",
+  "voiceGuideCost": "What the materials cost"
 }

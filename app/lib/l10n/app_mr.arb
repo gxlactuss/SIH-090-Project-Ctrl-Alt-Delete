@@ -613,5 +613,6 @@
   "voiceGuideWhat": "वस्तूचे नाव",
   "voiceGuideSize": "उंची",
   "voiceGuideColour": "रंग",
-  "voiceGuideTime": "बनवायला लागलेला वेळ"
+  "voiceGuideTime": "बनवायला लागलेला वेळ",
+  "voiceGuideCost": "साहित्याचा खर्च"
 }

@@ -2077,4 +2077,7 @@ class AppLocalizationsKn extends AppLocalizations {
 
   @override
   String get voiceGuideTime => 'ಮಾಡಲು ಹಿಡಿದ ಸಮಯ';
+
+  @override
+  String get voiceGuideCost => 'ಸಾಮಗ್ರಿಗಳ ಖರ್ಚು';
 }

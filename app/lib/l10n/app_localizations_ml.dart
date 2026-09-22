@@ -2090,4 +2090,7 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get voiceGuideTime => 'ഉണ്ടാക്കാൻ എടുത്ത സമയം';
+
+  @override
+  String get voiceGuideCost => 'സാമഗ്രികളുടെ ചെലവ്';
 }

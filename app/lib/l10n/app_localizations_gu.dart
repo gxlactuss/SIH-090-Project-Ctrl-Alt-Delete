@@ -2064,4 +2064,7 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get voiceGuideTime => 'બનાવવામાં લાગેલો સમય';
+
+  @override
+  String get voiceGuideCost => 'સામગ્રીનો ખર્ચ';
 }

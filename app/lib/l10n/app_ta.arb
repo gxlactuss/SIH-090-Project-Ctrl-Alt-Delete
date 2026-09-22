@@ -613,5 +613,6 @@
   "voiceGuideWhat": "பொருளின் பெயர்",
   "voiceGuideSize": "உயரம்",
   "voiceGuideColour": "நிறம்",
-  "voiceGuideTime": "செய்ய ஆன நேரம்"
+  "voiceGuideTime": "செய்ய ஆன நேரம்",
+  "voiceGuideCost": "பொருட்களின் செலவு"
 }

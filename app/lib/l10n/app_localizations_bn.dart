@@ -2063,4 +2063,7 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get voiceGuideTime => 'বানাতে কত সময় লেগেছে';
+
+  @override
+  String get voiceGuideCost => 'উপকরণের খরচ';
 }

@@ -2094,4 +2094,7 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get voiceGuideTime => 'செய்ய ஆன நேரம்';
+
+  @override
+  String get voiceGuideCost => 'பொருட்களின் செலவு';
 }

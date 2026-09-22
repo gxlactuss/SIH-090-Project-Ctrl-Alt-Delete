@@ -2065,4 +2065,7 @@ class AppLocalizationsOr extends AppLocalizations {
 
   @override
   String get voiceGuideTime => 'ତିଆରି କରିବାକୁ ଲାଗିଥିବା ସମୟ';
+
+  @override
+  String get voiceGuideCost => 'ସାମଗ୍ରୀର ଖର୍ଚ୍ଚ';
 }

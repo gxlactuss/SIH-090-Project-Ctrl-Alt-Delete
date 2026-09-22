@@ -613,5 +613,6 @@
   "voiceGuideWhat": "ଜିନିଷର ନାମ",
   "voiceGuideSize": "ଉଚ୍ଚତା",
   "voiceGuideColour": "ରଙ୍ଗ",
-  "voiceGuideTime": "ତିଆରି କରିବାକୁ ଲାଗିଥିବା ସମୟ"
+  "voiceGuideTime": "ତିଆରି କରିବାକୁ ଲାଗିଥିବା ସମୟ",
+  "voiceGuideCost": "ସାମଗ୍ରୀର ଖର୍ଚ୍ଚ"
 }

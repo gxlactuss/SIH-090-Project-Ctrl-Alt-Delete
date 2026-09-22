@@ -2072,4 +2072,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get voiceGuideTime => 'बनाने में लगा समय';
+
+  @override
+  String get voiceGuideCost => 'सामान की लागत';
 }
