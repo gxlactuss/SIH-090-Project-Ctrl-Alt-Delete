@@ -226,8 +226,6 @@
   "fieldMaterial": "कशाची बनली",
   "fieldSize": "आकार",
   "fieldColour": "रंग",
-  "fieldTechnique": "कशी बनवली",
-  "fieldOrigin": "कुठे बनवली",
   "fieldQuantity": "किती",
   "fieldPrice": "किंमत",
   "correctTitle": "बरोबर {field} सांगा",

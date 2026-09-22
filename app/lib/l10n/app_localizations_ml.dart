@@ -773,12 +773,6 @@ class AppLocalizationsMl extends AppLocalizations {
   String get fieldColour => 'നിറം';
 
   @override
-  String get fieldTechnique => 'എങ്ങനെ ഉണ്ടാക്കി';
-
-  @override
-  String get fieldOrigin => 'എവിടെ ഉണ്ടാക്കി';
-
-  @override
   String get fieldQuantity => 'എത്ര എണ്ണം';
 
   @override

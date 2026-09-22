@@ -260,7 +260,6 @@ class MockApi implements ApiClient {
           material: 'Clay',
           size: '10 inches tall',
           colour: 'Blue',
-          technique: 'Wheel thrown',
           quantity: 3,
           priceInPaise: 65000,
           hoursToMake: 6,
@@ -361,8 +360,6 @@ class MockApi implements ApiClient {
           ListingField.colour => 'Blue',
           ListingField.size => '12 inches',
           ListingField.material => 'Clay',
-          ListingField.technique => 'Wheel thrown',
-          ListingField.origin => 'Jaipur',
         }),
       ),
     );

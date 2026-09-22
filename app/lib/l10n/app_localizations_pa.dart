@@ -769,12 +769,6 @@ class AppLocalizationsPa extends AppLocalizations {
   String get fieldColour => 'ਰੰਗ';
 
   @override
-  String get fieldTechnique => 'ਕਿਵੇਂ ਬਣਾਈ';
-
-  @override
-  String get fieldOrigin => 'ਕਿੱਥੇ ਬਣਾਈ';
-
-  @override
   String get fieldQuantity => 'ਕਿੰਨੀਆਂ';
 
   @override

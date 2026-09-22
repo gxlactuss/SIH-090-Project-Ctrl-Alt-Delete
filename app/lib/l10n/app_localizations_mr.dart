@@ -766,12 +766,6 @@ class AppLocalizationsMr extends AppLocalizations {
   String get fieldColour => 'रंग';
 
   @override
-  String get fieldTechnique => 'कशी बनवली';
-
-  @override
-  String get fieldOrigin => 'कुठे बनवली';
-
-  @override
   String get fieldQuantity => 'किती';
 
   @override

@@ -764,12 +764,6 @@ class AppLocalizationsOr extends AppLocalizations {
   String get fieldColour => 'ରଙ୍ଗ';
 
   @override
-  String get fieldTechnique => 'କିପରି ତିଆରି';
-
-  @override
-  String get fieldOrigin => 'କେଉଁଠି ତିଆରି';
-
-  @override
   String get fieldQuantity => 'କେତୋଟି';
 
   @override

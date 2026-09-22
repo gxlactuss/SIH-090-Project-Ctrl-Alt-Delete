@@ -769,12 +769,6 @@ class AppLocalizationsKn extends AppLocalizations {
   String get fieldColour => 'ಬಣ್ಣ';
 
   @override
-  String get fieldTechnique => 'ಹೇಗೆ ಮಾಡಿದ್ದು';
-
-  @override
-  String get fieldOrigin => 'ಎಲ್ಲಿ ಮಾಡಿದ್ದು';
-
-  @override
   String get fieldQuantity => 'ಎಷ್ಟು';
 
   @override

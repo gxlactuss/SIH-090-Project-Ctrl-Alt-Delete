@@ -319,8 +319,6 @@
   "fieldMaterial": "किस चीज़ का",
   "fieldSize": "नाप",
   "fieldColour": "रंग",
-  "fieldTechnique": "कैसे बनाया",
-  "fieldOrigin": "कहाँ बनाया",
   "fieldQuantity": "कितने",
   "fieldPrice": "दाम",
   "correctTitle": "सही {field} बोलिए",

@@ -19,7 +19,6 @@
     "material": "terracotta",
     "size": "medium",
     "colour": "red",
-    "technique": "wheel thrown",
     "quantity": 2,
     "price_in_paise": 45000,
     "hours_to_make": 3.5,

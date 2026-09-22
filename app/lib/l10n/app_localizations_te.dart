@@ -768,12 +768,6 @@ class AppLocalizationsTe extends AppLocalizations {
   String get fieldColour => 'రంగు';
 
   @override
-  String get fieldTechnique => 'ఎలా చేసింది';
-
-  @override
-  String get fieldOrigin => 'ఎక్కడ చేసింది';
-
-  @override
   String get fieldQuantity => 'ఎన్ని';
 
   @override

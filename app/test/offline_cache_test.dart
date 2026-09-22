@@ -185,7 +185,6 @@ void main() {
           material: 'Clay',
           size: '12 inches',
           colour: 'Blue',
-          technique: 'Wheel thrown',
           quantity: 3,
           priceInPaise: 60000,
           hoursToMake: 6.5,
@@ -226,7 +225,6 @@ void main() {
       expect(restored.factSheet.material, 'Clay');
       expect(restored.factSheet.size, '12 inches');
       expect(restored.factSheet.colour, 'Blue');
-      expect(restored.factSheet.technique, 'Wheel thrown');
       expect(restored.factSheet.quantity, 3);
       expect(restored.factSheet.priceInPaise, 60000);
       expect(restored.factSheet.hoursToMake, 6.5);

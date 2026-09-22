@@ -763,12 +763,6 @@ class AppLocalizationsBn extends AppLocalizations {
   String get fieldColour => 'রং';
 
   @override
-  String get fieldTechnique => 'কীভাবে বানানো';
-
-  @override
-  String get fieldOrigin => 'কোথায় বানানো';
-
-  @override
   String get fieldQuantity => 'কতগুলো';
 
   @override

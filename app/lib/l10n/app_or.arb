@@ -226,8 +226,6 @@
   "fieldMaterial": "କେଉଁଥିରେ ତିଆରି",
   "fieldSize": "ଆକାର",
   "fieldColour": "ରଙ୍ଗ",
-  "fieldTechnique": "କିପରି ତିଆରି",
-  "fieldOrigin": "କେଉଁଠି ତିଆରି",
   "fieldQuantity": "କେତୋଟି",
   "fieldPrice": "ଦାମ",
   "correctTitle": "ଠିକ୍ {field} କୁହନ୍ତୁ",

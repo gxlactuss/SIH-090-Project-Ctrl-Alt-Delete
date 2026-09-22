@@ -774,12 +774,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get fieldColour => 'Colour';
 
   @override
-  String get fieldTechnique => 'How it was made';
-
-  @override
-  String get fieldOrigin => 'Where it was made';
-
-  @override
   String get fieldQuantity => 'How many';
 
   @override

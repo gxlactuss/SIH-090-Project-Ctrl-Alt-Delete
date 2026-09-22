@@ -226,8 +226,6 @@
   "fieldMaterial": "Made of",
   "fieldSize": "Size",
   "fieldColour": "Colour",
-  "fieldTechnique": "How it was made",
-  "fieldOrigin": "Where it was made",
   "fieldQuantity": "How many",
   "fieldPrice": "Price",
   "correctTitle": "Say the correct {field}",

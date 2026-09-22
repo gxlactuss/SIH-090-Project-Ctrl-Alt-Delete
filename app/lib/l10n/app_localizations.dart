@@ -504,10 +504,6 @@ abstract class AppLocalizations {
 
   String get fieldColour;
 
-  String get fieldTechnique;
-
-  String get fieldOrigin;
-
   String get fieldQuantity;
 
   String get fieldPrice;

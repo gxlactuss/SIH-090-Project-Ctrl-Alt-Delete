@@ -226,8 +226,6 @@
   "fieldMaterial": "কী দিয়ে তৈরি",
   "fieldSize": "মাপ",
   "fieldColour": "রং",
-  "fieldTechnique": "কীভাবে বানানো",
-  "fieldOrigin": "কোথায় বানানো",
   "fieldQuantity": "কতগুলো",
   "fieldPrice": "দাম",
   "correctTitle": "সঠিক {field} বলুন",

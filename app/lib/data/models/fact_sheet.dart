@@ -7,8 +7,6 @@ class FactSheet {
     this.material,
     this.size,
     this.colour,
-    this.technique,
-    this.origin,
     this.quantity,
     this.priceInPaise,
     this.hoursToMake,
@@ -19,9 +17,6 @@ class FactSheet {
   final String? material;
   final String? size;
   final String? colour;
-  final String? technique;
-
-  final String? origin;
 
   final int? quantity;
   final int? priceInPaise;
@@ -35,8 +30,6 @@ class FactSheet {
     String? material,
     String? size,
     String? colour,
-    String? technique,
-    String? origin,
     int? quantity,
     int? priceInPaise,
     double? hoursToMake,
@@ -47,8 +40,6 @@ class FactSheet {
       material: material ?? this.material,
       size: size ?? this.size,
       colour: colour ?? this.colour,
-      technique: technique ?? this.technique,
-      origin: origin ?? this.origin,
       quantity: quantity ?? this.quantity,
       priceInPaise: priceInPaise ?? this.priceInPaise,
       hoursToMake: hoursToMake ?? this.hoursToMake,
@@ -61,8 +52,6 @@ class FactSheet {
     ListingField.material => material,
     ListingField.size => size,
     ListingField.colour => colour,
-    ListingField.technique => technique,
-    ListingField.origin => origin,
     ListingField.quantity => quantity,
     ListingField.price => priceInPaise,
   };
@@ -71,8 +60,6 @@ class FactSheet {
     ListingField.material => copyWith(material: value as String?),
     ListingField.size => copyWith(size: value as String?),
     ListingField.colour => copyWith(colour: value as String?),
-    ListingField.technique => copyWith(technique: value as String?),
-    ListingField.origin => copyWith(origin: value as String?),
     ListingField.quantity => copyWith(quantity: value as int?),
     ListingField.price => copyWith(priceInPaise: value as int?),
   };
@@ -82,8 +69,6 @@ enum ListingField {
   material(Correction.words),
   size(Correction.chips),
   colour(Correction.chips),
-  technique(Correction.words),
-  origin(Correction.words),
   quantity(Correction.number),
   price(Correction.number);
 
@@ -99,8 +84,6 @@ extension ListingFieldDisplay on ListingField {
     ListingField.material => l10n.fieldMaterial,
     ListingField.size => l10n.fieldSize,
     ListingField.colour => l10n.fieldColour,
-    ListingField.technique => l10n.fieldTechnique,
-    ListingField.origin => l10n.fieldOrigin,
     ListingField.quantity => l10n.fieldQuantity,
     ListingField.price => l10n.fieldPrice,
   };
@@ -109,8 +92,6 @@ extension ListingFieldDisplay on ListingField {
     ListingField.material => Icons.category_outlined,
     ListingField.size => Icons.straighten,
     ListingField.colour => Icons.palette_outlined,
-    ListingField.technique => Icons.handyman_outlined,
-    ListingField.origin => Icons.place_outlined,
     ListingField.quantity => Icons.inventory_2_outlined,
     ListingField.price => Icons.currency_rupee,
   };

@@ -226,8 +226,6 @@
   "fieldMaterial": "શેનું બનેલું",
   "fieldSize": "માપ",
   "fieldColour": "રંગ",
-  "fieldTechnique": "કેવી રીતે બનાવ્યું",
-  "fieldOrigin": "ક્યાં બનાવ્યું",
   "fieldQuantity": "કેટલા",
   "fieldPrice": "કિંમત",
   "correctTitle": "સાચું {field} કહો",

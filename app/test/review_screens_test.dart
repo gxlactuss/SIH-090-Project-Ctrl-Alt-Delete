@@ -160,7 +160,7 @@ void main() {
     expect(find.text('Clay'), findsOneWidget);
     expect(find.text('12 inches'), findsOneWidget);
 
-    expect(find.text(l10n.notSaid), findsNWidgets(4));
+    expect(find.text(l10n.notSaid), findsNWidgets(2));
   });
 
   testWidgets('5.1 asks the one question when a fact is missing', (
@@ -226,19 +226,19 @@ void main() {
     expect(api.current.factSheet.priceInPaise, 45000);
   });
 
-  Listing missingOrigin() => Listing(
+  Listing missingMaterial() => Listing(
     id: 'l1',
     status: ListingStatus.ready,
     title: 'Blue water jug',
     description: 'A hand-thrown jug, glazed blue.',
     imageUrls: const ['a.jpg', 'b.jpg'],
-    factSheet: const FactSheet(material: 'Clay', size: '12 inches', quantity: 1),
+    factSheet: const FactSheet(size: '12 inches', quantity: 1),
     suggestions: const [
       Suggestion(
-        id: 'origin',
-        field: 'origin',
-        spokenPrompt: 'The voice note did not mention where it was made.',
-        textIfAccepted: 'origin',
+        id: 'material',
+        field: 'material',
+        spokenPrompt: 'The voice note did not mention what it is made of.',
+        textIfAccepted: 'material',
       ),
     ],
   );
@@ -247,8 +247,8 @@ void main() {
     tester,
   ) async {
     useCheapPhone(tester);
-    final api = _FakeApi(missingOrigin());
-    await tester.pumpWidget(harness(missingOrigin(), api));
+    final api = _FakeApi(missingMaterial());
+    await tester.pumpWidget(harness(missingMaterial(), api));
     await tester.pump();
 
     await tester.tap(find.text(l10n.readBackApprove));
@@ -256,7 +256,7 @@ void main() {
 
     expect(find.text(l10n.suggestTitle), findsOneWidget);
     expect(
-      find.text('The voice note did not mention where it was made.'),
+      find.text('The voice note did not mention what it is made of.'),
       findsOneWidget,
     );
 
@@ -264,18 +264,18 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(
-      find.text(l10n.correctTitle(l10n.fieldOrigin.toLowerCase())),
+      find.text(l10n.correctTitle(l10n.fieldMaterial.toLowerCase())),
       findsOneWidget,
     );
 
     await tester.tap(find.text(l10n.correctUseKeypad));
     await tester.pumpAndSettle();
-    await tester.enterText(find.byType(TextField), 'Jaipur');
+    await tester.enterText(find.byType(TextField), 'Clay');
     await tester.pumpAndSettle();
     await tester.tap(find.text(l10n.correctSave));
     await tester.pumpAndSettle();
 
-    expect(api.current.factSheet.origin, 'Jaipur');
+    expect(api.current.factSheet.material, 'Clay');
     expect(find.text(l10n.suggestDone), findsOneWidget);
   });
 
@@ -283,8 +283,8 @@ void main() {
     tester,
   ) async {
     useCheapPhone(tester);
-    final api = _FakeApi(missingOrigin());
-    await tester.pumpWidget(harness(missingOrigin(), api));
+    final api = _FakeApi(missingMaterial());
+    await tester.pumpWidget(harness(missingMaterial(), api));
     await tester.pump();
 
     await tester.tap(find.text(l10n.readBackApprove));
@@ -296,7 +296,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text(l10n.suggestTitle), findsOneWidget);
-    expect(api.current.factSheet.origin, isNull);
+    expect(api.current.factSheet.material, isNull);
   });
 
   testWidgets('walks 5.2 to 5.11 and publishes', (tester) async {

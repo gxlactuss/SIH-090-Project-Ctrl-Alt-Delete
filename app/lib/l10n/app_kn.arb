@@ -226,8 +226,6 @@
   "fieldMaterial": "ಯಾವುದರಿಂದ ಮಾಡಿದ್ದು",
   "fieldSize": "ಅಳತೆ",
   "fieldColour": "ಬಣ್ಣ",
-  "fieldTechnique": "ಹೇಗೆ ಮಾಡಿದ್ದು",
-  "fieldOrigin": "ಎಲ್ಲಿ ಮಾಡಿದ್ದು",
   "fieldQuantity": "ಎಷ್ಟು",
   "fieldPrice": "ಬೆಲೆ",
   "correctTitle": "ಸರಿಯಾದ {field} ಹೇಳಿ",

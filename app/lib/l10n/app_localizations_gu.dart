@@ -765,12 +765,6 @@ class AppLocalizationsGu extends AppLocalizations {
   String get fieldColour => 'રંગ';
 
   @override
-  String get fieldTechnique => 'કેવી રીતે બનાવ્યું';
-
-  @override
-  String get fieldOrigin => 'ક્યાં બનાવ્યું';
-
-  @override
   String get fieldQuantity => 'કેટલા';
 
   @override

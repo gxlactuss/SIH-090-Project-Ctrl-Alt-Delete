@@ -226,8 +226,6 @@
   "fieldMaterial": "ਕਿਸ ਚੀਜ਼ ਦੀ ਬਣੀ",
   "fieldSize": "ਆਕਾਰ",
   "fieldColour": "ਰੰਗ",
-  "fieldTechnique": "ਕਿਵੇਂ ਬਣਾਈ",
-  "fieldOrigin": "ਕਿੱਥੇ ਬਣਾਈ",
   "fieldQuantity": "ਕਿੰਨੀਆਂ",
   "fieldPrice": "ਕੀਮਤ",
   "correctTitle": "ਸਹੀ {field} ਦੱਸੋ",

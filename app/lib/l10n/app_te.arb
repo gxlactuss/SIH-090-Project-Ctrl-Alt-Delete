@@ -226,8 +226,6 @@
   "fieldMaterial": "దేనితో చేసింది",
   "fieldSize": "పరిమాణం",
   "fieldColour": "రంగు",
-  "fieldTechnique": "ఎలా చేసింది",
-  "fieldOrigin": "ఎక్కడ చేసింది",
   "fieldQuantity": "ఎన్ని",
   "fieldPrice": "ధర",
   "correctTitle": "సరైన {field} చెప్పండి",

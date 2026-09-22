@@ -226,8 +226,6 @@
   "fieldMaterial": "எதனால் செய்தது",
   "fieldSize": "அளவு",
   "fieldColour": "நிறம்",
-  "fieldTechnique": "எப்படிச் செய்தது",
-  "fieldOrigin": "எங்கே செய்தது",
   "fieldQuantity": "எத்தனை",
   "fieldPrice": "விலை",
   "correctTitle": "சரியான {field} சொல்லுங்கள்",

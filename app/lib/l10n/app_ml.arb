@@ -226,8 +226,6 @@
   "fieldMaterial": "എന്തുകൊണ്ട് ഉണ്ടാക്കി",
   "fieldSize": "വലിപ്പം",
   "fieldColour": "നിറം",
-  "fieldTechnique": "എങ്ങനെ ഉണ്ടാക്കി",
-  "fieldOrigin": "എവിടെ ഉണ്ടാക്കി",
   "fieldQuantity": "എത്ര എണ്ണം",
   "fieldPrice": "വില",
   "correctTitle": "ശരിയായ {field} പറയുക",

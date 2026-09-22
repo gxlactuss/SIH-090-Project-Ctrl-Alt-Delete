@@ -774,12 +774,6 @@ class AppLocalizationsTa extends AppLocalizations {
   String get fieldColour => 'நிறம்';
 
   @override
-  String get fieldTechnique => 'எப்படிச் செய்தது';
-
-  @override
-  String get fieldOrigin => 'எங்கே செய்தது';
-
-  @override
   String get fieldQuantity => 'எத்தனை';
 
   @override
