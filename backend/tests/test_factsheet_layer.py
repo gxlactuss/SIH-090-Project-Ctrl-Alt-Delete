@@ -281,19 +281,19 @@ def test_a_failed_model_call_never_stops_the_run():
 
 def test_the_advisor_never_goes_below_the_artisans_costs():
     advice = suggest_price(FactSheet(category="pottery", cost_of_materials=900, hours_spent=10))
-    # (900 + 10 x 50) x 1.3 = 1820, above the pottery band's high of 1200.
-    assert advice["floor"] == 1820.0
-    assert advice["suggested_price"] == 1820.0
+    # 900 + 10 x 90 = 1800, above the pottery P75 of 1700.
+    assert advice["floor"] == 1800.0
+    assert advice["suggested_price"] == 1800.0
 
 
 def test_a_low_floor_is_nudged_up_to_the_market():
-    advice = suggest_price(FactSheet(category="jewellery", cost_of_materials=50))
-    assert advice["floor"] == 65.0
-    assert advice["suggested_price"] == 250
+    advice = suggest_price(FactSheet(category="pottery", cost_of_materials=50))
+    assert advice["floor"] == 50.0
+    assert advice["suggested_price"] == 450.0
 
 
-def test_specific_fabric_categories_use_the_textile_band():
-    assert suggest_price(FactSheet(category="saree"))["market_band"] == {"low": 300, "median": 600, "high": 1500}
+def test_categories_without_enough_observations_get_no_band():
+    assert suggest_price(FactSheet(category="saree"))["market_band"] is None
 
 
 def test_one_missing_field_becomes_one_question():

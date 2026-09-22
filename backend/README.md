@@ -253,7 +253,9 @@ Tests run independently without requiring a running PostgreSQL instance or live 
 
 ### 5. Fair Pricing Advisor (`app/services/factsheet/price_advisor.py`, `PriceStage`)
 - Automatically adopts stated price if the artisan explicitly mentioned it in the voice note.
-- Otherwise suggests a price from a floor built on the stated material cost and hours, nudged into a market band for the category.
+- Otherwise suggests a price from a cost floor: stated material cost plus stated hours at a configurable labour rate (default ₹90/hour, a Maharashtra skilled-wage proxy). No blanket margin is added.
+- The market band is the P25 / median / P75 of observed IndiaHandmade (Ministry of Textiles) listings, kept with their source URLs. Only categories with at least five observations get a band (currently pottery, basket and kurta).
+- A floor below P25 is raised to P25; a floor inside the band is kept; a floor above P75 is kept and the mismatch is flagged. Every result carries a `confidence` of `high`, `medium`, `low` or `insufficient_data`.
 - With neither, no price is invented: the price stays empty and becomes a suggestion for the artisan to answer.
 
 ### 6. ONDC Catalog (`app/services/ondc/`)

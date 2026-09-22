@@ -13,8 +13,8 @@ class PriceStage:
     """Production Price Station: adopts the artisan's stated price, or advises one.
 
     Advice comes from the language layer's price advisor: a floor from the
-    material cost and hours the artisan stated, and a band from a reference
-    table for the category. Every number is traceable to one of those. With
+    material cost and hours the artisan stated, and a band from observed
+    market listings for the category. Every number is traceable to one of those. With
     neither, no price is invented and the artisan is asked for one instead.
     """
 

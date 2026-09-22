@@ -897,15 +897,15 @@ def test_price_stage_advises_from_cost_hours_and_category_when_price_not_stated(
 
     ctx = PipelineContext(listing_id=uuid.uuid4())
     ctx.fact_sheet_output = FactSheetOutput(
-        title="Handmade Jute Bag",
-        craft_type="Jute Craft",
-        material="Jute fiber",
-        story_summary="Handwoven bag",
+        title="Handloom Cotton Kurta",
+        craft_type="Handloom",
+        material="Cotton",
+        story_summary="Handwoven kurta",
         attributes={
             "stated_price": None,
-            "category": "textile",
-            "cost_of_materials": 200.0,
-            "hours_spent": 4.0,
+            "category": "kurta",
+            "cost_of_materials": 300.0,
+            "hours_spent": 6.0,
         },
     )
 
@@ -913,9 +913,9 @@ def test_price_stage_advises_from_cost_hours_and_category_when_price_not_stated(
     res = stage.run(ctx)
 
     assert res.status == StageStatus.success
-    # (200 + 4h x 50) x 1.3 = 520, inside the textile band of 300 to 1500.
-    assert ctx.price_output.recommended_price == 520.0
-    assert ctx.price_output.min_price == 520.0
+    # 300 + 6h x 90 = 840, inside the kurta P25 to P75 band of 499 to 1500.
+    assert ctx.price_output.recommended_price == 840.0
+    assert ctx.price_output.min_price == 840.0
     assert ctx.price_output.max_price == 1500.0
     assert res.metadata.get("stated_by_artisan") is False
 
