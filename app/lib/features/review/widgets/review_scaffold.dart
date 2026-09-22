@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../services/speech_service.dart';
@@ -41,7 +42,10 @@ class ReviewScaffold extends StatefulWidget {
   State<ReviewScaffold> createState() => _ReviewScaffoldState();
 }
 
-Future<void> _confirmCancel(BuildContext context, ReviewController review) async {
+Future<void> _confirmCancel(
+  BuildContext context,
+  ReviewController review,
+) async {
   final l10n = AppLocalizations.of(context);
 
   final confirmed = await showSpokenConfirm(
@@ -50,6 +54,7 @@ Future<void> _confirmCancel(BuildContext context, ReviewController review) async
     body: l10n.listingCancelBody,
     confirm: l10n.listingCancelConfirm,
     cancel: l10n.listingCancelKeep,
+    tone: ConfirmTone.delete,
     speechKey: 'review:cancelListing',
   );
   if (!confirmed || !context.mounted) return;
@@ -111,12 +116,12 @@ class _ReviewScaffoldState extends State<ReviewScaffold> {
                 onPressed: widget.onBack,
               ),
         actions: [
-
           if (review != null &&
               review.stage != ReviewStage.publishing &&
               !review.isPublished)
             IconButton(
               icon: const Icon(Icons.delete_outline, size: 30),
+              color: AppColors.delete,
               tooltip: AppLocalizations.of(context).listingCancelAction,
               onPressed: widget.busy || review.isBusy
                   ? null

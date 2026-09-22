@@ -6,7 +6,7 @@ import '../core/theme/app_theme.dart';
 import '../services/speech_service.dart';
 import 'whole_word_text.dart';
 
-enum ButtonTone { primary, secondary, danger }
+enum ButtonTone { primary, secondary, danger, delete }
 
 class BigActionButton extends StatelessWidget {
   const BigActionButton({
@@ -86,6 +86,16 @@ class BigActionButton extends StatelessWidget {
         onPressed: busy ? null : onPressed,
         style: FilledButton.styleFrom(
           backgroundColor: AppColors.danger,
+          minimumSize: const Size.fromHeight(AppTheme.minTapTarget),
+        ),
+        child: child,
+      ),
+      ButtonTone.delete => FilledButton(
+        onPressed: busy ? null : onPressed,
+        style: FilledButton.styleFrom(
+          backgroundColor: AppColors.delete,
+          foregroundColor: Colors.white,
+          overlayColor: AppColors.deletePressed,
           minimumSize: const Size.fromHeight(AppTheme.minTapTarget),
         ),
         child: child,

@@ -19,6 +19,10 @@ abstract final class AppColors {
 
   static const danger = Color(0xFFA4432A);
 
+  static const delete = Color(0xFFC62828);
+
+  static const deletePressed = Color(0xFF9E1F1F);
+
   static const surface = Color(0xFFFDECE0);
 
   static const border = Color(0xFFE8D5C0);

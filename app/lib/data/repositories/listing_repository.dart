@@ -1,17 +1,31 @@
 import 'dart:async';
 
+import 'package:shared_preferences/shared_preferences.dart';
+
 import '../local/listing_dao.dart';
 import '../models/listing.dart';
 import '../remote/api_client.dart';
 
 class ListingRepository {
-  ListingRepository({required this._api, ListingDao? dao})
+  ListingRepository({required this._api, ListingDao? dao, this._prefs})
     : _dao = dao ?? ListingDao();
+
+  static const _kDeleted = 'deleted_listing_ids';
+
+  static const _deletedLimit = 500;
 
   final ApiClient _api;
   final ListingDao _dao;
+  SharedPreferences? _prefs;
 
   final Map<String, Listing> _cache = {};
+
+  final Set<String> _deleted = {};
+
+  bool isDeleted(String id) => _deleted.contains(id);
+
+  Future<SharedPreferences> get _store async =>
+      _prefs ??= await SharedPreferences.getInstance();
 
   Future<void>? _hydrating;
 
@@ -19,7 +33,11 @@ class ListingRepository {
 
   Future<void> _hydrate() async {
     try {
+      _deleted.addAll((await _store).getStringList(_kDeleted) ?? const []);
+    } catch (_) {}
+    try {
       for (final listing in await _dao.all()) {
+        if (_deleted.contains(listing.id)) continue;
         _cache.putIfAbsent(listing.id, () => listing);
       }
     } catch (_) {}
@@ -53,8 +71,15 @@ class ListingRepository {
   Future<List<Listing>> refreshAll() async {
     final hydrating = hydrate();
     try {
-      final listings = await _api.listings();
+      final fetched = await _api.listings();
       await hydrating;
+      final listings = [
+        for (final listing in fetched)
+          if (!_deleted.contains(listing.id)) listing,
+      ];
+      for (final listing in fetched) {
+        if (_deleted.contains(listing.id)) unawaited(_deleteRemote(listing.id));
+      }
       for (final listing in listings) {
         _cache[listing.id] = listing;
       }
@@ -155,6 +180,7 @@ class ListingRepository {
   }
 
   Listing _remember(Listing listing) {
+    if (_deleted.contains(listing.id)) return listing;
     _cache[listing.id] = listing;
     unawaited(_persist(listing));
     return listing;
@@ -167,18 +193,38 @@ class ListingRepository {
   }
 
   Future<void> discard(String listingId) async {
+    await hydrate();
     _cache.remove(listingId);
+    _deleted.add(listingId);
+    await _saveDeleted();
     try {
       await _dao.delete(listingId);
     } catch (_) {}
+    await _deleteRemote(listingId);
+  }
+
+  Future<void> _deleteRemote(String listingId) async {
     try {
       await _api.deleteListing(listingId);
-    } catch (_) {
-    }
+    } catch (_) {}
+  }
+
+  Future<void> _saveDeleted() async {
+    final ids = _deleted.toList();
+    final kept = ids.length > _deletedLimit
+        ? ids.sublist(ids.length - _deletedLimit)
+        : ids;
+    try {
+      await (await _store).setStringList(_kDeleted, kept);
+    } catch (_) {}
   }
 
   Future<void> clearCache() async {
     _cache.clear();
+    _deleted.clear();
+    try {
+      await (await _store).remove(_kDeleted);
+    } catch (_) {}
     try {
       await _dao.clear();
     } catch (_) {}

@@ -36,6 +36,7 @@ class HybridApi implements ApiClient {
     ApiCall.uploadCapture,
     ApiCall.listing,
     ApiCall.listings,
+    ApiCall.deleteListing,
   };
 
   bool usesServer(ApiCall call) => onServer.contains(call);
@@ -213,7 +214,9 @@ class HybridApi implements ApiClient {
 
   @override
   Future<void> deleteListing(String listingId) async {
-    if (usesServer(ApiCall.deleteListing)) {
+    if (usesServer(ApiCall.deleteListing) ||
+        usesServer(ApiCall.listings) ||
+        usesServer(ApiCall.uploadCapture)) {
       await server.deleteListing(listingId);
     }
     await mock.deleteListing(listingId);

@@ -21,6 +21,11 @@ class CatalogController extends ChangeNotifier {
 
   final List<Listing> _listings;
 
+  final Set<String> _deleted = {};
+
+  bool _isDeleted(String id) =>
+      _deleted.contains(id) || (_repository?.isDeleted(id) ?? false);
+
   List<Listing>? _snapshot;
   List<Listing>? _recent;
   final Map<ListingFilter, List<Listing>> _filtered = {};
@@ -72,7 +77,7 @@ class CatalogController extends ChangeNotifier {
     _refreshError = null;
     _listings
       ..clear()
-      ..addAll(listings);
+      ..addAll(listings.where((l) => !_isDeleted(l.id)));
     notifyListeners();
   }
 
@@ -83,6 +88,7 @@ class CatalogController extends ChangeNotifier {
   Object? get refreshError => _refreshError;
 
   void replace(Listing listing) {
+    if (_isDeleted(listing.id)) return;
     final index = _listings.indexWhere((l) => l.id == listing.id);
     if (index == -1) {
       _listings.insert(0, listing);
@@ -93,6 +99,7 @@ class CatalogController extends ChangeNotifier {
   }
 
   void forget(String listingId) {
+    _deleted.add(listingId);
     final before = _listings.length;
     _listings.removeWhere((l) => l.id == listingId);
     if (_listings.length != before) notifyListeners();

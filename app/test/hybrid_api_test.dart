@@ -81,6 +81,21 @@ void main() {
       expect(listings.single.id, 'server-1');
     });
 
+    test(
+      'a delete reaches the server whenever listings come from it',
+      () async {
+        final api = hybrid({ApiCall.listings});
+        await api.listings();
+        seen.clear();
+
+        await api.deleteListing('server-1');
+
+        expect([
+          for (final r in seen) '${r.method} ${r.url.path}',
+        ], contains('DELETE /api/v1/listings/server-1'));
+      },
+    );
+
     test('an unlisted call never touches the network', () async {
       final api = hybrid({ApiCall.listings});
 

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:kirtikar/data/local/listing_dao.dart';
 import 'package:kirtikar/data/models/fact_sheet.dart';
 import 'package:kirtikar/data/models/listing.dart';
@@ -31,6 +32,14 @@ class _FakeApi implements ApiClient {
     calls++;
     if (offline) throw Exception('no network');
     return remote.firstWhere((l) => l.id == id);
+  }
+
+  final List<String> deleted = [];
+
+  @override
+  Future<void> deleteListing(String listingId) async {
+    deleted.add(listingId);
+    if (offline) throw Exception('no network');
   }
 
   @override
@@ -116,28 +125,89 @@ void main() {
       );
 
   group('a deleted listing stays deleted', () {
-    test('the last one deleted leaves Home and the products list empty', () async {
-      final api = _FakeApi([seed('l1')]);
-      final dao = _FakeDao();
-      final repository = ListingRepository(api: api, dao: dao);
+    setUp(() => SharedPreferences.setMockInitialValues({}));
+
+    test('a server that still lists it cannot bring it back', () async {
+      final api = _FakeApi([seed('l1'), seed('l2')]);
+      final repository = ListingRepository(api: api, dao: _FakeDao());
       final catalog = CatalogController(repository: repository);
-
       await catalog.refresh();
-      expect(catalog.listings.map((l) => l.id), ['l1']);
 
-      api.remote = [];
+      api.offline = true;
       await repository.discard('l1');
       catalog.forget('l1');
+      api.offline = false;
 
+      await catalog.refresh();
+
+      expect(catalog.listings.map((l) => l.id), ['l2']);
+      expect(repository.cached('l1'), isNull);
+      expect(api.deleted, ['l1', 'l1']);
+    });
+
+    test('a late update from an open screen does not re-add it', () async {
+      final api = _FakeApi([seed('l1')]);
+      final repository = ListingRepository(api: api, dao: _FakeDao());
+      final catalog = CatalogController(repository: repository);
+      await catalog.refresh();
+
+      await repository.discard('l1');
+      catalog.forget('l1');
+      catalog.replace(seed('l1', status: ListingStatus.ready));
+
+      expect(catalog.listings, isEmpty);
+    });
+
+    test('a refresh already in flight does not re-add it', () async {
+      final api = _FakeApi([seed('l1')]);
+      final repository = ListingRepository(api: api, dao: _FakeDao());
+      final catalog = CatalogController(repository: repository);
+
+      final refreshing = catalog.refresh();
+      catalog.forget('l1');
+      await refreshing;
+
+      expect(catalog.listings, isEmpty);
+    });
+
+    test('it stays deleted after the app restarts', () async {
+      final api = _FakeApi([seed('l1')])..offline = true;
+      final dao = _FakeDao()..rows['l1'] = seed('l1');
+      await ListingRepository(api: api, dao: dao).discard('l1');
+
+      api.offline = false;
+      final restarted = ListingRepository(api: api, dao: dao);
+      final catalog = CatalogController(repository: restarted);
       await catalog.refresh();
 
       expect(catalog.listings, isEmpty);
-      expect(catalog.recent, isEmpty);
-      expect(catalog.nextToFinish, isNull);
-      expect(catalog.countOf(ListingFilter.inProgress), 0);
-      expect(catalog.countOf(ListingFilter.listed), 0);
-      expect(catalog.failedToRefresh, isFalse);
     });
+
+    test(
+      'the last one deleted leaves Home and the products list empty',
+      () async {
+        final api = _FakeApi([seed('l1')]);
+        final dao = _FakeDao();
+        final repository = ListingRepository(api: api, dao: dao);
+        final catalog = CatalogController(repository: repository);
+
+        await catalog.refresh();
+        expect(catalog.listings.map((l) => l.id), ['l1']);
+
+        api.remote = [];
+        await repository.discard('l1');
+        catalog.forget('l1');
+
+        await catalog.refresh();
+
+        expect(catalog.listings, isEmpty);
+        expect(catalog.recent, isEmpty);
+        expect(catalog.nextToFinish, isNull);
+        expect(catalog.countOf(ListingFilter.inProgress), 0);
+        expect(catalog.countOf(ListingFilter.listed), 0);
+        expect(catalog.failedToRefresh, isFalse);
+      },
+    );
 
     test('an empty answer is not read as a failed refresh', () async {
       final api = _FakeApi([]);
@@ -162,7 +232,6 @@ void main() {
       expect(catalog.listings.map((l) => l.id), ['l1']);
       expect(catalog.failedToRefresh, isTrue);
     });
-
   });
 
   group('the row format', () {

@@ -36,6 +36,7 @@ class QueueItemScreen extends StatelessWidget {
       body: l10n.queueDeleteBody,
       confirm: l10n.queueDeleteConfirm,
       cancel: l10n.queueDeleteCancel,
+      tone: ConfirmTone.delete,
       speechKey: 'queue:delete',
     );
 
@@ -230,7 +231,7 @@ class QueueItemScreen extends StatelessWidget {
                   BigActionButton(
                     label: l10n.queueDelete,
                     icon: Icons.delete_outline,
-                    tone: ButtonTone.danger,
+                    tone: ButtonTone.delete,
                     onPressed: () => _confirmDelete(context),
                     spokenLabel: '${l10n.queueDelete}. ${l10n.queueDeleteBody}',
                   ),

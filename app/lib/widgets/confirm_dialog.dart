@@ -6,7 +6,7 @@ import '../services/speech_service.dart';
 import 'speak_button.dart';
 import 'whole_word_text.dart';
 
-enum ConfirmTone { danger, neutral, primary }
+enum ConfirmTone { danger, delete, neutral, primary }
 
 Future<bool> showSpokenConfirm(
   BuildContext context, {
@@ -36,6 +36,14 @@ Future<bool> showSpokenConfirm(
         ),
         ConfirmTone.danger => TextButton(
           style: TextButton.styleFrom(foregroundColor: AppColors.danger),
+          onPressed: () => answerWith(true),
+          child: WholeWordText(confirm),
+        ),
+        ConfirmTone.delete => FilledButton(
+          style: FilledButton.styleFrom(
+            backgroundColor: AppColors.delete,
+            foregroundColor: Colors.white,
+          ),
           onPressed: () => answerWith(true),
           child: WholeWordText(confirm),
         ),

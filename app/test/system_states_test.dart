@@ -14,6 +14,7 @@ import 'package:kirtikar/state/catalog_controller.dart';
 import 'package:kirtikar/widgets/status_view.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class _DeadApi implements ApiClient {
   int calls = 0;
@@ -55,6 +56,8 @@ class _BlockingPermissions implements PermissionService {
 }
 
 void main() {
+  setUp(() => SharedPreferences.setMockInitialValues({}));
+
   TestWidgetsFlutterBinding.ensureInitialized();
 
   void useCheapPhone(WidgetTester tester) {
