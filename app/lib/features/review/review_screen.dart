@@ -131,7 +131,6 @@ class _ReviewScreenState extends State<ReviewScreen> {
               child: switch (review.stage) {
                 ReviewStage.needsAttention => NeedsAttentionStage(
                   onClose: _confirmLeave,
-                  onReprocessing: _goHome,
                 ),
                 ReviewStage.readBack => ReadBackStage(
                   onClose: _confirmLeave,

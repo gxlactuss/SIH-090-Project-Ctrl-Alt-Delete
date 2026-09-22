@@ -732,16 +732,6 @@ class AppLocalizationsPa extends AppLocalizations {
   String get attentionFailed => 'ਤੁਹਾਡਾ ਜਵਾਬ ਨਹੀਂ ਗਿਆ। ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਦੱਸੋ।';
 
   @override
-  String get attentionRetakePhotos => 'ਫੋਟੋਆਂ ਦੁਬਾਰਾ ਖਿੱਚੋ';
-
-  @override
-  String get attentionRetakeSending => 'ਤੁਹਾਡੀਆਂ ਨਵੀਆਂ ਫੋਟੋਆਂ ਭੇਜ ਰਹੇ ਹਾਂ…';
-
-  @override
-  String get attentionRetakeFailed =>
-      'ਨਵੀਆਂ ਫੋਟੋਆਂ ਨਹੀਂ ਗਈਆਂ। ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।';
-
-  @override
   String get readBackTitle => 'ਅਸੀਂ ਇਹ ਸਮਝਿਆ';
 
   @override

@@ -728,16 +728,6 @@ class AppLocalizationsGu extends AppLocalizations {
   String get attentionFailed => 'તમારો જવાબ ગયો નહીં. કૃપા કરીને ફરી કહો.';
 
   @override
-  String get attentionRetakePhotos => 'ફોટા ફરી પાડો';
-
-  @override
-  String get attentionRetakeSending => 'તમારા નવા ફોટા મોકલી રહ્યા છીએ…';
-
-  @override
-  String get attentionRetakeFailed =>
-      'નવા ફોટા ગયા નહીં. કૃપા કરીને ફરી પ્રયત્ન કરો.';
-
-  @override
   String get readBackTitle => 'અમે આ સમજ્યા';
 
   @override

@@ -133,12 +133,6 @@ void main() {
         onGenerateRoute: (settings) {
           routes.add(settings);
 
-          if (settings.name == AppRoutes.retakePhotos) {
-            return MaterialPageRoute<List<String>>(
-              settings: settings,
-              builder: (_) => const Scaffold(body: Text('camera')),
-            );
-          }
           return MaterialPageRoute<void>(
             settings: settings,
             builder: (_) => const Scaffold(body: Text('elsewhere')),
@@ -177,24 +171,7 @@ void main() {
     expect(find.text(l10n.attentionTitle), findsOneWidget);
     expect(find.text('How big is it?'), findsOneWidget);
     expect(find.text(l10n.attentionHoldToAnswer), findsOneWidget);
-    expect(find.text(l10n.attentionRetakePhotos), findsOneWidget);
-  });
-
-  testWidgets('a question about a photo offers the camera', (tester) async {
-    useCheapPhone(tester);
-    final listing = ready().copyWith(
-      status: ListingStatus.needsAttention,
-      followUpQuestion: 'Photo 2: too dark. Please retake it in better light.',
-    );
-    await tester.pumpWidget(harness(listing, _FakeApi(listing)));
-    await tester.pump();
-
-    expect(find.text(l10n.attentionRetakePhotos), findsOneWidget);
-
-    await tester.tap(find.text(l10n.attentionRetakePhotos));
-    await tester.pumpAndSettle();
-
-    expect(routes.single.name, AppRoutes.retakePhotos);
+    expect(find.byIcon(Icons.photo_camera), findsNothing);
   });
 
   testWidgets('5.3 and 5.4: a field opens voice, with a keypad behind it', (

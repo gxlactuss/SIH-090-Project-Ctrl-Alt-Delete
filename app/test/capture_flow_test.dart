@@ -147,32 +147,6 @@ void main() {
     expect(Directory('${root.path}/captures').existsSync(), isFalse);
   });
 
-  test(
-    'a retake hands the photos back without asking for a recording',
-    () async {
-      List<File>? handedBack;
-      final capture = CaptureController(
-        dao: dao,
-        queue: queue,
-        recorder: recorder,
-        qualityChecker: (_) async => good,
-        storageDirectory: () async => root,
-        onPhotosReady: (photos) => handedBack = photos,
-      );
-
-      expect(capture.isPhotosOnly, isTrue);
-      expect(capture.stepCount, 3);
-
-      await takeThreePhotos(capture);
-      capture.confirmPhotos();
-
-      expect(handedBack?.length, 3);
-      expect(capture.stage, CaptureStage.photoSet);
-      expect(recorder.started, isNull);
-      expect(dao.saved, isEmpty);
-    },
-  );
-
   test('three photos and a voice note become a queued capture', () async {
     final capture = controllerWith(good);
 

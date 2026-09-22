@@ -146,12 +146,6 @@ class KirtikarApp extends StatelessWidget {
             builder: (_) => ListingDetailScreen(listing: argument),
           );
         }
-        if (settings.name == AppRoutes.retakePhotos) {
-          return MaterialPageRoute<List<String>>(
-            settings: settings,
-            builder: (_) => const CaptureScreen(photosOnly: true),
-          );
-        }
         final id = argument;
         if (id is! String) return null;
         if (settings.name == AppRoutes.helpTopic) {

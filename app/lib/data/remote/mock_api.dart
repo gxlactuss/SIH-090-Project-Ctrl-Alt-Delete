@@ -274,35 +274,6 @@ class MockApi implements ApiClient {
   static const String _followUp = 'How big is it? Say it in inches or feet.';
 
   @override
-  Future<Listing> retakePhotos({
-    required String listingId,
-    required List<String> photoPaths,
-    void Function(double progress)? onProgress,
-  }) async {
-    for (final path in photoPaths) {
-      if (!File(path).existsSync()) {
-        throw const UploadException(UploadFailure.missingFiles);
-      }
-    }
-
-    const steps = 10;
-    final step = uploadDuration ~/ steps;
-    for (var i = 1; i <= steps; i++) {
-      await Future<void>.delayed(step);
-      onProgress?.call(i / steps);
-    }
-
-    final current = await listing(listingId);
-    return _store(
-      current.copyWith(
-        status: ListingStatus.ready,
-        imageUrls: photoPaths,
-        clearFollowUpQuestion: true,
-      ),
-    );
-  }
-
-  @override
   Future<Listing> answerQuestion({
     required String listingId,
     required String voiceReplyPath,

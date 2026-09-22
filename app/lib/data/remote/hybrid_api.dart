@@ -10,7 +10,6 @@ enum ApiCall {
   listing,
   listings,
   answerQuestion,
-  retakePhotos,
   patchListing,
   reviseListing,
   resolveSuggestions,
@@ -135,20 +134,6 @@ class HybridApi implements ApiClient {
       voiceReplyPath: voiceReplyPath,
       field: field,
       transcript: transcript,
-    ),
-  );
-
-  @override
-  Future<Listing> retakePhotos({
-    required String listingId,
-    required List<String> photoPaths,
-    void Function(double progress)? onProgress,
-  }) => _one(
-    ApiCall.retakePhotos,
-    (api) => api.retakePhotos(
-      listingId: listingId,
-      photoPaths: photoPaths,
-      onProgress: onProgress,
     ),
   );
 

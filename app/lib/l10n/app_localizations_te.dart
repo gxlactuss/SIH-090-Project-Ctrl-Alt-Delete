@@ -731,16 +731,6 @@ class AppLocalizationsTe extends AppLocalizations {
   String get attentionFailed => 'మీ సమాధానం వెళ్ళలేదు. దయచేసి మళ్ళీ చెప్పండి.';
 
   @override
-  String get attentionRetakePhotos => 'ఫోటోలు మళ్ళీ తీయండి';
-
-  @override
-  String get attentionRetakeSending => 'మీ కొత్త ఫోటోలు పంపుతున్నాం…';
-
-  @override
-  String get attentionRetakeFailed =>
-      'కొత్త ఫోటోలు వెళ్ళలేదు. దయచేసి మళ్ళీ ప్రయత్నించండి.';
-
-  @override
   String get readBackTitle => 'మాకు అర్థమైనది ఇది';
 
   @override

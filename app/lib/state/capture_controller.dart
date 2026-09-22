@@ -43,7 +43,6 @@ class CaptureController extends ChangeNotifier {
     Future<Uint8List?> Function(Uint8List bytes, PhotoEdit edit)? photoRenderer,
     this._analytics,
     this.templateListingId,
-    this.onPhotosReady,
   }) : _checkQuality = qualityChecker ?? _defaultQualityCheck,
        _checkFraming = framingChecker,
        _renderEdit = photoRenderer ?? _defaultRender,
@@ -68,14 +67,9 @@ class CaptureController extends ChangeNotifier {
 
   final String? templateListingId;
 
-  final void Function(List<File> photos)? onPhotosReady;
-
   bool get isDuplicate => templateListingId != null;
 
-  bool get isPhotosOnly => onPhotosReady != null;
-
-  int get stepCount =>
-      AppConstants.photosPerListing + (isDuplicate || isPhotosOnly ? 0 : 1);
+  int get stepCount => AppConstants.photosPerListing + (isDuplicate ? 0 : 1);
 
   int? get step => switch (_stage) {
     CaptureStage.photoSet => AppConstants.photosPerListing,
@@ -386,11 +380,6 @@ class CaptureController extends ChangeNotifier {
 
   void confirmPhotos() {
     if (!hasAllPhotos) return;
-    final handOff = onPhotosReady;
-    if (handOff != null) {
-      handOff(photos);
-      return;
-    }
     if (isDuplicate) {
       save();
       return;

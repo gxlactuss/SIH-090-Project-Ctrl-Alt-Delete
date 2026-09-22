@@ -737,16 +737,6 @@ class AppLocalizationsTa extends AppLocalizations {
   String get attentionFailed => 'உங்கள் பதில் போகவில்லை. மீண்டும் சொல்லுங்கள்.';
 
   @override
-  String get attentionRetakePhotos => 'படங்களை மீண்டும் எடுங்கள்';
-
-  @override
-  String get attentionRetakeSending => 'உங்கள் புதிய படங்களை அனுப்புகிறோம்…';
-
-  @override
-  String get attentionRetakeFailed =>
-      'புதிய படங்கள் போகவில்லை. மீண்டும் முயற்சி செய்யுங்கள்.';
-
-  @override
   String get readBackTitle => 'நாங்கள் புரிந்துகொண்டது இது';
 
   @override

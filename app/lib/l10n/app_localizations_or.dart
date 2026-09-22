@@ -727,16 +727,6 @@ class AppLocalizationsOr extends AppLocalizations {
   String get attentionFailed => 'ଆପଣଙ୍କ ଉତ୍ତର ଗଲା ନାହିଁ। ଦୟାକରି ପୁଣି କୁହନ୍ତୁ।';
 
   @override
-  String get attentionRetakePhotos => 'ଫଟୋଗୁଡିକ ପୁଣି ଉଠାନ୍ତୁ';
-
-  @override
-  String get attentionRetakeSending => 'ଆପଣଙ୍କ ନୂଆ ଫଟୋ ପଠାଯାଉଛି…';
-
-  @override
-  String get attentionRetakeFailed =>
-      'ନୂଆ ଫଟୋ ଗଲା ନାହିଁ। ଦୟାକରି ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ।';
-
-  @override
   String get readBackTitle => 'ଆମେ ଏହା ବୁଝିଲୁ';
 
   @override

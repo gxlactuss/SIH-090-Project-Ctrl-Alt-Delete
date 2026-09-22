@@ -28,12 +28,6 @@ abstract interface class ApiClient {
     String? transcript,
   });
 
-  Future<Listing> retakePhotos({
-    required String listingId,
-    required List<String> photoPaths,
-    void Function(double progress)? onProgress,
-  });
-
   Future<Listing> patchListing({
     required String listingId,
     required Map<String, Object?> changes,

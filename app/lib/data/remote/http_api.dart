@@ -140,44 +140,6 @@ class HttpApi implements ApiClient {
   );
 
   @override
-  Future<Listing> retakePhotos({
-    required String listingId,
-    required List<String> photoPaths,
-    void Function(double progress)? onProgress,
-  }) async {
-    for (final path in photoPaths) {
-      if (!File(path).existsSync()) {
-        throw const UploadException(UploadFailure.missingFiles);
-      }
-    }
-
-    final serverId = await _serverId(listingId);
-    final sizes = [for (final path in photoPaths) File(path).lengthSync()];
-    final total = sizes.fold<int>(0, (sum, size) => sum + size);
-    var done = 0;
-    for (final (index, path) in photoPaths.indexed) {
-      final size = sizes[index];
-      final before = done;
-      await _multipart(
-        ApiRoutes.uploadMedia,
-        id: serverId,
-        files: {
-          'file': [path],
-        },
-        fields: {'mediaType': 'image'},
-        onProgress: onProgress == null || total == 0
-            ? null
-            : (part) => onProgress((before + part * size) / total),
-        limit: uploadTimeout,
-      );
-      done += size;
-    }
-    onProgress?.call(1);
-
-    return listing(listingId);
-  }
-
-  @override
   Future<Listing> patchListing({
     required String listingId,
     required Map<String, Object?> changes,

@@ -84,20 +84,6 @@ class ListingRepository {
     );
   }
 
-  Future<Listing> retakePhotos({
-    required String listingId,
-    required List<String> photoPaths,
-    void Function(double progress)? onProgress,
-  }) async {
-    return _remember(
-      await _api.retakePhotos(
-        listingId: listingId,
-        photoPaths: photoPaths,
-        onProgress: onProgress,
-      ),
-    );
-  }
-
   Future<Listing> patch({
     required String listingId,
     required Map<String, Object?> changes,

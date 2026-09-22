@@ -731,17 +731,6 @@ class AppLocalizationsKn extends AppLocalizations {
   String get attentionFailed => 'ನಿಮ್ಮ ಉತ್ತರ ಹೋಗಲಿಲ್ಲ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಹೇಳಿ.';
 
   @override
-  String get attentionRetakePhotos => 'ಫೋಟೋಗಳನ್ನು ಮತ್ತೆ ತೆಗೆಯಿರಿ';
-
-  @override
-  String get attentionRetakeSending =>
-      'ನಿಮ್ಮ ಹೊಸ ಫೋಟೋಗಳನ್ನು ಕಳುಹಿಸುತ್ತಿದ್ದೇವೆ…';
-
-  @override
-  String get attentionRetakeFailed =>
-      'ಹೊಸ ಫೋಟೋಗಳು ಹೋಗಲಿಲ್ಲ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.';
-
-  @override
   String get readBackTitle => 'ನಮಗೆ ಅರ್ಥವಾದದ್ದು ಇದು';
 
   @override

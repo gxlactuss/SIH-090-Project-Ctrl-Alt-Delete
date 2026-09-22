@@ -45,11 +45,6 @@ class Listing {
 
   bool get needsAttention => followUpQuestion != null;
 
-  bool get asksForPhotos => RegExp(
-    r'photo|picture|image|frame',
-    caseSensitive: false,
-  ).hasMatch(followUpQuestion ?? '');
-
   int get stock => factSheet.quantity ?? 0;
 
   bool get isSoldOut => status == ListingStatus.soldOut || stock <= 0;

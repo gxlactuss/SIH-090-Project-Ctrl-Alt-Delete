@@ -18,8 +18,6 @@ abstract final class AppRoutes {
 
   static const capture = '/capture';
 
-  static const retakePhotos = '/capture/retake';
-
   static const queue = '/queue';
   static const queueItem = '/queue/item';
 

@@ -736,16 +736,6 @@ class AppLocalizationsMl extends AppLocalizations {
       'നിങ്ങളുടെ ഉത്തരം പോയില്ല. ദയവായി വീണ്ടും പറയുക.';
 
   @override
-  String get attentionRetakePhotos => 'ഫോട്ടോകൾ വീണ്ടും എടുക്കുക';
-
-  @override
-  String get attentionRetakeSending => 'നിങ്ങളുടെ പുതിയ ഫോട്ടോകൾ അയയ്ക്കുന്നു…';
-
-  @override
-  String get attentionRetakeFailed =>
-      'പുതിയ ഫോട്ടോകൾ പോയില്ല. ദയവായി വീണ്ടും ശ്രമിക്കുക.';
-
-  @override
   String get readBackTitle => 'ഞങ്ങൾക്ക് മനസ്സിലായത് ഇതാണ്';
 
   @override

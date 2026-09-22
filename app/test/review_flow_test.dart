@@ -44,23 +44,6 @@ class _FakeApi implements ApiClient {
     );
   }
 
-  List<String>? retakenPhotos;
-
-  @override
-  Future<Listing> retakePhotos({
-    required String listingId,
-    required List<String> photoPaths,
-    void Function(double progress)? onProgress,
-  }) async {
-    if (failNext) throw Exception('no network');
-    retakenPhotos = photoPaths;
-    return current = current.copyWith(
-      status: ListingStatus.processing,
-      imageUrls: photoPaths,
-      clearFollowUpQuestion: true,
-    );
-  }
-
   @override
   Future<Listing> patchListing({
     required String listingId,
@@ -173,37 +156,6 @@ void main() {
   test('a listing with a missing fact opens on the question', () {
     final (:review, api: _) = build(seed());
     expect(review.stage, ReviewStage.needsAttention);
-  });
-
-  test('a question about a photo is answered by taking it again', () async {
-    final (:review, :api) = build(
-      seed(question: 'Photo 2: too dark. Please retake it in better light.'),
-    );
-    expect(review.listing.asksForPhotos, isTrue);
-
-    expect(await review.submitPhotos(['/tmp/photo_1.jpg']), isTrue);
-
-    expect(api.retakenPhotos, ['/tmp/photo_1.jpg']);
-    expect(review.listing.followUpQuestion, isNull);
-    expect(review.listing.status.isWorking, isTrue);
-  });
-
-  test('the subject gate wording counts as a question about photos', () {
-    final (:review, api: _) = build(
-      seed(
-        question:
-            'Could not separate the item from its surroundings. Please '
-            'photograph the item on its own against a plain wall, floor or '
-            'cloth. The item fills only 1.6% of the photo. Please move closer '
-            'so it fills most of the frame.',
-      ),
-    );
-    expect(review.listing.asksForPhotos, isTrue);
-  });
-
-  test('a question about a fact is not mistaken for a photo one', () {
-    final (:review, api: _) = build(seed());
-    expect(review.listing.asksForPhotos, isFalse);
   });
 
   test('a listing with nothing missing opens on the read-back', () {

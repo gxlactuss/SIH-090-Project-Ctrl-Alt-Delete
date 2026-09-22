@@ -55,13 +55,6 @@ class _FakeApi implements ApiClient {
   }) => throw UnimplementedError();
 
   @override
-  Future<Listing> retakePhotos({
-    required String listingId,
-    required List<String> photoPaths,
-    void Function(double progress)? onProgress,
-  }) => throw UnimplementedError();
-
-  @override
   Future<Listing> patchListing({
     required String listingId,
     required Map<String, Object?> changes,

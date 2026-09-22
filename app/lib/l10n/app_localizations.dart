@@ -480,12 +480,6 @@ abstract class AppLocalizations {
 
   String get attentionFailed;
 
-  String get attentionRetakePhotos;
-
-  String get attentionRetakeSending;
-
-  String get attentionRetakeFailed;
-
   String get readBackTitle;
 
   String get readBackListen;

@@ -233,18 +233,6 @@ class ReviewController extends ChangeNotifier {
     );
   }
 
-  Future<bool> submitPhotos(List<String> photoPaths) => _call(
-    () =>
-        _listings.retakePhotos(listingId: _listing.id, photoPaths: photoPaths),
-    then: () {
-      _analytics?.log(
-        AnalyticsEvent.retakePrompted,
-        properties: {'listingId': _listing.id},
-      );
-      if (!_listing.needsAttention) _stage = ReviewStage.readBack;
-    },
-  );
-
   Future<String?> _transcribe(String path) async {
     final voice = _voice;
     final language = _language;

@@ -737,16 +737,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Your answer did not go through. Please say it again.';
 
   @override
-  String get attentionRetakePhotos => 'Take the photos again';
-
-  @override
-  String get attentionRetakeSending => 'Sending your new photos…';
-
-  @override
-  String get attentionRetakeFailed =>
-      'The new photos did not go through. Please try again.';
-
-  @override
   String get readBackTitle => 'This is what we understood';
 
   @override

@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -28,7 +26,6 @@ class CaptureScreen extends StatefulWidget {
   const CaptureScreen({
     super.key,
     this.templateListingId,
-    this.photosOnly = false,
     this.dao,
     this.camera,
     this.recorder,
@@ -37,8 +34,6 @@ class CaptureScreen extends StatefulWidget {
   });
 
   final String? templateListingId;
-
-  final bool photosOnly;
 
   final CaptureDao? dao;
   final CameraService? camera;
@@ -76,14 +71,7 @@ class _CaptureScreenState extends State<CaptureScreen> {
     framingChecker: _framing.check,
     analytics: context.maybeRead<AnalyticsService>(),
     templateListingId: widget.templateListingId,
-    onPhotosReady: widget.photosOnly ? _handBackPhotos : null,
   );
-
-  void _handBackPhotos(List<File> photos) {
-    if (!mounted) return;
-    Navigator.of(context)
-        .pop<List<String>>([for (final photo in photos) photo.path]);
-  }
 
   void _onStageChanged() {
     final onCamera = _capture.stage == CaptureStage.camera;

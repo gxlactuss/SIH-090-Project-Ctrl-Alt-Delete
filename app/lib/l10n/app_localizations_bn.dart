@@ -726,16 +726,6 @@ class AppLocalizationsBn extends AppLocalizations {
   String get attentionFailed => 'আপনার উত্তর যায়নি। দয়া করে আবার বলুন।';
 
   @override
-  String get attentionRetakePhotos => 'ছবিগুলো আবার তুলুন';
-
-  @override
-  String get attentionRetakeSending => 'আপনার নতুন ছবি পাঠানো হচ্ছে…';
-
-  @override
-  String get attentionRetakeFailed =>
-      'নতুন ছবি যায়নি। দয়া করে আবার চেষ্টা করুন।';
-
-  @override
   String get readBackTitle => 'আমরা এটা বুঝেছি';
 
   @override
