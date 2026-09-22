@@ -907,15 +907,6 @@ class AppLocalizationsTe extends AppLocalizations {
   String get priceBody => 'ఇది ఒక్క వస్తువు ధర.';
 
   @override
-  String priceFloor(String amount) {
-    return 'మీకు అయిన ఖర్చు: $amount';
-  }
-
-  @override
-  String get priceFloorExplain =>
-      'మీ సామగ్రి, మీ సమయం కలిపి ఇంత అవుతుంది. దీనికంటే తక్కువకు అమ్మితే మీకు నష్టం.';
-
-  @override
   String priceBand(String low, String high) {
     return 'ఇలాంటి వస్తువులను ఇతరులు $low నుంచి $high కు అమ్ముతారు';
   }

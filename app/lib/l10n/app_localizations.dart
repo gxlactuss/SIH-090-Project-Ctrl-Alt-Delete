@@ -592,10 +592,6 @@ abstract class AppLocalizations {
 
   String get priceBody;
 
-  String priceFloor(String amount);
-
-  String get priceFloorExplain;
-
   String priceBand(String low, String high);
 
   String get priceBelowFloor;

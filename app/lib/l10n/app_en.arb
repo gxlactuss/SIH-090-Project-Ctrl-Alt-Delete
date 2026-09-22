@@ -275,8 +275,6 @@
   "suggestDone": "Nothing more to add",
   "priceTitle": "What is the price?",
   "priceBody": "This is for one piece.",
-  "priceFloor": "What it cost you: {amount}",
-  "priceFloorExplain": "Your materials and your time come to this much. Selling below it means you lose money on the work.",
   "priceBand": "Others sell this kind of thing for {low} to {high}",
   "priceBelowFloor": "This is below what it cost you to make. You can still choose it.",
   "priceSayIt": "Say the price",

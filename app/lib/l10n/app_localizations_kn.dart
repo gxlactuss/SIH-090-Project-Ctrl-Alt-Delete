@@ -908,15 +908,6 @@ class AppLocalizationsKn extends AppLocalizations {
   String get priceBody => 'ಇದು ಒಂದು ತುಂಡಿನ ಬೆಲೆ.';
 
   @override
-  String priceFloor(String amount) {
-    return 'ನಿಮಗೆ ಆದ ಖರ್ಚು: $amount';
-  }
-
-  @override
-  String get priceFloorExplain =>
-      'ನಿಮ್ಮ ಸಾಮಗ್ರಿ ಮತ್ತು ನಿಮ್ಮ ಸಮಯ ಸೇರಿ ಇಷ್ಟಾಗುತ್ತದೆ. ಇದಕ್ಕಿಂತ ಕಡಿಮೆಗೆ ಮಾರಿದರೆ ನಿಮಗೆ ನಷ್ಟ.';
-
-  @override
   String priceBand(String low, String high) {
     return 'ಇಂತಹ ವಸ್ತುಗಳನ್ನು ಬೇರೆಯವರು $low ರಿಂದ $high ಗೆ ಮಾರುತ್ತಾರೆ';
   }

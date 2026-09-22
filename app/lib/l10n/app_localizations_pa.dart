@@ -908,15 +908,6 @@ class AppLocalizationsPa extends AppLocalizations {
   String get priceBody => 'ਇਹ ਇੱਕ ਨਗ ਦੀ ਕੀਮਤ ਹੈ।';
 
   @override
-  String priceFloor(String amount) {
-    return 'ਤੁਹਾਡਾ ਖਰਚਾ: $amount';
-  }
-
-  @override
-  String get priceFloorExplain =>
-      'ਤੁਹਾਡਾ ਸਮਾਨ ਅਤੇ ਤੁਹਾਡਾ ਸਮਾਂ ਮਿਲਾ ਕੇ ਇੰਨਾ ਬਣਦਾ ਹੈ। ਇਸ ਤੋਂ ਘੱਟ ਵਿੱਚ ਵੇਚਣ ਨਾਲ ਤੁਹਾਨੂੰ ਘਾਟਾ ਪਵੇਗਾ।';
-
-  @override
   String priceBand(String low, String high) {
     return 'ਇਹੋ ਜਿਹੀਆਂ ਚੀਜ਼ਾਂ ਹੋਰ ਲੋਕ $low ਤੋਂ $high ਵਿੱਚ ਵੇਚਦੇ ਹਨ';
   }

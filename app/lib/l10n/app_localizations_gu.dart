@@ -904,15 +904,6 @@ class AppLocalizationsGu extends AppLocalizations {
   String get priceBody => 'આ એક નંગની કિંમત છે.';
 
   @override
-  String priceFloor(String amount) {
-    return 'તમારો ખર્ચ: $amount';
-  }
-
-  @override
-  String get priceFloorExplain =>
-      'તમારો માલસામાન અને તમારો સમય મળીને આટલું થાય છે. આનાથી ઓછી કિંમતે વેચશો તો તમને નુકસાન થશે.';
-
-  @override
   String priceBand(String low, String high) {
     return 'આવી વસ્તુઓ બીજા લોકો $low થી $high માં વેચે છે';
   }

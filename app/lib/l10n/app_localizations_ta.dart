@@ -914,15 +914,6 @@ class AppLocalizationsTa extends AppLocalizations {
   String get priceBody => 'இது ஒரு பொருளுக்கான விலை.';
 
   @override
-  String priceFloor(String amount) {
-    return 'உங்களுக்கான செலவு: $amount';
-  }
-
-  @override
-  String get priceFloorExplain =>
-      'உங்கள் மூலப்பொருட்களும் நேரமும் சேர்ந்து இவ்வளவு ஆகிறது. இதைவிடக் குறைவாக விற்றால் உங்களுக்கு நஷ்டம்.';
-
-  @override
   String priceBand(String low, String high) {
     return 'இதுபோன்ற பொருட்களை மற்றவர்கள் $low முதல் $high வரை விற்கிறார்கள்';
   }

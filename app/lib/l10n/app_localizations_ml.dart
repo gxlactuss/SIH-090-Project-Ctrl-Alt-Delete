@@ -913,15 +913,6 @@ class AppLocalizationsMl extends AppLocalizations {
   String get priceBody => 'ഇത് ഒരെണ്ണത്തിന്റെ വിലയാണ്.';
 
   @override
-  String priceFloor(String amount) {
-    return 'നിങ്ങൾക്ക് ചെലവായത്: $amount';
-  }
-
-  @override
-  String get priceFloorExplain =>
-      'നിങ്ങളുടെ സാമഗ്രികളും സമയവും ചേർന്ന് ഇത്രയാകും. ഇതിൽ കുറച്ച് വിറ്റാൽ നിങ്ങൾക്ക് നഷ്ടമാകും.';
-
-  @override
   String priceBand(String low, String high) {
     return 'ഇത്തരം സാധനങ്ങൾ മറ്റുള്ളവർ $low മുതൽ $high വരെ വിൽക്കുന്നു';
   }

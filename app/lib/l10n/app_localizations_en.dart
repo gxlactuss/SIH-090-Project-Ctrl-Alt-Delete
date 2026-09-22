@@ -913,15 +913,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get priceBody => 'This is for one piece.';
 
   @override
-  String priceFloor(String amount) {
-    return 'What it cost you: $amount';
-  }
-
-  @override
-  String get priceFloorExplain =>
-      'Your materials and your time come to this much. Selling below it means you lose money on the work.';
-
-  @override
   String priceBand(String low, String high) {
     return 'Others sell this kind of thing for $low to $high';
   }

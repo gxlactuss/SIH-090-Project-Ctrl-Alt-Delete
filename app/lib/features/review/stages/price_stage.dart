@@ -16,7 +16,6 @@ import '../../../widgets/fade_in.dart';
 import '../widgets/correction_sheet.dart';
 import '../widgets/review_scaffold.dart';
 import '../../../widgets/whole_word_text.dart';
-import '../../../widgets/info_panel.dart';
 
 class PriceStage extends StatefulWidget {
   const PriceStage({super.key, required this.onClose, required this.onBack});
@@ -45,15 +44,18 @@ class _PriceStageState extends State<PriceStage> {
     final price = _current(review);
     final floor = review.priceFloorInPaise;
     final belowFloor = review.isBelowFloor(price);
-    final ceiling = (floor * ReviewConstants.sliderCeilingMultiplier)
-        .round()
-        .clamp(_step * 2, 10000000);
+    final ceiling = [
+      (floor * ReviewConstants.sliderCeilingMultiplier).round(),
+      price * 2,
+      ReviewConstants.sliderMinimumCeilingInPaise,
+    ].reduce((a, b) => a > b ? a : b).clamp(_step * 2, 10000000);
 
-    final floorLine = l10n.priceFloor(Money.rupees(floor, locale));
-    final bandLine = l10n.priceBand(
-      Money.rupees(review.bandLowInPaise, locale),
-      Money.rupees(review.bandHighInPaise, locale),
-    );
+    final bandLine = review.bandHighInPaise > 0
+        ? l10n.priceBand(
+            Money.rupees(review.bandLowInPaise, locale),
+            Money.rupees(review.bandHighInPaise, locale),
+          )
+        : null;
 
     return ReviewScaffold(
       title: l10n.priceTitle,
@@ -61,8 +63,7 @@ class _PriceStageState extends State<PriceStage> {
       spokenLines: [
         l10n.priceTitle,
         Money.rupees(price, locale),
-        floorLine,
-        bandLine,
+        ?bandLine,
         if (belowFloor) l10n.priceBelowFloor,
       ],
       busy: review.isBusy,
@@ -127,26 +128,25 @@ class _PriceStageState extends State<PriceStage> {
                 ),
             ],
           ),
-          const SizedBox(height: 12),
-          const SizedBox(height: 6),
-          _FloorPanel(text: floorLine, explain: l10n.priceFloorExplain),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              const Icon(Icons.storefront, size: 24, color: AppColors.muted),
-              const SizedBox(width: 10),
-              Expanded(
-                child: WholeWordText(
-                  bandLine,
-                  style: const TextStyle(
-                    fontSize: 17,
-                    height: 1.3,
-                    color: AppColors.muted,
+          if (bandLine != null) ...[
+            const SizedBox(height: 18),
+            Row(
+              children: [
+                const Icon(Icons.storefront, size: 24, color: AppColors.muted),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: WholeWordText(
+                    bandLine,
+                    style: const TextStyle(
+                      fontSize: 17,
+                      height: 1.3,
+                      color: AppColors.muted,
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
+              ],
+            ),
+          ],
           AnimatedSize(
             duration: AppMotion.of(context, AppMotion.medium),
             curve: AppMotion.standard,
@@ -262,17 +262,5 @@ class _NudgeButton extends StatelessWidget {
         style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
       ),
     );
-  }
-}
-
-class _FloorPanel extends StatelessWidget {
-  const _FloorPanel({required this.text, required this.explain});
-
-  final String text;
-  final String explain;
-
-  @override
-  Widget build(BuildContext context) {
-    return InfoPanel(title: text, text: explain);
   }
 }

@@ -5,4 +5,6 @@ abstract final class ReviewConstants {
   static const double bandHighMultiplier = 1.8;
 
   static const double sliderCeilingMultiplier = 4.0;
+
+  static const int sliderMinimumCeilingInPaise = 500000;
 }

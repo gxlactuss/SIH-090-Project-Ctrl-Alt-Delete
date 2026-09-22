@@ -385,15 +385,6 @@
   "suggestDone": "और कुछ जोड़ना नहीं है",
   "priceTitle": "दाम कितना है?",
   "priceBody": "यह एक नग का दाम है।",
-  "priceFloor": "आपकी लागत: {amount}",
-  "@priceFloor": {
-    "placeholders": {
-      "amount": {
-        "type": "String"
-      }
-    }
-  },
-  "priceFloorExplain": "आपका सामान और आपका समय मिलाकर इतना होता है। इससे कम में बेचने पर आपको घाटा होगा।",
   "priceBand": "ऐसी चीज़ें दूसरे लोग {low} से {high} में बेचते हैं",
   "@priceBand": {
     "placeholders": {
