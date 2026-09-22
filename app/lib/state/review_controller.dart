@@ -168,10 +168,16 @@ class ReviewController extends ChangeNotifier {
 
   List<ReviewStage> get _order => _isEdit ? _editOrder : _fullOrder;
 
+  bool get _hasSuggestionStep =>
+      _listing.suggestions.any((s) => s.accepted == null) ||
+      _decisions.isNotEmpty ||
+      _skipped.isNotEmpty;
+
   List<ReviewStage> get _steps => [
     for (final stage in _order)
       if (stage != ReviewStage.needsAttention &&
-          stage != ReviewStage.publishing)
+          stage != ReviewStage.publishing &&
+          (stage != ReviewStage.suggestions || _hasSuggestionStep))
         stage,
   ];
 
@@ -200,7 +206,7 @@ class ReviewController extends ChangeNotifier {
     final index = _order.indexOf(_stage);
     if (index <= 0) return;
     var previous = _order[index - 1];
-    if (previous == ReviewStage.suggestions && _listing.suggestions.isEmpty) {
+    if (previous == ReviewStage.suggestions && !_hasSuggestionStep) {
       previous = ReviewStage.readBack;
     }
     if (previous == ReviewStage.needsAttention && !_listing.needsAttention) {
