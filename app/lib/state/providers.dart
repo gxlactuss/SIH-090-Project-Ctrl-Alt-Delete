@@ -13,6 +13,7 @@ import '../data/remote/default_api.dart';
 import '../data/remote/media_auth.dart';
 import '../data/remote/mock_api.dart';
 import '../data/remote/voice/voice_api.dart';
+import '../data/repositories/auth_repository.dart';
 import '../data/repositories/listing_repository.dart';
 import '../data/repositories/sales_repository.dart';
 import '../data/repositories/seller_repository.dart';
@@ -41,6 +42,7 @@ List<SingleChildWidget> appProviders({
   CrashReporter? crashes,
   NotificationService? notifications,
   GlobalKey<NavigatorState>? navigatorKey,
+  AuthRepository? auth,
 
   VoiceApi? voice,
 
@@ -143,7 +145,7 @@ List<SingleChildWidget> appProviders({
     ChangeNotifierProvider<AppState>.value(value: appState),
     ChangeNotifierProxyProvider<AppState, OnboardingController>(
       create: (context) =>
-          OnboardingController(appState: context.read<AppState>()),
+          OnboardingController(appState: context.read<AppState>(), auth: auth),
       update: (_, appState, controller) => controller!,
     ),
   ];
