@@ -37,7 +37,7 @@ SIH-090-Project-Ctrl-Alt-Delete/
 │
 ├── backend/              # Publishing Factory Backend (FastAPI + PostgreSQL + SQLAlchemy)
 │   ├── app/
-│   │   ├── api/          # RESTful v1 endpoints (/listings, /media, /seller, /publish, /voice)
+│   │   ├── api/          # RESTful v1 endpoints (/auth, /listings, /media, /seller, /public, /voice)
 │   │   ├── core/         # Config, Security, Phone validation, Firebase Auth
 │   │   ├── db/           # SQLAlchemy session & Base
 │   │   ├── models/       # Domain models (sellers, listings, media, suggestions, consents)
@@ -54,6 +54,8 @@ SIH-090-Project-Ctrl-Alt-Delete/
 │   │       ├── vision/   # Image Processing Subsystem (IS-Net ONNX)
 │   │       ├── voice/    # Voice Station Subsystem (Sarvam AI saaras:v3)
 │   │       ├── llm/      # LLM Extraction Subsystem (Gemini 3.5 Flash)
+│   │       ├── factsheet/ # Fact sheet extraction, schema and writer
+│   │       ├── ondc/     # ONDC catalog mapping
 │   │       └── publishing/ # Multi-Channel Adapters (ONDC, Meta WhatsApp, Google Merchant)
 │   ├── alembic/          # Database migrations
 │   ├── tests/            # Automated test suite (160/160 passing - 100%)
@@ -81,10 +83,10 @@ Kirtikar is built for an artisan who may not read or type comfortably, on a chea
 |---|---|---|
 | 1 | **Onboarding** | Choose language → welcome → terms (spoken summary) → phone number + OTP (Firebase) → permissions → profile (name, village, craft) |
 | 2 | **Home** | See what needs attention, start a new product, check uploads and sales |
-| 3 | **Guided capture** | Take up to 3 photos with live framing help → automatic quality check (blur, light, product in frame) with retake advice → crop/rotate → record a voice note describing the product (or type it) → saved to the queue |
+| 3 | **Guided capture** | Take up to 3 photos with live framing help → automatic quality check (blur, light, product in frame) with retake advice → crop/rotate → record a voice note describing the product and what its materials cost (or type it) → saved to the queue |
 | 4 | **Upload queue** | Watch uploads progress; failed items explain why and retry automatically when a network returns |
-| 5 | **Review & publish** | Answer one follow-up question by voice → listen to the generated title and description → accept or reject suggested additions → confirm price and stock → reorder photos → give photo and story consent → publish |
-| 6 | **Listings / Products** | Drafts, live and sold sections; edit, update stock, share a preview link, unpublish and relist |
+| 5 | **Review & publish** | Answer one follow-up question by voice → listen to the generated title and description → accept or reject suggested additions → confirm price and stock against the market range → reorder photos → give photo and story consent → publish |
+| 6 | **Listings / Products** | Drafts, live and sold sections; edit, update stock, share a preview link, unpublish and relist, delete for good |
 | 7 | **Sales** | Sale details, pack-by reminders, a spoken packing checklist, and weekly / monthly / total earnings |
 | 8 | **Profile & settings** | Edit profile and craft story, change phone, link the ONDC selling account, voice speed and auto-read, notifications, privacy & consent centre, storage, sign out / delete account |
 | 9 | **Help** | Spoken help topics, FAQ, about, call or WhatsApp support, terms and privacy |
@@ -103,7 +105,7 @@ Screens (features/)  ──►  Controllers (state/, ChangeNotifier via Provider
                                        ├─ MockApi   → on-device simulation for demos
                                        └─ HybridApi → per-call switch between the two
 ```
-- **Authentication**: Firebase phone OTP on the device; the Firebase ID token is exchanged at `POST /api/v1/auth/firebase` for the backend's JWT, which is stored, refreshed and retried once on `401`.
+- **Authentication**: real Firebase phone OTP on the device (no demo numbers or codes); the Firebase ID token is exchanged at `POST /api/v1/auth/firebase` for the backend's JWT, which is stored, refreshed and retried once on `401`.
 - **Uploads**: `POST /listings` with the phone's capture id as `client_item_id`, then one `POST /listings/{id}/media` per photo and voice note, with progress. The phone keeps using its own capture id and maps it to the server's listing id.
 - **Moving to the real backend one call at a time**: `API_REAL_CALLS` chooses which calls go to the server. By default these are profile, upload and reading listings; the rest stay simulated until the backend supports them.
 - **Status updates**: listings still being processed are refreshed on a backoff while the app is open, on resume, and on pull-to-refresh.
@@ -192,7 +194,7 @@ python3 test_voice_cli.py --record --seconds 10 --image /path/to/craft.jpg
 
 | Subsystem | Lead | Status | Highlights |
 |---|---|:---:|---|
-| **Mobile App (`app/`)** | Mohit | ✅ Functional | 10 flows / 55+ screens and steps, 11 languages, voice-first UI, offline queue + background upload, Firebase OTP, backend-ready API layer (370 tests) |
+| **Mobile App (`app/`)** | Mohit | ✅ Functional | 10 flows / 55+ screens and steps, 11 languages, voice-first UI, offline queue + background upload, Firebase OTP, backend-ready API layer (390+ tests) |
 | **Backend Core (`backend/`)** | Ayush | ✅ Functional | FastAPI, Alembic migrations, in-memory SQLite test harness |
 | **Vision Station (`backend/app/services/vision/`)** | Kaustubh | ✅ Integrated | 80% studio white framing, IS-Net ONNX, Laplacian/ROI quality gate |
 | **Voice Station (`backend/app/services/voice/`)** | Kaustubh | ✅ Integrated | Sarvam AI (`saaras:v3`) Indic STT translation (Hindi, Marathi, Bengali, etc.) |
