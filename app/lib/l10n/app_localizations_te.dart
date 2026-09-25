@@ -117,11 +117,6 @@ class AppLocalizationsTe extends AppLocalizations {
   String get phoneInvalid => 'పది అంకెల నంబర్ ఇవ్వండి';
 
   @override
-  String phoneUnknown(String number) {
-    return 'ఈ డెమోలో ఈ నంబర్ పనిచేయదు. $number వాడండి.';
-  }
-
-  @override
   String get phoneSendCode => 'కోడ్ పంపండి';
 
   @override
@@ -139,13 +134,6 @@ class AppLocalizationsTe extends AppLocalizations {
 
   @override
   String get otpResend => 'కోడ్ మళ్ళీ పంపండి';
-
-  @override
-  String get otpCallMe => 'నాకు ఫోన్ చేసి చెప్పండి';
-
-  @override
-  String get otpCalling =>
-      'కొద్దిసేపట్లో కాల్ వస్తుంది, కోడ్ చదివి వినిపిస్తారు.';
 
   @override
   String get otpWrong => 'కోడ్ సరిగ్గా లేదు. మళ్ళీ ఇవ్వండి.';

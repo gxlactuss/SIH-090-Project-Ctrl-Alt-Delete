@@ -117,11 +117,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get phoneInvalid => 'Enter a ten digit number';
 
   @override
-  String phoneUnknown(String number) {
-    return 'That number does not work in this demo. Use $number.';
-  }
-
-  @override
   String get phoneSendCode => 'Send the code';
 
   @override
@@ -139,13 +134,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get otpResend => 'Send the code again';
-
-  @override
-  String get otpCallMe => 'Call me and read it out';
-
-  @override
-  String get otpCalling =>
-      'You will get a call shortly and the code will be read out to you.';
 
   @override
   String get otpWrong => 'That code is not right. Enter it again.';

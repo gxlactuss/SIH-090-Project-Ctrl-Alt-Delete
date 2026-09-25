@@ -117,11 +117,6 @@ class AppLocalizationsTa extends AppLocalizations {
   String get phoneInvalid => 'பத்து இலக்க எண்ணை உள்ளிடுங்கள்';
 
   @override
-  String phoneUnknown(String number) {
-    return 'இந்த டெமோவில் இந்த எண் வேலை செய்யாது. $number பயன்படுத்துங்கள்.';
-  }
-
-  @override
   String get phoneSendCode => 'குறியீடு அனுப்பு';
 
   @override
@@ -139,13 +134,6 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get otpResend => 'குறியீட்டை மீண்டும் அனுப்பு';
-
-  @override
-  String get otpCallMe => 'எனக்கு போன் செய்து சொல்லுங்கள்';
-
-  @override
-  String get otpCalling =>
-      'சிறிது நேரத்தில் அழைப்பு வரும், குறியீடு படித்துக் காட்டப்படும்.';
 
   @override
   String get otpWrong => 'குறியீடு சரியில்லை. மீண்டும் உள்ளிடுங்கள்.';

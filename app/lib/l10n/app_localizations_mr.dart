@@ -118,11 +118,6 @@ class AppLocalizationsMr extends AppLocalizations {
   String get phoneInvalid => 'दहा अंकी नंबर टाका';
 
   @override
-  String phoneUnknown(String number) {
-    return 'हा नंबर या डेमोमध्ये चालणार नाही. $number वापरा.';
-  }
-
-  @override
   String get phoneSendCode => 'कोड पाठवा';
 
   @override
@@ -140,12 +135,6 @@ class AppLocalizationsMr extends AppLocalizations {
 
   @override
   String get otpResend => 'कोड पुन्हा पाठवा';
-
-  @override
-  String get otpCallMe => 'मला फोन करून सांगा';
-
-  @override
-  String get otpCalling => 'थोड्या वेळात फोन येईल आणि कोड बोलून सांगितला जाईल.';
 
   @override
   String get otpWrong => 'कोड बरोबर नाही. पुन्हा टाका.';

@@ -117,11 +117,6 @@ class AppLocalizationsBn extends AppLocalizations {
   String get phoneInvalid => 'দশ অঙ্কের নম্বর দিন';
 
   @override
-  String phoneUnknown(String number) {
-    return 'এই ডেমোতে এই নম্বর চলবে না। $number ব্যবহার করুন।';
-  }
-
-  @override
   String get phoneSendCode => 'কোড পাঠান';
 
   @override
@@ -139,12 +134,6 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get otpResend => 'কোড আবার পাঠান';
-
-  @override
-  String get otpCallMe => 'আমাকে ফোন করে বলে দিন';
-
-  @override
-  String get otpCalling => 'কিছুক্ষণের মধ্যে ফোন আসবে আর কোড পড়ে শোনানো হবে।';
 
   @override
   String get otpWrong => 'কোডটা ঠিক নয়। আবার লিখুন।';

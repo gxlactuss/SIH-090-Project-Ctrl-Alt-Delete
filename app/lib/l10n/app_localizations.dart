@@ -120,8 +120,6 @@ abstract class AppLocalizations {
 
   String get phoneInvalid;
 
-  String phoneUnknown(String number);
-
   String get phoneSendCode;
 
   String get otpTitle;
@@ -131,10 +129,6 @@ abstract class AppLocalizations {
   String otpResendIn(int seconds);
 
   String get otpResend;
-
-  String get otpCallMe;
-
-  String get otpCalling;
 
   String get otpWrong;
 
