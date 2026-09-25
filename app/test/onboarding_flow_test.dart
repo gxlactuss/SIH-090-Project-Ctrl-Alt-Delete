@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kirtikar/app.dart';
 import 'package:kirtikar/core/constants/app_constants.dart';
-import 'package:kirtikar/core/dev/dev_accounts.dart';
 import 'package:kirtikar/data/models/app_language.dart';
+import 'package:kirtikar/data/repositories/auth_repository.dart';
 import 'package:kirtikar/data/repositories/seller_repository.dart';
 import 'package:kirtikar/l10n/app_localizations.dart';
 import 'package:kirtikar/services/speech_service.dart';
@@ -32,7 +32,11 @@ void main() {
     final speech = SpeechService();
 
     return MultiProvider(
-      providers: appProviders(sellers: sellers, speech: speech),
+      providers: appProviders(
+        sellers: sellers,
+        speech: speech,
+        auth: _FakeAuth(),
+      ),
       child: const KirtikarApp(),
     );
   }
@@ -104,12 +108,13 @@ void main() {
 
     expect(find.text(l10n.phoneTitle), findsOneWidget);
     expect(find.byType(TextField), findsNothing);
-    await typeOnPad(tester, DevAccounts.phone);
+    await typeOnPad(tester, '9876543210');
     await tester.tap(find.text(l10n.phoneSendCode));
     await advance(tester);
 
     expect(find.text(l10n.otpTitle), findsOneWidget);
-    await advance(tester, const Duration(seconds: 5));
+    await typeOnPad(tester, '123456');
+    await advance(tester);
 
     expect(find.text(l10n.profileTitle), findsOneWidget);
     expect(find.byType(TextField), findsOneWidget);
@@ -139,36 +144,6 @@ void main() {
     expect(await sellers.hasSeenPractice(), isFalse);
   });
 
-  testWidgets('a number that is not the demo number is refused', (
-    tester,
-  ) async {
-    useCheapPhone(tester);
-    await sellers.saveLanguage(AppLanguage.byCode('en'));
-    await tester.pumpWidget(harness());
-    await tester.pump();
-    await advance(tester, const Duration(seconds: 4));
-
-    final l10n = lookupAppLocalizations(const Locale('en'));
-
-    await tester.tap(find.text(l10n.actionSkip));
-    await advance(tester);
-    await tester.tap(find.byKey(const Key('terms-agree-check')));
-    await tester.pump();
-    await tester.tap(find.text(l10n.termsAgreeContinue));
-    await advance(tester);
-    for (var i = 0; i < 2; i++) {
-      await tester.tap(find.text(l10n.permissionNotNow));
-      await advance(tester);
-    }
-
-    await typeOnPad(tester, '9876543210');
-    await tester.tap(find.text(l10n.phoneSendCode));
-    await advance(tester);
-
-    expect(find.text(l10n.phoneUnknown(DevAccounts.phone)), findsOneWidget);
-    expect(find.text(l10n.otpTitle), findsNothing);
-  });
-
   testWidgets('a completed setup skips onboarding entirely', (tester) async {
     useCheapPhone(tester);
     await sellers.saveLanguage(AppLanguage.byCode('en'));
@@ -185,4 +160,16 @@ void main() {
       expect(find.text(tab), findsOneWidget);
     }
   });
+}
+
+class _FakeAuth extends AuthRepository {
+  @override
+  Future<OtpRequestOutcome> requestOtp(String phone) async =>
+      OtpRequestOutcome.sent;
+
+  @override
+  Future<OtpVerifyOutcome> verifyOtp({
+    required String phone,
+    required String code,
+  }) async => OtpVerifyOutcome.verified;
 }

@@ -95,8 +95,6 @@ class _ChangePhoneScreenState extends State<ChangePhoneScreen> {
           _step = _Step.code;
         case OtpRequestOutcome.invalidNumber:
           _error = l10n.phoneInvalid;
-        case OtpRequestOutcome.unknownNumber:
-          _error = l10n.phoneUnknown(_auth.demoNumber ?? '');
         case OtpRequestOutcome.tooManyTries:
           _error = l10n.authTooManyTries;
         case OtpRequestOutcome.failed:

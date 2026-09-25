@@ -27,10 +27,8 @@ class _OtpScreenState extends State<OtpScreen> {
   bool _verifying = false;
   bool _autoRead = false;
   String? _error;
-  String? _notice;
 
   Timer? _ticker;
-  Timer? _autoReadTimer;
   int _secondsLeft = AppConstants.otpResendSeconds;
 
   bool get _isComplete => _code.length == AppConstants.otpDigits;
@@ -43,7 +41,6 @@ class _OtpScreenState extends State<OtpScreen> {
     _auth = context.read<OnboardingController>().auth;
     _auth.autoRead.addListener(_onAutoRead);
     _startResendTimer();
-    _armAutoRead();
     WidgetsBinding.instance.addPostFrameCallback((_) => _onAutoRead());
   }
 
@@ -51,14 +48,12 @@ class _OtpScreenState extends State<OtpScreen> {
   void dispose() {
     _auth.autoRead.removeListener(_onAutoRead);
     _ticker?.cancel();
-    _autoReadTimer?.cancel();
     super.dispose();
   }
 
   void _onAutoRead() {
     final read = _auth.autoRead.value;
     if (read == null || !mounted || _verifying) return;
-    _autoReadTimer?.cancel();
     setState(() {
       _code = read.code ?? '';
       _autoRead = true;
@@ -74,22 +69,6 @@ class _OtpScreenState extends State<OtpScreen> {
       if (!mounted) return;
       setState(() => _secondsLeft--);
       if (_secondsLeft <= 0) timer.cancel();
-    });
-  }
-
-  void _armAutoRead() {
-    final onboarding = context.read<OnboardingController>();
-    final code = onboarding.auth.demoOtp;
-    if (code == null || onboarding.phone != onboarding.auth.demoNumber) return;
-
-    _autoReadTimer = Timer(AppConstants.otpAutoReadDelay, () {
-      if (!mounted || _code.isNotEmpty) return;
-      setState(() {
-        _code = code;
-        _autoRead = true;
-        _error = null;
-      });
-      _verify();
     });
   }
 
@@ -149,29 +128,23 @@ class _OtpScreenState extends State<OtpScreen> {
     }
   }
 
-  Future<void> _resend({required bool byCall}) async {
+  Future<void> _resend() async {
     final l10n = AppLocalizations.of(context);
     final onboarding = context.read<OnboardingController>();
 
-    setState(() {
-      _notice = null;
-      _error = null;
-    });
+    setState(() => _error = null);
 
-    final outcome = byCall
-        ? await onboarding.auth.requestOtpByCall(onboarding.phone)
-        : await onboarding.auth.requestOtp(onboarding.phone);
+    final outcome = await onboarding.auth.requestOtp(onboarding.phone);
     if (!mounted) return;
 
     switch (outcome) {
       case OtpRequestOutcome.sent:
         _startResendTimer();
-        if (byCall) setState(() => _notice = l10n.otpCalling);
       case OtpRequestOutcome.tooManyTries:
         setState(() => _error = l10n.authTooManyTries);
       case OtpRequestOutcome.failed:
         setState(() => _error = l10n.phoneSendFailed);
-      case OtpRequestOutcome.invalidNumber || OtpRequestOutcome.unknownNumber:
+      case OtpRequestOutcome.invalidNumber:
         break;
     }
   }
@@ -204,12 +177,6 @@ class _OtpScreenState extends State<OtpScreen> {
               text: _error!,
               color: AppColors.danger,
             ),
-          if (_notice != null)
-            _Notice(
-              icon: Icons.phone_in_talk,
-              text: _notice!,
-              color: AppColors.success,
-            ),
           const SizedBox(height: 10),
           NumberPad(
             enabled: !_verifying,
@@ -226,7 +193,7 @@ class _OtpScreenState extends State<OtpScreen> {
             children: [
               Flexible(
                 child: TextButton(
-                  onPressed: canResend ? () => _resend(byCall: false) : null,
+                  onPressed: canResend ? _resend : null,
                   child: WholeWordText(
                     canResend ? l10n.otpResend : l10n.otpResendIn(_secondsLeft),
                     textAlign: TextAlign.center,
@@ -253,13 +220,6 @@ class _OtpScreenState extends State<OtpScreen> {
           busy: _verifying,
           onPressed: _isComplete ? _verify : null,
         ),
-        if (onboarding.auth.canCall)
-          BigActionButton(
-            label: l10n.otpCallMe,
-            icon: Icons.phone_in_talk,
-            tone: ButtonTone.secondary,
-            onPressed: () => _resend(byCall: true),
-          ),
       ],
     );
   }

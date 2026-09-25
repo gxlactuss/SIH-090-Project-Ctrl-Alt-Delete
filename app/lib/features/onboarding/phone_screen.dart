@@ -63,8 +63,6 @@ class _PhoneScreenState extends State<PhoneScreen> {
         Navigator.of(context).pushNamed(AppRoutes.otp);
       case OtpRequestOutcome.invalidNumber:
         setState(() => _error = l10n.phoneInvalid);
-      case OtpRequestOutcome.unknownNumber:
-        setState(() => _error = l10n.phoneUnknown(auth.demoNumber ?? ''));
       case OtpRequestOutcome.tooManyTries:
         setState(() => _error = l10n.authTooManyTries);
       case OtpRequestOutcome.failed:

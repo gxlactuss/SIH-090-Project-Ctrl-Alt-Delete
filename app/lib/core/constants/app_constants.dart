@@ -45,7 +45,5 @@ abstract final class AppConstants {
 
   static const int otpResendSeconds = 30;
 
-  static const Duration otpAutoReadDelay = Duration(milliseconds: 2200);
-
   static const Duration fakeNetworkDelay = Duration(milliseconds: 900);
 }

@@ -1,23 +1,11 @@
 import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 
 import '../../core/constants/app_constants.dart';
-import '../../core/dev/dev_accounts.dart';
 
-enum OtpRequestOutcome {
-  sent,
-
-  invalidNumber,
-
-  unknownNumber,
-
-  tooManyTries,
-
-  failed,
-}
+enum OtpRequestOutcome { sent, invalidNumber, tooManyTries, failed }
 
 enum OtpVerifyOutcome { verified, wrongCode, expired, tooManyTries, failed }
 
@@ -28,11 +16,11 @@ class AutoRead {
 }
 
 class AuthRepository {
-  AuthRepository({FirebaseAuth? firebase})
-    : _firebase =
-          firebase ?? (Firebase.apps.isEmpty ? null : FirebaseAuth.instance);
+  AuthRepository({FirebaseAuth? firebase}) : _injected = firebase;
 
-  final FirebaseAuth? _firebase;
+  final FirebaseAuth? _injected;
+
+  FirebaseAuth get _firebase => _injected ?? FirebaseAuth.instance;
 
   String? _verificationId;
   int? _resendToken;
@@ -41,14 +29,7 @@ class AuthRepository {
 
   final ValueNotifier<AutoRead?> autoRead = ValueNotifier(null);
 
-  bool get canCall => _firebase == null;
-
-  bool get isSignedIn => _firebase == null || _firebase.currentUser != null;
-
-  String? get demoNumber => DevAccounts.enabled ? DevAccounts.phone : null;
-
-  String? get demoOtp =>
-      DevAccounts.enabled && _firebase == null ? DevAccounts.otp : null;
+  bool get isSignedIn => _firebase.currentUser != null;
 
   Future<OtpRequestOutcome> requestOtp(String phone) async {
     final digits = _digitsOf(phone);
@@ -57,8 +38,6 @@ class AuthRepository {
     }
 
     final firebase = _firebase;
-    if (firebase == null) return _fakeRequest(digits);
-
     final done = Completer<OtpRequestOutcome>();
     void finish(OtpRequestOutcome outcome) {
       if (!done.isCompleted) done.complete(outcome);
@@ -99,15 +78,12 @@ class AuthRepository {
     );
   }
 
-  Future<OtpRequestOutcome> requestOtpByCall(String phone) => requestOtp(phone);
-
   Future<OtpVerifyOutcome> verifyOtp({
     required String phone,
     required String code,
   }) async {
     final digits = _digitsOf(phone);
     final firebase = _firebase;
-    if (firebase == null) return _fakeVerify(digits, code);
 
     if (digits != _codeFor) return OtpVerifyOutcome.expired;
 
@@ -147,7 +123,7 @@ class AuthRepository {
     }
   }
 
-  Future<String?> idToken() async => _firebase?.currentUser?.getIdToken();
+  Future<String?> idToken() async => _firebase.currentUser?.getIdToken();
 
   Future<void> signOut() async {
     _verificationId = null;
@@ -155,7 +131,7 @@ class AuthRepository {
     _codeFor = null;
     _autoCredential = null;
     autoRead.value = null;
-    await _firebase?.signOut();
+    await _firebase.signOut();
   }
 
   OtpRequestOutcome _requestFailure(FirebaseAuthException e) {
@@ -165,26 +141,6 @@ class AuthRepository {
       'too-many-requests' || 'quota-exceeded' => OtpRequestOutcome.tooManyTries,
       _ => OtpRequestOutcome.failed,
     };
-  }
-
-  Future<OtpRequestOutcome> _fakeRequest(String digits) async {
-    await Future<void>.delayed(AppConstants.fakeNetworkDelay);
-
-    if (DevAccounts.enabled && digits == DevAccounts.phone) {
-      return OtpRequestOutcome.sent;
-    }
-    return OtpRequestOutcome.unknownNumber;
-  }
-
-  Future<OtpVerifyOutcome> _fakeVerify(String digits, String code) async {
-    await Future<void>.delayed(AppConstants.fakeNetworkDelay);
-
-    if (DevAccounts.enabled &&
-        digits == DevAccounts.phone &&
-        code == DevAccounts.otp) {
-      return OtpVerifyOutcome.verified;
-    }
-    return OtpVerifyOutcome.wrongCode;
   }
 
   String _digitsOf(String input) => input.replaceAll(RegExp(r'\D'), '');
