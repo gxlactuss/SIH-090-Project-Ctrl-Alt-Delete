@@ -1,5 +1,8 @@
+import 'dart:typed_data';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kirtikar/core/constants/review_constants.dart';
+import 'package:kirtikar/data/models/app_language.dart';
 import 'package:kirtikar/data/models/fact_sheet.dart';
 import 'package:kirtikar/data/models/listing.dart';
 import 'package:kirtikar/data/models/listing_status.dart';
@@ -7,6 +10,7 @@ import 'package:kirtikar/data/models/sale.dart';
 import 'package:kirtikar/data/models/seller_profile.dart';
 import 'package:kirtikar/data/models/suggestion.dart';
 import 'package:kirtikar/data/remote/api_client.dart';
+import 'package:kirtikar/data/remote/voice/voice_api.dart';
 import 'package:kirtikar/data/repositories/listing_repository.dart';
 import 'package:kirtikar/state/review_controller.dart';
 
@@ -120,6 +124,47 @@ class _FakeApi implements ApiClient {
       throw UnimplementedError();
   @override
   Future<List<Sale>> sales() => throw UnimplementedError();
+}
+
+class _FakeVoice implements VoiceApi {
+  _FakeVoice({this.blowUp = false});
+
+  final bool blowUp;
+  final List<String> translated = [];
+
+  @override
+  bool get isAvailable => true;
+
+  @override
+  Future<String> translate(
+    String text, {
+    required AppLanguage from,
+    required AppLanguage to,
+  }) async {
+    if (blowUp) throw const VoiceException(VoiceFailure.network, 'no signal');
+    translated.add(text);
+    return '${to.code}: $text';
+  }
+
+  @override
+  Future<Transcript> transcribe(
+    String path,
+    AppLanguage language, {
+    bool toEnglish = false,
+  }) async => throw UnimplementedError();
+
+  @override
+  Future<Uint8List> speak(String text, AppLanguage language) async =>
+      throw UnimplementedError();
+
+  @override
+  int get maxSpeakChars => 2500;
+
+  @override
+  Duration get maxClipLength => const Duration(seconds: 30);
+
+  @override
+  String get voiceName => 'fake';
 }
 
 void main() {
@@ -253,6 +298,61 @@ void main() {
     await review.submitSuggestions();
 
     expect(api.lastDecisions, {'a': true, 'b': false});
+  });
+
+  group('suggestion prompts follow the app language', () {
+    const addition = Suggestion(
+      id: 'gift',
+      spokenPrompt: 'Should I say it makes a good gift?',
+      textIfAccepted: 'It makes a good gift.',
+    );
+    const missingPrice = Suggestion(
+      id: 'price',
+      field: 'price',
+      spokenPrompt: 'The voice note did not mention a price.',
+      textIfAccepted: 'price',
+    );
+
+    ReviewController withVoice(VoiceApi voice, String languageCode) =>
+        ReviewController(
+          listings: ListingRepository(
+            api: _FakeApi(
+              seed(question: null, suggestions: [addition, missingPrice]),
+            ),
+          ),
+          listing: seed(question: null, suggestions: [addition, missingPrice]),
+          voice: voice,
+          language: AppLanguage.byCode(languageCode),
+        );
+
+    test('an addition is translated, a missing field is not', () async {
+      final voice = _FakeVoice();
+      final review = withVoice(voice, 'hi');
+
+      expect(review.promptFor(addition), isNull);
+      await pumpEventQueue();
+
+      expect(
+        review.promptFor(addition),
+        'hi: Should I say it makes a good gift?',
+      );
+      expect(voice.translated, ['Should I say it makes a good gift?']);
+    });
+
+    test('English needs no translation', () {
+      final voice = _FakeVoice();
+      final review = withVoice(voice, 'en');
+
+      expect(review.promptFor(addition), addition.spokenPrompt);
+      expect(voice.translated, isEmpty);
+    });
+
+    test('a failed translation falls back to English', () async {
+      final review = withVoice(_FakeVoice(blowUp: true), 'ta');
+      await pumpEventQueue();
+
+      expect(review.promptFor(addition), addition.spokenPrompt);
+    });
   });
 
   test('the suggestion screen is skipped when there is nothing to suggest', () {

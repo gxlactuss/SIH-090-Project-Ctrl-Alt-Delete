@@ -871,6 +871,23 @@ class AppLocalizationsGu extends AppLocalizations {
   String get suggestDone => 'બીજું કંઈ ઉમેરવાનું નથી';
 
   @override
+  String get suggestAskMaterial =>
+      'આ શેનું બનેલું છે તે તમે કહ્યું નથી. આ ઉમેરીએ?';
+
+  @override
+  String get suggestAskSize => 'તમે આનું માપ કહ્યું નથી. આ ઉમેરીએ?';
+
+  @override
+  String get suggestAskColour => 'તમે આનો રંગ કહ્યો નથી. આ ઉમેરીએ?';
+
+  @override
+  String get suggestAskQuantity =>
+      'તમારી પાસે કેટલા છે તે તમે કહ્યું નથી. આ ઉમેરીએ?';
+
+  @override
+  String get suggestAskPrice => 'તમે કિંમત કહી નથી. આ ઉમેરીએ?';
+
+  @override
   String get priceTitle => 'કિંમત કેટલી?';
 
   @override

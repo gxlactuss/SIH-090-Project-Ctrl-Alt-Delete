@@ -88,6 +88,14 @@ extension ListingFieldDisplay on ListingField {
     ListingField.price => l10n.fieldPrice,
   };
 
+  String askIfMissing(AppLocalizations l10n) => switch (this) {
+    ListingField.material => l10n.suggestAskMaterial,
+    ListingField.size => l10n.suggestAskSize,
+    ListingField.colour => l10n.suggestAskColour,
+    ListingField.quantity => l10n.suggestAskQuantity,
+    ListingField.price => l10n.suggestAskPrice,
+  };
+
   IconData get icon => switch (this) {
     ListingField.material => Icons.category_outlined,
     ListingField.size => Icons.straighten,

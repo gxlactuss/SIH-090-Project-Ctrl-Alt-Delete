@@ -873,6 +873,23 @@ class AppLocalizationsKn extends AppLocalizations {
   String get suggestDone => 'ಇನ್ನೇನೂ ಸೇರಿಸಲು ಇಲ್ಲ';
 
   @override
+  String get suggestAskMaterial =>
+      'ಇದು ಯಾವುದರಿಂದ ಮಾಡಿದ್ದು ಎಂದು ನೀವು ಹೇಳಲಿಲ್ಲ. ಇದನ್ನು ಸೇರಿಸೋಣವೇ?';
+
+  @override
+  String get suggestAskSize => 'ನೀವು ಇದರ ಅಳತೆ ಹೇಳಲಿಲ್ಲ. ಇದನ್ನು ಸೇರಿಸೋಣವೇ?';
+
+  @override
+  String get suggestAskColour => 'ನೀವು ಇದರ ಬಣ್ಣ ಹೇಳಲಿಲ್ಲ. ಇದನ್ನು ಸೇರಿಸೋಣವೇ?';
+
+  @override
+  String get suggestAskQuantity =>
+      'ನಿಮ್ಮ ಬಳಿ ಎಷ್ಟು ಇವೆ ಎಂದು ನೀವು ಹೇಳಲಿಲ್ಲ. ಇದನ್ನು ಸೇರಿಸೋಣವೇ?';
+
+  @override
+  String get suggestAskPrice => 'ನೀವು ಬೆಲೆ ಹೇಳಲಿಲ್ಲ. ಇದನ್ನು ಸೇರಿಸೋಣವೇ?';
+
+  @override
   String get priceTitle => 'ಬೆಲೆ ಎಷ್ಟು?';
 
   @override

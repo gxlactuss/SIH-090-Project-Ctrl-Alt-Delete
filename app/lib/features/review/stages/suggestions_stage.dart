@@ -29,15 +29,6 @@ class SuggestionsStage extends StatelessWidget {
     review.next();
   }
 
-  static ListingField? _fieldOf(Suggestion suggestion) {
-    final name = suggestion.field;
-    if (name == null) return null;
-    for (final field in ListingField.values) {
-      if (field.name == name) return field;
-    }
-    return null;
-  }
-
   Future<void> _fill(
     BuildContext context,
     Suggestion suggestion,
@@ -80,11 +71,23 @@ class SuggestionsStage extends StatelessWidget {
     }
 
     final answered = review.answeredSuggestions;
-    final field = _fieldOf(suggestion);
+    final field = ReviewController.fieldOf(suggestion);
+    final prompt = field?.askIfMissing(l10n) ?? review.promptFor(suggestion);
+
+    if (prompt == null) {
+      return ReviewScaffold(
+        title: l10n.suggestTitle,
+        spokenLines: const [],
+        onBack: onBack,
+        onClose: onClose,
+        body: const Center(child: CircularProgressIndicator()),
+      );
+    }
 
     return ReviewScaffold(
+      key: ValueKey('suggestion:${suggestion.id}'),
       title: l10n.suggestTitle,
-      spokenLines: [l10n.suggestTitle, suggestion.spokenPrompt],
+      spokenLines: [l10n.suggestTitle, prompt],
       busy: review.isBusy,
       onBack: onBack,
       onClose: onClose,
@@ -110,7 +113,7 @@ class SuggestionsStage extends StatelessWidget {
               children: [
                 Expanded(
                   child: WholeWordText(
-                    suggestion.spokenPrompt,
+                    prompt,
                     style: const TextStyle(
                       fontSize: 23,
                       height: 1.35,
@@ -120,7 +123,7 @@ class SuggestionsStage extends StatelessWidget {
                   ),
                 ),
                 SpeakButton(
-                  text: suggestion.spokenPrompt,
+                  text: prompt,
                   utteranceKey: 'suggestion:${suggestion.id}',
                   size: 34,
                 ),
@@ -135,7 +138,6 @@ class SuggestionsStage extends StatelessWidget {
           icon: Icons.check,
           onPressed: review.isBusy
               ? null
-
               : field != null
               ? () => _fill(context, suggestion, field)
               : () => review.answerSuggestion(suggestion.id, true),

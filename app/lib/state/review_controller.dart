@@ -45,6 +45,7 @@ class ReviewController extends ChangeNotifier {
         (listing.needsAttention
             ? ReviewStage.needsAttention
             : ReviewStage.readBack);
+    _translatePrompts();
   }
 
   final bool _isEdit;
@@ -128,6 +129,70 @@ class ReviewController extends ChangeNotifier {
   final Set<String> _skipped = {};
 
   bool isSkipped(String id) => _skipped.contains(id);
+
+  static ListingField? fieldOf(Suggestion suggestion) {
+    final name = suggestion.field;
+    if (name == null) return null;
+    for (final field in ListingField.values) {
+      if (field.name == name) return field;
+    }
+    return null;
+  }
+
+  static final AppLanguage _english = AppLanguage.byCode('en');
+
+  final Map<String, String> _prompts = {};
+
+  final Set<String> _translating = {};
+
+  String? promptFor(Suggestion suggestion) {
+    if (!_needsTranslation) return suggestion.spokenPrompt;
+    return _prompts[suggestion.id];
+  }
+
+  bool get _needsTranslation {
+    final voice = _voice;
+    final language = _language;
+    return voice != null &&
+        voice.isAvailable &&
+        language != null &&
+        language.code != _english.code;
+  }
+
+  void _translatePrompts() {
+    if (!_needsTranslation) return;
+    for (final suggestion in _listing.suggestions) {
+      if (suggestion.accepted != null || fieldOf(suggestion) != null) continue;
+      if (_prompts.containsKey(suggestion.id)) continue;
+      if (!_translating.add(suggestion.id)) continue;
+      _translatePrompt(suggestion);
+    }
+  }
+
+  Future<void> _translatePrompt(Suggestion suggestion) async {
+    String prompt;
+    try {
+      prompt = await _voice!.translate(
+        suggestion.spokenPrompt,
+        from: _english,
+        to: _language!,
+      );
+      if (prompt.isEmpty) prompt = suggestion.spokenPrompt;
+    } catch (_) {
+      prompt = suggestion.spokenPrompt;
+    }
+    _translating.remove(suggestion.id);
+    _prompts[suggestion.id] = prompt;
+    if (!_disposed) notifyListeners();
+  }
+
+  bool _disposed = false;
+
+  @override
+  void dispose() {
+    _disposed = true;
+    super.dispose();
+  }
 
   Suggestion? get nextSuggestion {
     for (final suggestion in _listing.suggestions) {
@@ -373,6 +438,7 @@ class ReviewController extends ChangeNotifier {
 
     try {
       _listing = await call();
+      _translatePrompts();
       then?.call();
       return true;
     } catch (error) {

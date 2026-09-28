@@ -105,8 +105,10 @@ Rules:
 - Only suggest things that are plausible and harmless to ask about (e.g. season/occasion \
 it suits, a care tip, a use case) — never invent a material, price, or specific claim \
 as if it were true.
-- Phrase spoken_prompt as a clear yes/no question, e.g. "Should I mention this is good \
-for summer?" — never as a statement that assumes agreement.
+- Phrase spoken_prompt as a clear yes/no question in simple English, e.g. "Should I \
+mention this is good for summer?" — never as a statement that assumes agreement. \
+Always English, whatever language the fact sheet is in: the app translates it into \
+the artisan's language.
 - Write sentence as the one short English sentence that would be added to the listing \
 description if the artisan says yes, e.g. "It is a good choice for summer."
 - Suggest at most 3 additions. If nothing sensible comes to mind, return an empty list.

@@ -874,6 +874,23 @@ class AppLocalizationsPa extends AppLocalizations {
   String get suggestDone => 'ਹੋਰ ਕੁਝ ਜੋੜਨ ਲਈ ਨਹੀਂ';
 
   @override
+  String get suggestAskMaterial =>
+      'ਤੁਸੀਂ ਨਹੀਂ ਦੱਸਿਆ ਕਿ ਇਹ ਕਿਸ ਚੀਜ਼ ਦੀ ਬਣੀ ਹੈ। ਕੀ ਇਹ ਜੋੜੀਏ?';
+
+  @override
+  String get suggestAskSize => 'ਤੁਸੀਂ ਇਸਦਾ ਆਕਾਰ ਨਹੀਂ ਦੱਸਿਆ। ਕੀ ਇਹ ਜੋੜੀਏ?';
+
+  @override
+  String get suggestAskColour => 'ਤੁਸੀਂ ਇਸਦਾ ਰੰਗ ਨਹੀਂ ਦੱਸਿਆ। ਕੀ ਇਹ ਜੋੜੀਏ?';
+
+  @override
+  String get suggestAskQuantity =>
+      'ਤੁਸੀਂ ਨਹੀਂ ਦੱਸਿਆ ਕਿ ਤੁਹਾਡੇ ਕੋਲ ਕਿੰਨੀਆਂ ਹਨ। ਕੀ ਇਹ ਜੋੜੀਏ?';
+
+  @override
+  String get suggestAskPrice => 'ਤੁਸੀਂ ਕੀਮਤ ਨਹੀਂ ਦੱਸੀ। ਕੀ ਇਹ ਜੋੜੀਏ?';
+
+  @override
   String get priceTitle => 'ਕੀਮਤ ਕਿੰਨੀ ਹੈ?';
 
   @override

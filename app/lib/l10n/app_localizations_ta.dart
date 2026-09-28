@@ -880,6 +880,26 @@ class AppLocalizationsTa extends AppLocalizations {
   String get suggestDone => 'இனி சேர்க்க எதுவும் இல்லை';
 
   @override
+  String get suggestAskMaterial =>
+      'இது எதனால் செய்தது என்று நீங்கள் சொல்லவில்லை. இதைச் சேர்க்கலாமா?';
+
+  @override
+  String get suggestAskSize =>
+      'இதன் அளவை நீங்கள் சொல்லவில்லை. இதைச் சேர்க்கலாமா?';
+
+  @override
+  String get suggestAskColour =>
+      'இதன் நிறத்தை நீங்கள் சொல்லவில்லை. இதைச் சேர்க்கலாமா?';
+
+  @override
+  String get suggestAskQuantity =>
+      'உங்களிடம் எத்தனை உள்ளன என்று நீங்கள் சொல்லவில்லை. இதைச் சேர்க்கலாமா?';
+
+  @override
+  String get suggestAskPrice =>
+      'விலையை நீங்கள் சொல்லவில்லை. இதைச் சேர்க்கலாமா?';
+
+  @override
   String get priceTitle => 'விலை என்ன?';
 
   @override

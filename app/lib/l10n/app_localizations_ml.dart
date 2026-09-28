@@ -879,6 +879,25 @@ class AppLocalizationsMl extends AppLocalizations {
   String get suggestDone => 'ഇനി ഒന്നും ചേർക്കാനില്ല';
 
   @override
+  String get suggestAskMaterial =>
+      'ഇത് എന്തുകൊണ്ട് ഉണ്ടാക്കിയതാണെന്ന് നിങ്ങൾ പറഞ്ഞില്ല. ഇത് ചേർക്കട്ടെ?';
+
+  @override
+  String get suggestAskSize =>
+      'ഇതിന്റെ വലിപ്പം നിങ്ങൾ പറഞ്ഞില്ല. ഇത് ചേർക്കട്ടെ?';
+
+  @override
+  String get suggestAskColour =>
+      'ഇതിന്റെ നിറം നിങ്ങൾ പറഞ്ഞില്ല. ഇത് ചേർക്കട്ടെ?';
+
+  @override
+  String get suggestAskQuantity =>
+      'നിങ്ങളുടെ കയ്യിൽ എത്ര എണ്ണം ഉണ്ടെന്ന് നിങ്ങൾ പറഞ്ഞില്ല. ഇത് ചേർക്കട്ടെ?';
+
+  @override
+  String get suggestAskPrice => 'വില നിങ്ങൾ പറഞ്ഞില്ല. ഇത് ചേർക്കട്ടെ?';
+
+  @override
   String get priceTitle => 'വില എത്ര?';
 
   @override

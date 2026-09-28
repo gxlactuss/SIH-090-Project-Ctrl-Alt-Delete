@@ -879,6 +879,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get suggestDone => 'Nothing more to add';
 
   @override
+  String get suggestAskMaterial =>
+      'You did not say what it is made of. Shall we add it?';
+
+  @override
+  String get suggestAskSize =>
+      'You did not say how big it is. Shall we add it?';
+
+  @override
+  String get suggestAskColour => 'You did not say its colour. Shall we add it?';
+
+  @override
+  String get suggestAskQuantity =>
+      'You did not say how many you have. Shall we add it?';
+
+  @override
+  String get suggestAskPrice => 'You did not say the price. Shall we add it?';
+
+  @override
   String get priceTitle => 'What is the price?';
 
   @override

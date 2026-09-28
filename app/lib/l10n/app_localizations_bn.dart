@@ -869,6 +869,23 @@ class AppLocalizationsBn extends AppLocalizations {
   String get suggestDone => 'আর কিছু যোগ করার নেই';
 
   @override
+  String get suggestAskMaterial =>
+      'এটা কী দিয়ে তৈরি, আপনি বলেননি। এটা যোগ করব?';
+
+  @override
+  String get suggestAskSize => 'এটার মাপ আপনি বলেননি। এটা যোগ করব?';
+
+  @override
+  String get suggestAskColour => 'এটার রং আপনি বলেননি। এটা যোগ করব?';
+
+  @override
+  String get suggestAskQuantity =>
+      'আপনার কাছে কতগুলো আছে, আপনি বলেননি। এটা যোগ করব?';
+
+  @override
+  String get suggestAskPrice => 'দাম আপনি বলেননি। এটা যোগ করব?';
+
+  @override
   String get priceTitle => 'দাম কত?';
 
   @override

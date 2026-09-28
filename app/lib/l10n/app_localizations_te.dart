@@ -873,6 +873,23 @@ class AppLocalizationsTe extends AppLocalizations {
   String get suggestDone => 'ఇంకేమీ జోడించాల్సింది లేదు';
 
   @override
+  String get suggestAskMaterial =>
+      'ఇది దేనితో చేసిందో మీరు చెప్పలేదు. దీన్ని జోడించాలా?';
+
+  @override
+  String get suggestAskSize => 'మీరు దీని పరిమాణం చెప్పలేదు. దీన్ని జోడించాలా?';
+
+  @override
+  String get suggestAskColour => 'మీరు దీని రంగు చెప్పలేదు. దీన్ని జోడించాలా?';
+
+  @override
+  String get suggestAskQuantity =>
+      'మీ దగ్గర ఎన్ని ఉన్నాయో మీరు చెప్పలేదు. దీన్ని జోడించాలా?';
+
+  @override
+  String get suggestAskPrice => 'మీరు ధర చెప్పలేదు. దీన్ని జోడించాలా?';
+
+  @override
   String get priceTitle => 'ధర ఎంత?';
 
   @override

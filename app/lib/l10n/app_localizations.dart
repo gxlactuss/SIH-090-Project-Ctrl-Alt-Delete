@@ -572,6 +572,16 @@ abstract class AppLocalizations {
 
   String get suggestDone;
 
+  String get suggestAskMaterial;
+
+  String get suggestAskSize;
+
+  String get suggestAskColour;
+
+  String get suggestAskQuantity;
+
+  String get suggestAskPrice;
+
   String get priceTitle;
 
   String get priceBody;

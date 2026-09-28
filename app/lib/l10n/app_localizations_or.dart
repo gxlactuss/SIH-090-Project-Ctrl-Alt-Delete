@@ -870,6 +870,23 @@ class AppLocalizationsOr extends AppLocalizations {
   String get suggestDone => 'ଆଉ କିଛି ଯୋଡିବାର ନାହିଁ';
 
   @override
+  String get suggestAskMaterial =>
+      'ଏହା କେଉଁଥିରେ ତିଆରି, ଆପଣ କହିଲେ ନାହିଁ। ଏହା ଯୋଡିବା କି?';
+
+  @override
+  String get suggestAskSize => 'ଆପଣ ଏହାର ଆକାର କହିଲେ ନାହିଁ। ଏହା ଯୋଡିବା କି?';
+
+  @override
+  String get suggestAskColour => 'ଆପଣ ଏହାର ରଙ୍ଗ କହିଲେ ନାହିଁ। ଏହା ଯୋଡିବା କି?';
+
+  @override
+  String get suggestAskQuantity =>
+      'ଆପଣଙ୍କ ପାଖରେ କେତୋଟି ଅଛି, ଆପଣ କହିଲେ ନାହିଁ। ଏହା ଯୋଡିବା କି?';
+
+  @override
+  String get suggestAskPrice => 'ଆପଣ ଦାମ କହିଲେ ନାହିଁ। ଏହା ଯୋଡିବା କି?';
+
+  @override
   String get priceTitle => 'ଦାମ କେତେ?';
 
   @override

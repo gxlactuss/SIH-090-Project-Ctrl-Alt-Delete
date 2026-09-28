@@ -232,10 +232,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text(l10n.suggestTitle), findsOneWidget);
-    expect(
-      find.text('The voice note did not mention what it is made of.'),
-      findsOneWidget,
-    );
+    expect(find.text(l10n.suggestAskMaterial), findsOneWidget);
 
     await tester.tap(find.text(l10n.suggestYes));
     await tester.pumpAndSettle();
